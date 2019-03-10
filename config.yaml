@@ -1,11 +1,19 @@
 config:
   backup: true
+  banner: false
   create: true
   dotpath: dotfiles
-  banner: false
-  longkey: true
-  keepdot: true
-  showdiff: true
   ignoreempty: false
+  keepdot: true
+  link_by_default: false
+  longkey: true
+  showdiff: true
+  workdir: ~/.config/dotdrop
 dotfiles:
+  f_spacemacs:
+    dst: ~/.spacemacs
+    src: .spacemacs
 profiles:
+  arch:
+    dotfiles:
+    - f_spacemacs
