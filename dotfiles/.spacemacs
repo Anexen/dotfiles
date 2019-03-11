@@ -69,7 +69,6 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-sort-by-usage t)
-     better-defaults
      spell-checking
      syntax-checking
      version-control
@@ -87,6 +86,7 @@ This function should only modify configuration layer settings."
      sphinx-doc
      transpose-frame
      rainbow-mode
+     all-the-icons
      blacken
    )
 
@@ -485,6 +485,8 @@ before packages are loaded."
 
   (add-hook 'prog-mode-hook 'turn-on-fci-mode)
   (add-hook 'text-mode-hook 'turn-on-fci-mode)
+
+  (setq neo-theme 'icons)
 
   (setq-default tab-width 4)
   (setq nxml-child-indent 4)
