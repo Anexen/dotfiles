@@ -10,6 +10,15 @@ config:
   showdiff: true
   workdir: ~/.config/dotdrop
 dotfiles:
+  f_aliases:
+    dst: ~/.aliases
+    src: .aliases
+  f_bashrc:
+    dst: ~/.bashrc
+    src: .bashrc
+  f_environ:
+    dst: ~/.environ
+    src: .environ
   f_spacemacs:
     dst: ~/.spacemacs
     src: .spacemacs
@@ -17,3 +26,6 @@ profiles:
   arch:
     dotfiles:
     - f_spacemacs
+    - f_aliases
+    - f_environ
+    - f_bashrc

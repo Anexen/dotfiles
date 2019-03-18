@@ -1,0 +1,10 @@
+export EDITOR=vim
+export VISUAL=vim
+export TERM="xterm-256color"
+
+export PATH="~/.pyenv/bin:$PATH"
+export SWT_GTK3=0
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
+export DOTDROP_PROFILE=arch
+export DOCKER_BUILDKIT=1
