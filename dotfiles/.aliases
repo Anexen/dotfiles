@@ -1,4 +1,4 @@
-
+alias vim=nvim
 alias ls='ls -h --color=auto'
 alias dir='dir --color=auto'
 alias vdir='vdir --color=auto'

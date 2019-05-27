@@ -41,11 +41,12 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
 
      ;; language-specific
+     python
+     sql
      yaml
      javascript
      html
      markdown
-     python
      docker
      ansible
      emacs-lisp
@@ -56,6 +57,9 @@ This function should only modify configuration layer settings."
      themes-megapack
      multiple-cursors
      imenu-list
+     semantic
+     gtags
+     rebox
      org
      neotree
      (shell :variables
@@ -231,7 +235,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 15
+                               :size 14
                                :weight normal
                                :width normal)
 
@@ -485,6 +489,7 @@ before packages are loaded."
 
   (add-hook 'prog-mode-hook 'turn-on-fci-mode)
   (add-hook 'text-mode-hook 'turn-on-fci-mode)
+  (setq-default fill-column 80)
 
   (setq neo-theme 'icons)
 
@@ -499,10 +504,16 @@ before packages are loaded."
   (add-hook 'yaml-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   (add-hook 'xml-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
-
   (add-hook 'python-mode-hook (lambda ()
                                 (require 'sphinx-doc)
                                 (sphinx-doc-mode t)))
+
+  ;; (defun highlight-foo ()
+  ;;   (font-lock-add-keywords
+  ;;    nil ;; putting nil here adds the keywords only to the current buffer
+  ;;    '(("foo" 0 font-lock-keyword-face))))
+
+  ;; (add-hook 'python-mode-hook 'highlight-foo)
 
   ;; scroll one line at a time (less "jumpy" than defaults)
   (setq mouse-wheel-scroll-amount '(5 ((shift) . 1))) ;; 5 lines at a time
@@ -510,11 +521,13 @@ before packages are loaded."
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse)
   (setq google-translate-default-target-language "ru")
 
+  (setq-local imenu-create-index-function #'ggtags-build-imenu-index)
+
   (progn
     (require 'python)
     (spacemacs/set-leader-keys-for-major-mode 'python-mode
       "=" 'blacken-buffer)
-    )
+  )
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -531,7 +544,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (blacken zenburn-theme yasnippet-snippets writeroom-mode visual-fill-column web-mode tao-theme solarized-theme seti-theme pyvenv minimal-theme magit-svn kaolin-themes json-navigator hl-todo helm-xref gruvbox-theme google-translate eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu editorconfig dumb-jump dracula-theme doom-themes doom-modeline eldoc-eval docker json-mode tablist diff-hl define-word darktooth-theme cython-mode cyberpunk-theme counsel-projectile counsel swiper ivy company-go color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized centered-cursor-mode browse-at-remote auto-compile apropospriate-theme alect-themes aggressive-indent ace-window ace-link anaconda-mode smartparens flycheck flyspell-correct company projectile window-purpose imenu-list helm helm-core avy magit transient git-commit lv markdown-mode pythonic f simple-httpd spaceline powerline all-the-icons dash org-plus-contrib evil goto-chg async hydra zen-and-art-theme yapfify yaml-mode ws-butler with-editor winum white-sand-theme which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill undo-tree underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme treepy toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit symon sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection sphinx-doc spaceline-all-the-icons spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode shrink-path scss-mode sass-mode reverse-theme restart-emacs rebecca-theme rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme pytest pyenv-mode py-isort purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme pippel pipenv pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el password-generator paradox packed overseer organic-green-theme org-bullets open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme nameless mwim mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode material-theme markdown-toc majapahit-theme magit-gitflow madhat2r-theme macrostep lush-theme lorem-ipsum livid-mode live-py-mode link-hint light-soap-theme json-snatcher json-reformat js2-refactor js-doc jinja2-mode jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight hierarchy heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruber-darker-theme graphql grandshell-theme gotham-theme golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md gandalf-theme fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eziam-theme expand-region exotica-theme evil-visualstar evil-unimpaired evil-tutor evil-numbers evil-mc evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu espresso-theme emmet-mode elisp-slime-nav dotenv-mode dockerfile-mode docker-tramp django-theme diminish darkokai-theme darkmine-theme darkburn-theme dakrone-theme company-web company-tern company-statistics company-ansible company-anaconda column-enforce-mode color-identifiers-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme autothemer auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst anti-zenburn-theme ansible-doc ansible ample-zen-theme ample-theme afternoon-theme ace-jump-helm-line ac-ispell))))
+    (stickyfunc-enhance srefactor sql-indent blacken zenburn-theme yasnippet-snippets writeroom-mode visual-fill-column web-mode tao-theme solarized-theme seti-theme pyvenv minimal-theme magit-svn kaolin-themes json-navigator hl-todo helm-xref gruvbox-theme google-translate eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit eval-sexp-fu editorconfig dumb-jump dracula-theme doom-themes doom-modeline eldoc-eval docker json-mode tablist diff-hl define-word darktooth-theme cython-mode cyberpunk-theme counsel-projectile counsel swiper ivy company-go color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized centered-cursor-mode browse-at-remote auto-compile apropospriate-theme alect-themes aggressive-indent ace-window ace-link anaconda-mode smartparens flycheck flyspell-correct company projectile window-purpose imenu-list helm helm-core avy magit transient git-commit lv markdown-mode pythonic f simple-httpd spaceline powerline all-the-icons dash org-plus-contrib evil goto-chg async hydra zen-and-art-theme yapfify yaml-mode ws-butler with-editor winum white-sand-theme which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill undo-tree underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme treepy toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit symon sunny-day-theme sublime-themes subatomic256-theme subatomic-theme string-inflection sphinx-doc spaceline-all-the-icons spacegray-theme soothe-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode shrink-path scss-mode sass-mode reverse-theme restart-emacs rebecca-theme rainbow-mode rainbow-identifiers rainbow-delimiters railscasts-theme pytest pyenv-mode py-isort purple-haze-theme pug-mode professional-theme prettier-js popwin planet-theme pippel pipenv pip-requirements phoenix-dark-pink-theme phoenix-dark-mono-theme persp-mode pcre2el password-generator paradox packed overseer organic-green-theme org-bullets open-junk-file omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme neotree naquadah-theme nameless mwim mustang-theme move-text monokai-theme monochrome-theme molokai-theme moe-theme mmm-mode material-theme markdown-toc majapahit-theme magit-gitflow madhat2r-theme macrostep lush-theme lorem-ipsum livid-mode live-py-mode link-hint light-soap-theme json-snatcher json-reformat js2-refactor js-doc jinja2-mode jbeans-theme jazz-theme ir-black-theme inkpot-theme indent-guide importmagic impatient-mode hungry-delete highlight-parentheses highlight-numbers highlight-indentation highlight hierarchy heroku-theme hemisu-theme helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hc-zenburn-theme gruber-darker-theme graphql grandshell-theme gotham-theme golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md gandalf-theme fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flx-ido flatui-theme flatland-theme fill-column-indicator farmhouse-theme fancy-battery eziam-theme expand-region exotica-theme evil-visualstar evil-unimpaired evil-tutor evil-numbers evil-mc evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu espresso-theme emmet-mode elisp-slime-nav dotenv-mode dockerfile-mode docker-tramp django-theme diminish darkokai-theme darkmine-theme darkburn-theme dakrone-theme company-web company-tern company-statistics company-ansible company-anaconda column-enforce-mode color-identifiers-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme autothemer auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst anti-zenburn-theme ansible-doc ansible ample-zen-theme ample-theme afternoon-theme ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
