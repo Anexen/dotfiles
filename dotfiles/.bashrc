@@ -52,3 +52,5 @@ fi
 # init pyenv
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
+eval "$(pipenv --completion)"
