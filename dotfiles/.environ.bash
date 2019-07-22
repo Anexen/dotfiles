@@ -2,8 +2,6 @@ export EDITOR=nvim
 export VISUAL=nvim
 export TERM="xterm-256color"
 
-export LS_COLORS="*.py=34"
-
 export PATH="~/.pyenv/bin:$PATH"
 export SWT_GTK3=0
 
@@ -11,3 +9,7 @@ export DOTDROP_PROFILE=arch
 export DOCKER_BUILDKIT=1
 
 export GTAGSLABEL=pygments
+
+export GIT_PS1_SHOWCOLORHINTS=true
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWUPSTREAM="auto"

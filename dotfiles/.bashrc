@@ -5,25 +5,37 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-source ~/.secrets
-source ~/.environ
-source ~/.aliases
-source ~/.git-prompt.sh
+. ~/.secrets.bash
+. ~/.environ.bash
+. ~/.aliases.bash
+. ~/.colors.bash
+. ~/.git-prompt.sh
 
-HISTCONTROL=ignoreboth
+. /usr/share/fzf/key-bindings.bash
+. /usr/share/fzf/completion.bash
 
-# append to the history file, don't overwrite it
+# append to the history file, don't overwrite it (from multiple shells)
 shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
+# save multiline commands as single history records
+shopt -s cmdhist
+# minor errors in the spelling of a directory name in a cd command will be corrected
+shopt -s cdspell
+# cd into a dir by just typing the dir name
+shopt -s autocd
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-PS1='\[\e[92m\]#\! \[\e[36m\][\A]\[\e[94m\] \u@\h:\[\e[32m\]\w\[\e[33m\]$(__git_ps1)\[\e[92m\]\n└─ \$\[\e[0m\] '
+# ignoreboth = ignorespace + ignoredups 
+HISTCONTROL=ignoreboth:erasedups
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=2000
+HISTFILESIZE=2000
+
+# save history after every command
+PROMPT_COMMAND="${PROMPT_COMMAND}; history -a"
+
+PS1="\[${IGreen}\]"#"\! \[${Cyan}\][\t]\[${IBlue}\] \u@\h:\[${Green}\]\w\[${Yellow}\]\$(__git_ps1)\[${IGreen}\]\n└─ \$\[${Color_Off}\] "
 
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
@@ -52,3 +64,4 @@ fi
 # init pyenv
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
+
