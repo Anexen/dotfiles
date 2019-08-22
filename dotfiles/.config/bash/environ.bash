@@ -2,7 +2,6 @@ export EDITOR=nvim
 export VISUAL=nvim
 export TERM="xterm-256color"
 
-export PATH="~/.pyenv/bin:$PATH"
 export SWT_GTK3=0
 
 export DOTDROP_PROFILE=arch
