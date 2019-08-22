@@ -29,6 +29,9 @@ dotfiles:
   f_bashrc:
     src: .bashrc
     dst: ~/.bashrc
+  d_config_bash:
+    src: .config/bash
+    dst: ~/.config/bash
 profiles:
   arch:
     dotfiles:
@@ -38,3 +41,4 @@ profiles:
     - f_environ.bash
     - f_colors.bash
     - f_bashrc
+    - d_config_bash
