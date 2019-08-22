@@ -17,15 +17,6 @@ dotfiles:
   f_config_nvim_init.vim:
     src: .config/nvim/init.vim
     dst: ~/.config/nvim/init.vim
-  f_aliases.bash:
-    src: .aliases.bash
-    dst: ~/.aliases.bash
-  f_environ.bash:
-    src: .environ.bash
-    dst: ~/.environ.bash
-  f_colors.bash:
-    src: .colors.bash
-    dst: ~/.colors.bash
   f_bashrc:
     src: .bashrc
     dst: ~/.bashrc
@@ -37,8 +28,5 @@ profiles:
     dotfiles:
     - f_spacemacs
     - f_config_nvim_init.vim
-    - f_aliases.bash
-    - f_environ.bash
-    - f_colors.bash
     - f_bashrc
     - d_config_bash
