@@ -4,8 +4,8 @@
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
-bind '"\e[1;5D": backward-word'
-bind '"\e[1;5C": forward-word'
+# bind '"\e[1;5D": backward-word'
+# bind '"\e[1;5C": forward-word'
 
 # Perform file completion in a case insensitive fashion
 bind "set completion-ignore-case on"
@@ -23,7 +23,8 @@ bind "set visible-stats on"
 bind "set colored-completion-prefix on"
 # color the common prefix in menu-complete
 bind "set menu-complete-display-prefix on"
-
+# disable deep
+bind "set bell-style none"
 
 # append to the history file, don't overwrite it (from multiple shells)
 shopt -s histappend
@@ -57,7 +58,15 @@ HISTFILESIZE=5000
 
 
 __generate_ps1() {
+  local last_exit_code=$?
   local environ=""
+  local greet_color
+
+  if [[ ${last_exit_code} = 0 ]]; then
+    greet_color="${PIGreen}"
+  else
+    greet_color="${PIRed}"
+  fi
 
   if [[ -n "${VIRTUAL_ENV}" ]]; then
     environ="("$(basename "${VIRTUAL_ENV}")") "
@@ -67,7 +76,7 @@ __generate_ps1() {
   local shell="${PIBlue} \u@\h:${PColorOff}"
   local wd="${PGreen}\w${PColorOff}"
   local scm="${PYellow}$(__git_ps1)${PColorOff}"
-  local greet="\n${PIGreen}└─ \$${PColorOff} "
+  local greet="\n${greet_color}└─ \$${PColorOff} "
 
   PS1="${environ}${time}${shell}${wd}${scm}${greet}"
 }
@@ -78,36 +87,30 @@ PROMPT_COMMAND=__generate_ps1
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-__libs="${__dir}/libs/*.bash"
-for _config_file in ${__libs}; do
-    source "${_config_file}"
-done
+source "${__dir}/libs/helpers.bash"
+source "${__dir}/libs/preexec.bash"
 
 source "${__dir}/theme/colors.bash"
-
 source "${__dir}/environ.bash"
 source "${__dir}/aliases.bash"
 
+source "${__dir}/plugins/battery.bash"
+source "${__dir}/plugins/fzf.bash"
+source "${__dir}/plugins/pyenv.bash"
+source "${__dir}/plugins/ssh.bash"
 
-__plugins="${__dir}/plugins/*.bash"
-for _config_file in ${__plugins}; do
-    source "${_config_file}"
-done
-
-
-__completion="${__dir}/completion/*.bash"
-for _config_file in ${__completion}; do
-    source "${_config_file}"
-done
+source "${__dir}/completion/third-party.bash"
+source "${__dir}/completion/dotdrop.bash"
 
 # configure preexec
 
-_short-dirname () {
+_short_dirname () {
   local dir_name=`dirs -0`
   [ ${#dir_name} -gt 8 ] && echo ${dir_name##*/} || echo $dir_name
 }
 
-_short-command () {
+
+_short_command () {
   local input_command="$@"
   local short=${input_command%% *}
   local icon=""
@@ -121,10 +124,6 @@ _short-command () {
   echo ${icon}${short}
 }
 
-set_xterm_title () {
-  local title="$1"
-  echo -ne "\033]0;$title\007"
-}
 
 reload_history () {
   history -a 
@@ -132,13 +131,49 @@ reload_history () {
   history -r
 }
 
-precmd () {
-  set_xterm_title "$(_short-dirname)"
-  reload_history
+
+function preexec_xterm_title_install () {
+    # These functions are defined here because they only make sense with the
+    # preexec_install below.
+    function precmd () {
+        local screen_info=" "
+        if [[ -n $SCREEN_HOST ]]; then
+            screen_info=" (${USER}@${SCREEN_HOST}) "
+        fi
+        preexec_xterm_title "$(_short_dirname)${screen_info}$PROMPTCHAR"
+        if [[ "${TERM}" == screen ]]; then
+            preexec_screen_title "`preexec_screen_user_at_host`${PROMPTCHAR}"
+        fi
+        reload_history
+    }
+
+    function preexec () {
+        local screen_info=""
+        if [[ -n $SCREEN_HOST ]]; then
+            screen_info=" (${USER}@${SCREEN_HOST}) "
+        fi
+        preexec_xterm_title "$(_short_command $1)${screen_info}"
+        if [[ "${TERM}" == screen ]]; then
+            local cutit="$1"
+            local cmdtitle=`echo "$cutit" | cut -d " " -f 1`
+            if [[ "$cmdtitle" == "exec" ]]
+            then
+                local cmdtitle=`echo "$cutit" | cut -d " " -f 2`
+            fi
+            if [[ "$cmdtitle" == "screen" ]]
+            then
+                # Since stacked screens are quite common, it would be nice to
+                # just display them as '$$'.
+                local cmdtitle="${PROMPTCHAR}"
+            else
+                local cmdtitle=":$cmdtitle"
+            fi
+            preexec_screen_title "`preexec_screen_user_at_host`${PROMPTCHAR}$cmdtitle"
+        fi
+    }
+
+    preexec_install
 }
 
-preexec () {
-  set_xterm_title "$(_short-command $1)"
-}
+preexec_xterm_title_install
 
-preexec_install

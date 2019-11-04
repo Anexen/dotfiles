@@ -97,13 +97,13 @@ function preexec_invoke_exec () {
         return
     fi
 
-    if [[ "${BASH_COMMAND}" == "${PROMPT_COMMAND%%;*}" ]]
-    then
-        # Another attempt to detect two prompts being displayed
-        # one after another. 
-        preexec_interactive_mode=""
-        return
-    fi
+    # if [[ "${BASH_COMMAND}" == "${PROMPT_COMMAND%%;*}" ]]
+    # then
+    #     # Another attempt to detect two prompts being displayed
+    #     # one after another. 
+    #     preexec_interactive_mode=""
+    #     return
+    # fi
 
     # In more recent versions of bash, this could be set via the "BASH_COMMAND"
     # variable, but using history here is better in some ways: for example, "ps
@@ -210,3 +210,4 @@ function preexec_xterm_title_install () {
 
     preexec_install
 }
+

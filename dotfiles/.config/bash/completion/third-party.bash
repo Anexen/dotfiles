@@ -11,4 +11,3 @@ fi
 . /usr/share/git/completion/git-prompt.sh
 . /usr/share/git/completion/git-completion.bash
 
-. /usr/share/fzf/completion.bash
