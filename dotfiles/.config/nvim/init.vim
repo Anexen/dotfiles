@@ -127,7 +127,11 @@ set undodir=~/.config/nvim/undodir
 "   Utils                                                         utils_anchor
 
 function! IsOnBattery()
-    return readfile('/sys/class/power_supply/BAT0/status') == ['Discharging']
+    if filereadable('/sys/class/power_supply/BAT0/status')
+        return readfile('/sys/class/power_supply/BAT0/status') == ['Discharging']
+    endif
+
+    return 0
 endfunction
 
 
@@ -138,7 +142,7 @@ endfunction
 
 function! GoogleSearch(...)
 	let q = substitute(join(a:000, ' '), ' ', '+', 'g')
-	silent! exe '!chromium https://google.com/search?q=' . q
+	silent! execute '!chromium https://google.com/search?q=' . q
 endfunction
 
 command! -nargs=+ Google call GoogleSearch(<f-args>)
@@ -286,7 +290,7 @@ let g:lightline = {
 " ----------------------------------------------------------------------------
 "   FZF                                                             fzf_anchor
 
-let FZF_DEFAULT_COMMAND="fd --type f"
+let $FZF_DEFAULT_COMMAND="fd --type f"
 
 " Ag with preview on '?'
 command! -bang -nargs=* Ag
@@ -416,8 +420,7 @@ let g:rooter_patterns = [
     \ '.python-version',
 	\ ]
 
-let g:rooter_manual_only = 1
-
+" let g:rooter_manual_only = 1
 
 " Plugin: Table mode
 
@@ -462,9 +465,9 @@ nnoremap <Leader>4 :4wincmd w<CR>
 " +buffers
 
 function! MoveBuffer(window) abort
-    let l:cur_buf = bufnr('%')
-    exe a:window.'wincmd w'
-    exe 'b'.l:cur_buf
+    let current_buffer = bufnr('%')
+    execute a:window.'wincmd w'
+    execute 'b'.current_buffer
 endfunction
 
 nnoremap <silent> <Leader>bq :copen<CR>
@@ -524,12 +527,12 @@ function! s:fzf_neighbouring_files()
   call fzf#run(fzf#wrap({
         \ 'source': command,
         \ 'sink': 'edit',
-        \ 'down': '30%',
+        \ 'down': '40%',
         \ }))
 endfunction
 
 nnoremap <Leader>jd :e%:p:h<CR>
-nnoremap <Leader>jn :call <sid>fzf_neighbouring_files()<CR>
+nnoremap <Leader>jn :call <SID>fzf_neighbouring_files()<CR>
 nnoremap <Leader>jr :e.<CR>
 nnoremap <Leader>jb :b bash<CR>
 
@@ -543,6 +546,8 @@ nnoremap <Leader>fer :source $MYVIMRC<CR>
 nnoremap <Leader>feb :e ~/.config/bash/main.bash<CR>
 
 " +files/yank
+" file name under cursor
+nnoremap <silent> <Leader>fyc :let @+=expand('<cfile>')<CR>
 " file name
 nnoremap <silent> <Leader>fyn :let @+=expand('%:t')<CR>
 " relative file name
@@ -554,29 +559,26 @@ nnoremap <silent> <Leader>fyl :let @+=expand('%:f').':'.line('.')<CR>
 " absolute file name with line number
 nnoremap <silent> <Leader>fy<S-l> :let @+=expand('%:p').':'.line('.')<CR>
 
-" +major mode
-nmap <Leader>m <LocalLeader>
+" +marks
+nmap <Leader>m :Marks<CR>
 
 " +project
 
-function! s:handle_selected_project(directory)
-    call fzf#vim#files(a:directory)
-    call feedkeys('i')
+function! s:get_projects()
+    return 'fd --type d --hidden ".git$" ~/projects | xargs dirname | sed "s#${HOME}#~#g"'
 endfunction
 
-function! s:get_projects()
-    " TODO: automatically find projects
-    return [
-        \ '~/projects/aprenita/aprenita',
-        \ '~/projects/aprenita/aprenita-infrastructure',
-        \ ]
+function! s:handle_selected_project(directory)
+    execute 'edit '.fnameescape(a:directory)
+    FZF
+    call feedkeys('i')
 endfunction
 
 function! SwitchToProject()
     call fzf#run(fzf#wrap({
         \ 'source': <SID>get_projects(),
         \ 'sink': function('<SID>handle_selected_project'),
-        \ 'down': '30%',
+        \ 'down': '40%',
         \ }))
 endfunction
 
@@ -640,7 +642,7 @@ nnoremap <Leader>w<S-k> :resize -5<CR>
 
 function! SetLSPShortcuts()
     nnoremap <buffer> <LocalLeader>gd :call LanguageClient#textDocument_definition()<CR>
-    nnoremap <buffer> <LocalLeader><S-g>d :call LanguageClient#textDocument_definition({'gotoCmd': 'vsplit'})<CR>
+    nnoremap <buffer> <LocalLeader>g<S-d> :call LanguageClient#textDocument_definition({'gotoCmd': 'vsplit'})<CR>
     nnoremap <buffer> <LocalLeader>gt :call LanguageClient#textDocument_typeDefinition()<CR>
     nnoremap <buffer> <LocalLeader>gi :call LanguageClient#textDocument_implementation()<CR>
     nnoremap <buffer> <LocalLeader>r :call LanguageClient#textDocument_references()<CR>
@@ -688,11 +690,6 @@ augroup END
 cnoreabbrev H vert h
 
 
-abbr funciton function
-abbr teh the
-abbr tempalte template
+abbr apreinta aprenita
 abbr fitler filter
-abbr cosnt const
-abbr attribtue attribute
-abbr attribuet attribute
-
+abbr calss class
