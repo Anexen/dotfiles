@@ -187,7 +187,7 @@ set background=dark
 let g:onedark_terminal_italics = 1
 " make background darker
 let g:onedark_color_overrides = {
-    \ 'black': {'gui': '#222222', 'cterm': '230'},
+    \ 'black': {'gui': '#151515', 'cterm': '230'},
     \}
 
 colorscheme onedark
