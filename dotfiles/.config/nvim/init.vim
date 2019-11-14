@@ -296,7 +296,14 @@ let g:lightline = {
 " ----------------------------------------------------------------------------
 "   FZF                                                             fzf_anchor
 
-let $FZF_DEFAULT_COMMAND="fd --type f"
+let s:fzf_files_exclude = [
+    \ '.mypy_cache', '.ipynb_checkpoints', '__pycache__',
+    \ '.git', 'undodir'
+    \ ]
+
+let $FZF_DEFAULT_COMMAND= 'fd '
+    \ . '--type f --hidden --no-ignore-vcs '
+    \ . join(map(s:fzf_files_exclude, '"--exclude " . v:val'), ' ')
 
 " Ag with preview on '?'
 command! -bang -nargs=* Ag
@@ -425,8 +432,6 @@ let g:rooter_patterns = [
 	\ '.git/',
     \ '.python-version',
 	\ ]
-
-" let g:rooter_manual_only = 1
 
 " Plugin: Table mode
 
