@@ -53,10 +53,10 @@ Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
 Plug 'chrisbra/Colorizer'               " color colornames and codes
 Plug 'dhruvasagar/vim-table-mode'       " automatic table creator & formatter
 Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on neovim.
-" Plug 'kshenoy/vim-signature'            " show marks in sign column
+Plug 'kshenoy/vim-signature'           " show marks in sign column
+Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
-
 call plug#end()
 
 " ----------------------------------------------------------------------------
@@ -119,6 +119,12 @@ set listchars+=space:·
 " Maintain undo history between sessions
 set undofile
 set undodir=~/.config/nvim/undodir
+
+set colorcolumn=0
+
+set updatetime=500
+
+set nobackup
 
 " tree view in netrw
 " let g:netrw_liststyle = 3
@@ -187,7 +193,7 @@ set background=dark
 let g:onedark_terminal_italics = 1
 " make background darker
 let g:onedark_color_overrides = {
-    \ 'black': {'gui': '#151515', 'cterm': '230'},
+    \ 'black': {'gui': '#202020', 'cterm': '230'},
     \}
 
 colorscheme onedark
@@ -426,6 +432,11 @@ let g:rooter_patterns = [
 
 let g:table_mode_disable_mappings = 1
 
+" Plugin: signature
+
+" disable signature mappings
+let g:SignatureMap = {}
+
 " ----------------------------------------------------------------------------
 "   Keybindings                                             keybindings_anchor
 
@@ -616,7 +627,7 @@ nnoremap <Leader><S-t>t :TableModeToggle<CR>
 nnoremap <Leader><S-t>w :call ToggleWhitespace()<CR>
 nnoremap <expr> <Leader><S-t>n ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
 nnoremap <expr> <Leader><S-t>r ":setlocal colorcolumn=".(&colorcolumn == '0' ? '+1' : '0')."<CR>"
-
+nnoremap <Leader><S-t>><S-u> :UndotreeToggle<CR>
 " +windows
 nnoremap <Leader>ww :Windows<CR>
 nnoremap <Leader>wd <C-w>c
