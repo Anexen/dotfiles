@@ -642,7 +642,8 @@ nnoremap <Leader><S-t>t :TableModeToggle<CR>
 nnoremap <Leader><S-t>w :call ToggleWhitespace()<CR>
 nnoremap <expr> <Leader><S-t>n ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
 nnoremap <expr> <Leader><S-t>r ":setlocal colorcolumn=".(&colorcolumn == '0' ? '+1' : '0')."<CR>"
-nnoremap <Leader><S-t>><S-u> :UndotreeToggle<CR>
+nnoremap <Leader><S-t><S-u> :UndotreeToggle<CR>
+
 " +windows
 nnoremap <Leader>ww :Windows<CR>
 nnoremap <Leader>wd <C-w>c
