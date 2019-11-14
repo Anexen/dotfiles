@@ -167,7 +167,7 @@ command! -nargs=+ Google call GoogleSearch(<f-args>)
 function! DisableWhitespace()
     setlocal nolist
     syntax clear Whitespace
-    let b:ws = 0
+    let b:whitespace_enabled = 0
 endfunction
 
 
@@ -181,12 +181,12 @@ function! EnableWhitespace()
     syntax match Whitespace / / containedin=ALL conceal cchar=·
     setlocal conceallevel=2 concealcursor=c
 
-    let b:ws = 1
+    let b:whitespace_enabled = 1
 endfunction
 
 
 function! ToggleWhitespace()
-    if get(b:, 'ws')
+    if get(b:, 'whitespace_enabled')
         call DisableWhitespace()
     else
         call EnableWhitespace()
@@ -488,6 +488,8 @@ nnoremap <Leader>2 :2wincmd w<CR>
 nnoremap <Leader>3 :3wincmd w<CR>
 nnoremap <Leader>4 :4wincmd w<CR>
 
+nnoremap <expr> <Leader>? ":vert h ".expand('<cword>')."<CR>"
+
 " +buffers
 
 function! MoveBuffer(window) abort
@@ -585,8 +587,17 @@ nnoremap <silent> <Leader>fyl :let @+=expand('%:f').':'.line('.')<CR>
 " absolute file name with line number
 nnoremap <silent> <Leader>fy<S-l> :let @+=expand('%:p').':'.line('.')<CR>
 
+" +mode
+nnoremap <Leader>mc :ColorToggle<CR>
+nnoremap <Leader>mh :HardTimeToggle<CR>
+nnoremap <Leader>mt :TableModeToggle<CR>
+nnoremap <Leader>mu :UndotreeToggle<CR>
+nnoremap <Leader>mw :call ToggleWhitespace()<CR>
+nnoremap <expr> <Leader>mc ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
+nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
+
 " +marks
-nmap <Leader>m :Marks<CR>
+nmap <Leader<S-m> :Marks<CR>
 
 " +project
 
@@ -635,15 +646,6 @@ nnoremap <Leader>tp :tabprev<CR>
 nnoremap <Leader>td :tabclose<CR>
 nnoremap <Leader>t<S-n> :tabnew<CR>
 
-" +Toggle
-nnoremap <Leader><S-t>h :HardTimeToggle<CR>
-nnoremap <Leader><S-t>c :ColorToggle<CR>
-nnoremap <Leader><S-t>t :TableModeToggle<CR>
-nnoremap <Leader><S-t>w :call ToggleWhitespace()<CR>
-nnoremap <expr> <Leader><S-t>n ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
-nnoremap <expr> <Leader><S-t>r ":setlocal colorcolumn=".(&colorcolumn == '0' ? '+1' : '0')."<CR>"
-nnoremap <Leader><S-t><S-u> :UndotreeToggle<CR>
-
 " +windows
 nnoremap <Leader>ww :Windows<CR>
 nnoremap <Leader>wd <C-w>c
@@ -685,7 +687,8 @@ augroup END
 
 
 function! SetPythonOverrides()
-    setlocal foldmethod=indent nofoldenable foldlevel=1 textwidth=79
+    setlocal foldmethod=indent nofoldenable foldlevel=1
+    let b:textwidth = 79
     nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
     nnoremap <buffer> <LocalLeader>i :Neoformat isort<CR>
     nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
