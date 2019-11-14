@@ -53,10 +53,20 @@ Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
 Plug 'chrisbra/Colorizer'               " color colornames and codes
 Plug 'dhruvasagar/vim-table-mode'       " automatic table creator & formatter
 Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on neovim.
-Plug 'kshenoy/vim-signature'           " show marks in sign column
-Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
+Plug 'kshenoy/vim-signature'            " show marks in sign column
+Plug 'mbbill/undotree', {
+    \ 'on': 'UndotreeToggle'
+    \ }
 
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
+
+" to try:
+" Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
+" Plug 'kana/vim-textobj-function'        " ? need python adapter or:
+" Plug 'bps/vim-textobj-python'
+" Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
+" Plug 'sirver/ultisnips'
+
 call plug#end()
 
 " ----------------------------------------------------------------------------
