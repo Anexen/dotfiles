@@ -18,7 +18,9 @@ Plug 'jesseleite/vim-agriculture'
 
 " Tags
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', {
+    \ 'on': 'TagbarToggle'
+    \ }
 
 " Syntax highlighting
 Plug 'sheerun/vim-polyglot'
@@ -334,7 +336,9 @@ let g:gutentags_ctags_exclude = [
     \ ]
 
 let g:tagbar_sort = 0
-
+let g:tagbar_foldlevel = 0
+let g:tagbar_autofocus = 1
+let g:tagbar_compact = 1
 
 " ----------------------------------------------------------------------------
 "   LSP                                                             lsp_anchor
@@ -360,7 +364,7 @@ set shortmess+=c
 let g:ncm2#matcher = 'substrfuzzy'
 let g:ncm2#total_popup_limit = 20
 
-augroup ncm2
+augroup _ncm2
     autocmd!
     autocmd BufEnter * call ncm2#enable_for_buffer()
 augroup END
@@ -413,7 +417,7 @@ let g:neoformat_run_all_formatters = 1
 
 let g:neoformat_enabled_python = ['isort', 'black']
 
-augroup format
+augroup _format
   autocmd!
   autocmd BufWritePre * call RemoveTrailingWhitespaces()
 augroup END
@@ -656,7 +660,7 @@ nnoremap <Leader>wv <C-w>v
 nnoremap <Leader>wh <C-w>h
 nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
-nnoremap <Leader>wl <C-w>l" Set Make tabs to tabs and not spaces
+nnoremap <Leader>wl <C-w>l
 
 " balance windows
 nnoremap <Leader>w= <C-w>=
@@ -680,7 +684,7 @@ function! SetLSPShortcuts()
     nnoremap <buffer> <LocalLeader>s :call LanguageClient#textDocument_signatureHelp()<CR>
 endfunction()
 
-augroup lsp
+augroup _lsp
     autocmd!
     autocmd FileType python,javascript call SetLSPShortcuts()
 augroup END
@@ -698,21 +702,23 @@ function! SetPythonOverrides()
     " highlight link pythonAssignment Define
 endfunction
 
-augroup python
+augroup _python
     autocmd!
     autocmd FileType python call SetPythonOverrides()
 augroup END
 
-augroup bash
+augroup _bash
     autocmd!
     autocmd Filetype bash setlocal shiftwidth=2 softtabstop=2 expandtab
 augroup END
 
-augroup make
+augroup _make
     autocmd!
     " Set Make tabs to tabs and not spaces
-    autocmd FileType make set noexpandtab shiftwidth=4
+    autocmd FileType make setlocal noexpandtab shiftwidth=4
 augroup END
+
+
 " ----------------------------------------------------------------------------
 "   Abbreviations                                         abbreviations_anchor
 

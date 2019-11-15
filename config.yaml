@@ -17,7 +17,6 @@ dotfiles:
   f_config_nvim_init.vim:
     src: .config/nvim/init.vim
     dst: ~/.config/nvim/init.vim
-    link: link
   f_bashrc:
     src: .bashrc
     dst: ~/.bashrc
