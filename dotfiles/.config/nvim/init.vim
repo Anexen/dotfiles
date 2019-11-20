@@ -360,7 +360,7 @@ set shortmess+=c
 let g:ncm2#matcher = 'substrfuzzy'
 let g:ncm2#total_popup_limit = 20
 
-augroup ncm2
+augroup _ncm2
     autocmd!
     autocmd BufEnter * call ncm2#enable_for_buffer()
 augroup END
@@ -413,7 +413,7 @@ let g:neoformat_run_all_formatters = 1
 
 let g:neoformat_enabled_python = ['isort', 'black']
 
-augroup format
+augroup _format
   autocmd!
   autocmd BufWritePre * call RemoveTrailingWhitespaces()
 augroup END
@@ -550,13 +550,12 @@ nnoremap <expr> <Leader>ld (IsQuickfixOpen() ? ':cclose' : ':lclose')."\<CR>"
 " +jump
 
 function! s:fzf_neighbouring_files()
-  let command = 'fd --max-depth=1 ' . expand('%:p:h')
-
-  call fzf#run(fzf#wrap({
-        \ 'source': command,
+  call fzf#run({
+        \ 'source': 'fd --type f --max-depth=1 --hidden .',
+        \ 'dir': expand('%:p:h'),
         \ 'sink': 'edit',
         \ 'down': '40%',
-        \ }))
+        \ })
 endfunction
 
 nnoremap <Leader>jd :e%:p:h<CR>
@@ -674,13 +673,13 @@ function! SetLSPShortcuts()
     nnoremap <buffer> <LocalLeader>g<S-d> :call LanguageClient#textDocument_definition({'gotoCmd': 'vsplit'})<CR>
     nnoremap <buffer> <LocalLeader>gt :call LanguageClient#textDocument_typeDefinition()<CR>
     nnoremap <buffer> <LocalLeader>gi :call LanguageClient#textDocument_implementation()<CR>
-    nnoremap <buffer> <LocalLeader>r :call LanguageClient#textDocument_references()<CR>
+    nnoremap <buffer> <LocalLeader>gr :call LanguageClient#textDocument_references()<CR>
     nnoremap <buffer> <LocalLeader><S-r> :call LanguageClient#textDocument_rename()<CR>
     nnoremap <buffer> <LocalLeader>h :call LanguageClient#textDocument_hover()<CR>
     nnoremap <buffer> <LocalLeader>s :call LanguageClient#textDocument_signatureHelp()<CR>
 endfunction()
 
-augroup lsp
+augroup _lsp
     autocmd!
     autocmd FileType python,javascript call SetLSPShortcuts()
 augroup END
@@ -698,21 +697,25 @@ function! SetPythonOverrides()
     " highlight link pythonAssignment Define
 endfunction
 
-augroup python
+
+augroup _python
     autocmd!
     autocmd FileType python call SetPythonOverrides()
 augroup END
 
-augroup bash
+
+augroup _bash
     autocmd!
     autocmd Filetype bash setlocal shiftwidth=2 softtabstop=2 expandtab
 augroup END
 
-augroup make
+
+augroup _make
     autocmd!
     " Set Make tabs to tabs and not spaces
     autocmd FileType make set noexpandtab shiftwidth=4
 augroup END
+
 " ----------------------------------------------------------------------------
 "   Abbreviations                                         abbreviations_anchor
 
