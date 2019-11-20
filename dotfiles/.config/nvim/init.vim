@@ -498,21 +498,18 @@ vnoremap <S-Tab> <gv
 nmap <ScrollWheelUp> <C-y>
 nmap <ScrollWheelDown> <C-e>
 
-function! s:VSetSearch(cmdtype)
-    echomsg "Test"
-    echomsg a:cmdtype
+function! s:visualSearch(cmdtype)
     let temp = @s
     norm! gv"sy
     let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
     let @s = temp
 endfunction
 
-xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+xnoremap * :<C-u>call <SID>visualSearch('/')<CR>/<C-r>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>visualSearch('?')<CR>?<C-r>=@/<CR><CR>
 
 " ----------------------------------------------------------------------------
 "   Leader Keybindings                                  leader_bindings_anchor
-
 
 let g:mapleader = "\<Space>"
 let g:maplocalleader = ','
