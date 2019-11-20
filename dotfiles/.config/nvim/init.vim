@@ -18,7 +18,9 @@ Plug 'jesseleite/vim-agriculture'
 
 " Tags
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', {
+    \ 'on': 'TagbarToggle'
+    \ }
 
 " Syntax highlighting
 Plug 'sheerun/vim-polyglot'
@@ -225,8 +227,20 @@ function! LightlineFugitive()
 endfunction
 
 
-function! LightlineNeomake()
+function! LightlineNeomakeErrors()
     return '%{neomake#statusline#LoclistStatus()}'
+endfunction
+
+
+function! LightlineNeomakeJobs() abort
+    let jobs = neomake#GetJobs()
+
+    if empty(jobs)
+        return ''
+    endif
+
+    let names = map(jobs, 'v:val.name')
+    return '[' . join(names, ', ') . ']'
 endfunction
 
 
@@ -247,6 +261,7 @@ function! LightlineFileEncoding()
     return winwidth(0) > 70 ? &fileencoding : ''
 endfunction
 
+
 function! LightlineHardTime()
     if get(b:, 'hardtime_on')
         return '[hard]'
@@ -255,11 +270,15 @@ function! LightlineHardTime()
     return ''
 endfunction
 
-augroup GutentagsStatusLineRefresher
+
+augroup _lightline_refresher
     autocmd!
-    autocmd User GutentagsUpdating call lightline#update()
-    autocmd User GutentagsUpdated call lightline#update()
+    autocmd User GutentagsUpdating nested call lightline#update()
+    autocmd User GutentagsUpdated nested call lightline#update()
+    autocmd User NeomakeJobStarted nested call lightline#update()
+    autocmd User NeomakeFinished nested call lightline#update()
 augroup END
+
 
 " TODO: filename: unique_tail_improved
 let g:lightline = {
@@ -274,7 +293,8 @@ let g:lightline = {
     \       ['lineinfo'],
     \       ['percent'],
     \       ['fileformat', 'fileencoding', 'filetype', 'hardtime'],
-    \       ['neomake', 'gutentags'],
+    \       ['neomake_errors', 'gutentags'],
+    \       ['neomake_jobs'],
     \   ]
     \ },
     \ 'inactive': {
@@ -293,14 +313,15 @@ let g:lightline = {
     \   'fileformat': 'LightlineFileFormat',
     \   'fileencoding': 'LightlineFileEncoding',
     \   'hardtime': 'LightlineHardTime',
+    \   'neomake_jobs': 'LightlineNeomakeJobs',
     \ },
     \ 'component_expand': {
-    \   'neomake': 'LightlineNeomake',
+    \   'neomake_errors': 'LightlineNeomakeErrors',
     \ },
     \ 'component_type' : {
-    \     'neomake': 'error',
+    \     'neomake_errors': 'error',
     \ },
-    \ }
+    \}
 
 
 " ----------------------------------------------------------------------------
@@ -334,7 +355,9 @@ let g:gutentags_ctags_exclude = [
     \ ]
 
 let g:tagbar_sort = 0
-
+let g:tagbar_foldlevel = 0
+let g:tagbar_autofocus = 1
+let g:tagbar_compact = 1
 
 " ----------------------------------------------------------------------------
 "   LSP                                                             lsp_anchor
@@ -381,11 +404,14 @@ inoremap <silent> <C-Space> <C-r>=ncm2#manual_trigger()<CR>
 if IsOnBattery()
     call neomake#configure#automake('w', 1000)
 else
-    " when writing or reading a buffer, and on changes in normal mode with no delay.
     call neomake#configure#automake('nrw', 1000)
 endif
 
 let g:neomake_python_enabled_makers = ['flake8']
+
+let g:neomake_place_signs = 1
+let g:neomake_highlight_lines = 0
+let g:neomake_highlight_columns = 0
 
 let g:neomake_error_sign = {'text': '●', 'texthl': 'NeomakeErrorSign'}
 let g:neomake_warning_sign = {'text': '●', 'texthl': 'NeomakeWarningSign'}
@@ -472,6 +498,18 @@ vnoremap <S-Tab> <gv
 nmap <ScrollWheelUp> <C-y>
 nmap <ScrollWheelDown> <C-e>
 
+function! s:VSetSearch(cmdtype)
+    echomsg "Test"
+    echomsg a:cmdtype
+    let temp = @s
+    norm! gv"sy
+    let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
+    let @s = temp
+endfunction
+
+xnoremap * :<C-u>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+
 " ----------------------------------------------------------------------------
 "   Leader Keybindings                                  leader_bindings_anchor
 
@@ -522,12 +560,14 @@ vmap <Leader>cp <Esc>gcap
 
 " +errors
 nnoremap <Leader>ed :lclose<CR>
-nnoremap <Leader>er :Neomake<CR>
-nnoremap <Leader>e<S-r> :Neomake<Space>
+nnoremap <Leader>er :Neomake<Space>
+nnoremap <Leader>e<S-r> :Neomake<CR>
 nnoremap <Leader>el :lopen<CR>
 nnoremap <Leader>en :lnext<CR>
 nnoremap <Leader>ep :lprev<CR>
 nnoremap <Leader>ec :ll<CR>
+" copy (save) loclist to qflist
+nnoremap <Leader>es :call setqflist(getloclist(winnr()))<CR>
 
 " +git/version control
 nnoremap <Leader>gb :Gblame<CR>
@@ -655,7 +695,7 @@ nnoremap <Leader>wv <C-w>v
 nnoremap <Leader>wh <C-w>h
 nnoremap <Leader>wj <C-w>j
 nnoremap <Leader>wk <C-w>k
-nnoremap <Leader>wl <C-w>l" Set Make tabs to tabs and not spaces
+nnoremap <Leader>wl <C-w>l
 
 " balance windows
 nnoremap <Leader>w= <C-w>=
@@ -697,7 +737,6 @@ function! SetPythonOverrides()
     " highlight link pythonAssignment Define
 endfunction
 
-
 augroup _python
     autocmd!
     autocmd FileType python call SetPythonOverrides()
@@ -713,7 +752,7 @@ augroup END
 augroup _make
     autocmd!
     " Set Make tabs to tabs and not spaces
-    autocmd FileType make set noexpandtab shiftwidth=4
+    autocmd FileType make setlocal noexpandtab shiftwidth=4
 augroup END
 
 " ----------------------------------------------------------------------------
