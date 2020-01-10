@@ -61,11 +61,10 @@ Plug 'mbbill/undotree', {
     \ }
 
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
+Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
 
 " to try:
 " Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
-" Plug 'kana/vim-textobj-function'        " ? need python adapter or:
-" Plug 'bps/vim-textobj-python'
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'sirver/ultisnips'
 
@@ -319,7 +318,7 @@ let g:lightline = {
     \   'neomake_errors': 'LightlineNeomakeErrors',
     \ },
     \ 'component_type' : {
-    \     'neomake_errors': 'error',
+    \   'neomake_errors': 'error',
     \ },
     \}
 
@@ -329,7 +328,7 @@ let g:lightline = {
 
 let s:fzf_files_exclude = [
     \ '.mypy_cache', '.ipynb_checkpoints', '__pycache__',
-    \ '.git', 'undodir'
+    \ '.git', 'undodir', '.eggs', '*.pyc'
     \ ]
 
 let $FZF_DEFAULT_COMMAND= 'fd '
@@ -364,6 +363,8 @@ let g:tagbar_compact = 1
 
 let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
+    \ 'rust': ['rls'],
+    \ 'javascript': ['tcp://127.0.0.1:5001'],
     \ }
 
 " Diagnostics are disabled in favor of Neomake
@@ -381,7 +382,6 @@ set pumheight=20
 set shortmess+=c
 
 let g:ncm2#matcher = 'substrfuzzy'
-let g:ncm2#total_popup_limit = 20
 
 augroup _ncm2
     autocmd!
@@ -599,6 +599,8 @@ nnoremap <Leader>jd :e%:p:h<CR>
 nnoremap <Leader>jn :call <SID>fzf_neighbouring_files()<CR>
 nnoremap <Leader>jr :e.<CR>
 nnoremap <Leader>jb :b bash<CR>
+" jump tag
+nnoremap <Leader>jt  <C-]>
 
 " +files
 nnoremap <Leader>fs :update<CR>
@@ -718,16 +720,25 @@ endfunction()
 
 augroup _lsp
     autocmd!
-    autocmd FileType python,javascript call SetLSPShortcuts()
+    autocmd FileType python,javascript,rust call SetLSPShortcuts()
 augroup END
 
 
 function! SetPythonOverrides()
-    setlocal foldmethod=indent nofoldenable foldlevel=1
     let b:textwidth = 79
+
+    setlocal foldmethod=indent nofoldenable foldlevel=1
+
     nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
     nnoremap <buffer> <LocalLeader>i :Neoformat isort<CR>
+
+    " debug
     nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
+
+    " lint
+    nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>
+    nnoremap <buffer> <LocalLeader>lf :Neomake flake8<CR>
+    nnoremap <buffer> <LocalLeader>lp :Neomake pylint<CR>
 
     " syntax match pythonFunction /\v[[:alpha:]_]+\ze(\s?\()/
     " syntax match pythonAssignment /\v[[:alpha:]_]+\ze\s?\=/
@@ -737,6 +748,17 @@ endfunction
 augroup _python
     autocmd!
     autocmd FileType python call SetPythonOverrides()
+augroup END
+
+
+function! SetRustOverrides()
+    nnoremap <buffer> <LocalLeader>= :Neoformat rustfmt<CR>
+endfunction
+
+
+augroup _rust
+    autocmd!
+    autocmd FileType rust call SetRustOverrides()
 augroup END
 
 
