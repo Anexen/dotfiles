@@ -64,6 +64,8 @@ Plug 'takac/vim-hardtime'               " Habit breaking, habit making
 Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
 
 " to try:
+" Plug 'sakhnik/nvim-gdb'                 " gdb integration
+" Plug 'wellle/context.vim'
 " Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'sirver/ultisnips'
@@ -158,8 +160,8 @@ endfunction
 
 
 function! GoogleSearch(...)
-	let q = substitute(join(a:000, ' '), ' ', '+', 'g')
-	silent! execute '!chromium https://google.com/search?q=' . q
+    let q = substitute(join(a:000, ' '), ' ', '+', 'g')
+    silent! execute '!chromium https://google.com/search?q=' . q
 endfunction
 
 command! -nargs=+ Google call GoogleSearch(<f-args>)
@@ -462,12 +464,13 @@ let g:rooter_use_lcd = 1
 " let g:rooter_change_directory_for_non_project_files = 'current'
 
 let g:rooter_patterns = [
-	\ 'init.vim',
+    \ 'init.vim',
     \ 'main.bash',
     \ '.git',
-	\ '.git/',
+    \ '.git/',
     \ '.python-version',
-	\ ]
+    \ 'Cargo.toml',
+    \ ]
 
 " Plugin: Table mode
 
@@ -731,6 +734,7 @@ function! SetPythonOverrides()
 
     nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
     nnoremap <buffer> <LocalLeader>i :Neoformat isort<CR>
+    nnoremap <buffer> <silent> <expr> <LocalLeader>o ":silent !isort -rc -sl ".expand('%')." && autoflake --remove-all-unused-imports --in-place ".expand('%')." && isort ". expand('%')."<CR>"
 
     " debug
     nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
@@ -753,6 +757,12 @@ augroup END
 
 function! SetRustOverrides()
     nnoremap <buffer> <LocalLeader>= :Neoformat rustfmt<CR>
+
+    " TODO: neomake makers
+    nnoremap <buffer> <LocalLeader>cb :!cargo build<CR>
+    nnoremap <buffer> <LocalLeader>c<S-b> :!cargo build --release<CR>
+    nnoremap <buffer> <LocalLeader>cr :!cargo run --release<CR>
+    nnoremap <buffer> <LocalLeader>c<S-r> :!cargo run --release<CR>
 endfunction
 
 
