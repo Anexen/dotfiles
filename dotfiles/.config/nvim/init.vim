@@ -33,9 +33,11 @@ Plug 'autozimu/LanguageClient-neovim', {
 
 " Completion
 Plug 'ncm2/ncm2' | Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-vim' | Plug 'Shougo/neco-vim'
+Plug 'ncm2/ncm2-tagprefix'
+Plug 'ncm2/ncm2-bufword'
+Plug 'fgrsnau/ncm2-otherbuf'
 
 " Linters and Fixers
 Plug 'neomake/neomake'
@@ -629,12 +631,12 @@ nnoremap <silent> <Leader>fyl :let @+=expand('%:f').':'.line('.')<CR>
 nnoremap <silent> <Leader>fy<S-l> :let @+=expand('%:p').':'.line('.')<CR>
 
 " +mode
-nnoremap <Leader>mc :ColorToggle<CR>
+nnoremap <Leader>mc :ColorizerToggle<CR>
 nnoremap <Leader>mh :HardTimeToggle<CR>
 nnoremap <Leader>mt :TableModeToggle<CR>
 nnoremap <Leader>mu :UndotreeToggle<CR>
 nnoremap <Leader>mw :call ToggleWhitespace()<CR>
-nnoremap <expr> <Leader>mc ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
+nnoremap <expr> <Leader>mr ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
 nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
 
 " +marks
@@ -794,3 +796,5 @@ cnoreabbrev H vert h
 abbr apreinta aprenita
 abbr fitler filter
 abbr calss class
+abbr imoprt import
+abbr improt import
