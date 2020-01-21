@@ -54,20 +54,30 @@ Plug 'tpope/vim-surround'               " quoting/parenthesizing made simple
 Plug 'tpope/vim-repeat'                 " better '.' repeat
 Plug 'Asheq/close-buffers.vim'          " quickly close (bdelete) several buffers at once
 Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
-Plug 'chrisbra/Colorizer'               " color colornames and codes
+Plug 'norcalli/nvim-colorizer.lua'      " color colornames and codes
 Plug 'dhruvasagar/vim-table-mode'       " automatic table creator & formatter
 Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on neovim.
 Plug 'kshenoy/vim-signature'            " show marks in sign column
+Plug 'takac/vim-hardtime'               " Habit breaking, habit making
+Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
+
+Plug 'wellle/context.vim', {
+    \ 'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
+    \ }
+
 Plug 'mbbill/undotree', {
     \ 'on': 'UndotreeToggle'
     \ }
 
-Plug 'takac/vim-hardtime'               " Habit breaking, habit making
-Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
+Plug 'glacambre/firenvim', {
+    \ 'do': { _ -> firenvim#install(0) }
+    \ }
+
+
+" Plug 'neovim/nvim-lsp'
 
 " to try:
 " Plug 'sakhnik/nvim-gdb'                 " gdb integration
-" Plug 'wellle/context.vim'
 " Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'sirver/ultisnips'
@@ -143,6 +153,25 @@ set nobackup
 
 " tree view in netrw
 " let g:netrw_liststyle = 3
+
+" ----------------------------------------------------------------------------
+"   Firenvim                                                   firenvim_anchor
+
+autocmd BufEnter localhost*ipynb*.txt set filetype=python
+autocmd BufEnter github.com_*.txt set filetype=markdown
+
+let g:firenvim_config = {
+\   'localSettings': {
+\       '.*': {
+\           'cmdline': 'neovim',
+\           'priority': 0,
+\           'selector': 'textarea',
+\           'takeover': 'never',
+\       },
+\   }
+\ }
+
+nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
 
 " ----------------------------------------------------------------------------
 "   Utils                                                         utils_anchor
