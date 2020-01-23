@@ -383,7 +383,8 @@ let g:gutentags_generate_on_missing = 0
 let g:gutentags_generate_on_write = 1
 
 let g:gutentags_ctags_exclude = [
-    \  '.git', '.mypy_cache', '.ipynb_checkpoints', '__pycache__',
+    \   '.git', '.mypy_cache', '.ipynb_checkpoints',
+    \   '__pycache__', '*.css', '*.xml', '*.json'
     \ ]
 
 let g:tagbar_sort = 0
@@ -758,14 +759,76 @@ augroup _lsp
 augroup END
 
 
+function! PathAsImport(path)
+    let path = substitute(a:path, '/', '.', 'g')
+    let path = substitute(path, '.py$', '', '')
+    return 'from '. path . ' import '
+endfunction
+
+function! s:do_import(import_path)
+    execute 'normal O' . a:import_path
+endfunction
+
+function! AutoImport(name)
+    " find exact tag
+    let tags = taglist('^'.a:name.'$')
+    " filter top-level tags
+    let tags = filter(tags, "v:val['cmd'][2] != ' '")
+
+    if len(tags) < 1
+        echohl WarningMsg
+        echo "[AutoImport] Not found!"
+        echohl None
+        return
+    endif
+
+    let matched_files = map(tags, "v:val['filename']")
+
+    for tagfile in tagfiles()
+        let base = fnamemodify(tagfile, ':p:h')
+        let matched_files = map(
+        \   matched_files,
+        \   {i, x -> substitute(x, base . '/', '', '')}
+        \ )
+    endfor
+
+    " prepare import strings
+    let matched_files = map(
+    \   matched_files,
+    \   {i, x -> PathAsImport(x).a:name}
+    \ )
+
+    " for single tag import immediately
+    if len(matched_files) == 1
+        call s:do_import(matched_files[0])
+    else
+        call fzf#run(fzf#wrap({
+        \   'source': matched_files,
+        \   'sink': function('s:do_import'),
+        \ }))
+    endif
+endfunction
+
+function! OptimizeImports()
+    let fn = expand('%')
+    execute '!isort -rc -sl ' . fn
+    execute '!autoflake --remove-all-unused-imports --in-place ' . fn
+    Neoformat isort
+endfunction
+
 function! SetPythonOverrides()
     let b:textwidth = 79
 
     setlocal foldmethod=indent nofoldenable foldlevel=1
 
+    " import yank path as import
+    nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'))<CR>
+    " import paste
+    nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'))<CR>
+    nnoremap <buffer> <silent> <LocalLeader>ii :Neoformat isort<CR>
+    nnoremap <buffer> <silent> <LocalLeader>io :silent call OptimizeImports()<CR>
+
     nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
-    nnoremap <buffer> <LocalLeader>i :Neoformat isort<CR>
-    nnoremap <buffer> <silent> <expr> <LocalLeader>o ":silent !isort -rc -sl ".expand('%')." && autoflake --remove-all-unused-imports --in-place ".expand('%')." && isort ". expand('%')."<CR>"
 
     " debug
     nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
