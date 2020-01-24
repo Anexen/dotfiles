@@ -675,7 +675,7 @@ nmap <Leader<S-m> :Marks<CR>
 " +project
 
 function! s:get_projects()
-    return 'fd --type d --hidden ".git$" ~/projects | xargs dirname | sed "s#${HOME}#~#g"'
+    return 'fd --type d --hidden ".git$" --max-depth=3 ~/projects | xargs dirname | sed "s#${HOME}#~#g"'
 endfunction
 
 function! s:handle_selected_project(directory)
@@ -765,11 +765,18 @@ function! PathAsImport(path)
     return 'from '. path . ' import '
 endfunction
 
-function! s:do_import(import_path)
+
+function! s:do_global_import(import_path)
+    execute 'normal ggO' . a:import_path
+endfunction
+
+
+function! s:do_local_import(import_path)
     execute 'normal O' . a:import_path
 endfunction
 
-function! AutoImport(name)
+
+function! AutoImport(name, local)
     " find exact tag
     let tags = taglist('^'.a:name.'$')
     " filter top-level tags
@@ -798,13 +805,19 @@ function! AutoImport(name)
     \   {i, x -> PathAsImport(x).a:name}
     \ )
 
+    if a:local
+        let ImportFn = function('s:do_local_import')
+    else
+        let ImportFn = function('s:do_global_import')
+    endif
+
     " for single tag import immediately
     if len(matched_files) == 1
-        call s:do_import(matched_files[0])
+        call ImportFn(matched_files[0])
     else
         call fzf#run(fzf#wrap({
         \   'source': matched_files,
-        \   'sink': function('s:do_import'),
+        \   'sink': ImportFn,
         \ }))
     endif
 endfunction
@@ -824,7 +837,8 @@ function! SetPythonOverrides()
     " import yank path as import
     nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'))<CR>
     " import paste
-    nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'))<CR>
+    nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'), 1)<CR>
+    nnoremap <buffer> <silent> <LocalLeader>i<S-p> :call AutoImport(expand('<cword>'), 0)<CR>
     nnoremap <buffer> <silent> <LocalLeader>ii :Neoformat isort<CR>
     nnoremap <buffer> <silent> <LocalLeader>io :silent call OptimizeImports()<CR>
 
