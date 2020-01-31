@@ -58,6 +58,7 @@ Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on ne
 Plug 'kshenoy/vim-signature'            " show marks in sign column
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
 Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
+Plug 'matze/vim-move'                   " move parts of a text
 
 Plug 'wellle/context.vim', {
     \ 'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
@@ -418,9 +419,12 @@ let g:gutentags_generate_on_new = 0
 let g:gutentags_generate_on_missing = 0
 let g:gutentags_generate_on_write = 1
 
+let g:gutentags_project_root = ['Cargo.toml']
+let g:gutentags_add_default_project_roots = 1
+
+let g:gutentags_ctags_extra_args = ['--languages=python,javascript,rust']
 let g:gutentags_ctags_exclude = [
-    \   '.git', '.mypy_cache', '.ipynb_checkpoints',
-    \   '__pycache__', '*.css', '*.xml', '*.json'
+    \   '.git', '.mypy_cache', '.ipynb_checkpoints', '__pycache__', '*.min.js'
     \ ]
 
 let g:tagbar_sort = 0
