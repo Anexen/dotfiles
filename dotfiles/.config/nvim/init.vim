@@ -152,6 +152,11 @@ set nobackup
 " tree view in netrw
 " let g:netrw_liststyle = 3
 
+let g:loaded_sql_completion = 0
+
+let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
+
+
 " ----------------------------------------------------------------------------
 "   Firenvim                                                   firenvim_anchor
 
@@ -419,6 +424,7 @@ augroup _ncm2
     autocmd!
     autocmd BufEnter * call ncm2#enable_for_buffer()
 augroup END
+
 
 " When the <Enter> key is pressed while the popup menu is visible, it only
 " hides the menu. Use this mapping to close the menu and also start a new line.
@@ -757,11 +763,15 @@ augroup _lsp
     autocmd FileType python,javascript,rust call SetLSPShortcuts()
 augroup END
 
-
-function! PathAsImport(path)
+function! PathAsImport(path, kind)
     let path = substitute(a:path, '/', '.', 'g')
     let path = substitute(path, '.py$', '', '')
-    return 'from '. path . ' import '
+
+    if a:kind == 'n'
+        return 'import '
+    endif
+
+    return 'from ' . path . ' import '
 endfunction
 
 
@@ -769,9 +779,24 @@ function! s:do_global_import(import_path)
     execute 'normal ggO' . a:import_path
 endfunction
 
+let g:python_smart_local_import = 1
 
 function! s:do_local_import(import_path)
-    execute 'normal O' . a:import_path
+    if ! get(g:, 'python_smart_local_import')
+        execute "normal O" . a:import_path
+        return
+    endif
+
+    let prev_indent = indent('.')
+    normal [m
+    let next_indent = indent('.')
+
+    if prev_indent == next_indent
+        " we are at class level
+        execute "normal \<C-o>O" . a:import_path
+    else
+        execute "normal o" . a:import_path
+    endif
 endfunction
 
 
@@ -788,7 +813,8 @@ function! AutoImport(name, local)
         return
     endif
 
-    let matched_files = map(tags, "v:val['filename']")
+    let kinds = map(copy(tags), {i, x -> x['kind']})
+    let matched_files = map(tags, {i, x -> x['filename']})
 
     for tagfile in tagfiles()
         let base = fnamemodify(tagfile, ':p:h')
@@ -801,8 +827,10 @@ function! AutoImport(name, local)
     " prepare import strings
     let matched_files = map(
     \   matched_files,
-    \   {i, x -> PathAsImport(x).a:name}
+    \   {i, x -> PathAsImport(x, kinds[i]) . a:name}
     \ )
+
+    let matched_files = uniq(matched_files)
 
     if a:local
         let ImportFn = function('s:do_local_import')
@@ -834,7 +862,7 @@ function! SetPythonOverrides()
     setlocal foldmethod=indent nofoldenable foldlevel=1
 
     " import yank path as import
-    nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'))<CR>
+    nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c')<CR>
     " import paste
     nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'), 1)<CR>
     nnoremap <buffer> <silent> <LocalLeader>i<S-p> :call AutoImport(expand('<cword>'), 0)<CR>
@@ -870,6 +898,8 @@ function! SetRustOverrides()
     nnoremap <buffer> <LocalLeader>c<S-b> :!cargo build --release<CR>
     nnoremap <buffer> <LocalLeader>cr :!cargo run --release<CR>
     nnoremap <buffer> <LocalLeader>c<S-r> :!cargo run --release<CR>
+    nnoremap <buffer> <LocalLeader>ct :!cargo test<CR>
+    nnoremap <buffer> <LocalLeader>c<S-t> :!cargo test<CR>
 endfunction
 
 
