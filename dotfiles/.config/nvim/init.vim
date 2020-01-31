@@ -50,8 +50,6 @@ Plug 'tpope/vim-fugitive'
 " Miscellaneous
 Plug 'airblade/vim-rooter'              " changes working directory to the project root
 Plug 'tpope/vim-commentary'             " comment helper
-Plug 'tpope/vim-surround'               " quoting/parenthesizing made simple
-Plug 'tpope/vim-repeat'                 " better '.' repeat
 Plug 'Asheq/close-buffers.vim'          " quickly close (bdelete) several buffers at once
 Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
 Plug 'norcalli/nvim-colorizer.lua'      " color colornames and codes
@@ -522,7 +520,8 @@ tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<C-\><C-n>"
 " exit insert mode by pressing jk
 inoremap jk <Esc>
 
-nnoremap vil ^vg_
+onoremap il :<c-u>normal! _vg_<cr>
+vnoremap il :<c-u>normal! _vg_<cr>
 
 " (de)indent using tab in normal and visual modes
 nnoremap <Tab> >>_
@@ -898,8 +897,9 @@ augroup END
 " open help in vertical split
 cnoreabbrev H vert h
 
-
 abbr apreinta aprenita
+abbr aprentia aprenita
+
 abbr fitler filter
 abbr calss class
 abbr imoprt import
