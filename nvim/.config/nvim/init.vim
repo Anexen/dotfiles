@@ -499,13 +499,29 @@ else
     call neomake#configure#automake('nrw', 1000)
 endif
 
-" TODO generic function
-function! NeomakeGitFiles()
-    let git_files = systemlist("git diff --name-only --cached  --diff-filter=MA | grep '.py$'")
-    let flake8_maker = deepcopy(neomake#GetMaker('flake8', 'python'))
-    let flake8_maker.args = extend(flake8_maker.args, git_files)
-    let flake8_maker.append_file = 0
-    call neomake#Make({'enabled_makers': [flake8_maker]})
+let g:neomake_git_diff_config = {
+\   'py': {'filetype': 'python', 'makers': ['flake8']},
+\ }
+
+function! NeomakeGitDiff()
+    let ext_patterns = map(keys(g:neomake_git_diff_config), {index, val -> '.'.val.'$'})
+    let git_files = systemlist("git diff --name-only --cached --diff-filter=AM | grep '".join(ext_patterns, "|")."'")
+    let l:maker_name_to_maker = {}
+    for changed_file in git_files
+        let ext = fnamemodify(changed_file, ':e')
+        let ext_config = g:neomake_git_diff_config[ext]
+        let changed_file_filetype = ext_config['filetype']
+        let needed_makers = ext_config['makers']
+        for maker_name in needed_makers
+            if !has_key(maker_name_to_maker, maker_name)
+                let l:maker_name_to_maker[maker_name] = deepcopy(neomake#GetMaker(maker_name, changed_file_filetype))
+                let l:maker_name_to_maker[maker_name].append_file = 0
+            endif
+            let maker = l:maker_name_to_maker[maker_name]
+            call add(maker.args, changed_file)
+        endfor
+    endfor
+    call neomake#Make({'enabled_makers': values(l:maker_name_to_maker)})
 endfunction
 
 let g:neomake_python_enabled_makers = ['flake8']
@@ -679,6 +695,7 @@ vmap <Leader>cp <Esc>gcap
 nnoremap <Leader>ed :lclose<CR>
 nnoremap <Leader>er :Neomake<Space>
 nnoremap <Leader>e<S-r> :Neomake<CR>
+nnoremap <Leader>eg :call NeomakeGitDiff()<CR>
 nnoremap <Leader>el :lopen<CR>
 nnoremap <Leader>en :lnext<CR>
 nnoremap <Leader>ep :lprev<CR>
