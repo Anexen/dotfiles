@@ -52,13 +52,15 @@ Plug 'airblade/vim-rooter'              " changes working directory to the proje
 Plug 'tpope/vim-commentary'             " comment helper
 Plug 'Asheq/close-buffers.vim'          " quickly close (bdelete) several buffers at once
 Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
-Plug 'norcalli/nvim-colorizer.lua'      " color colornames and codes
+Plug 'chrisbra/Colorizer'               " color colornames and codes
 Plug 'dhruvasagar/vim-table-mode'       " automatic table creator & formatter
 Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on neovim.
 Plug 'kshenoy/vim-signature'            " show marks in sign column
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
 Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
-Plug 'matze/vim-move'                   " move parts of a text
+Plug 'farfanoide/inflector.vim'         " string inflection
+
+Plug 'ruslan-savina/spelling'
 
 Plug 'wellle/context.vim', {
     \ 'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
@@ -223,7 +225,7 @@ function! EnableWhitespace()
 endfunction
 
 
-function! ToggleWhitespace()
+function! WhitespaceToggle()
     if get(b:, 'whitespace_enabled')
         call DisableWhitespace()
     else
@@ -232,17 +234,31 @@ function! ToggleWhitespace()
 endfunction
 
 
+function! SpellingToggle()
+    augroup _spelling_update_group
+        autocmd!
+        if !get(b:, 'spelling_enabled', 0)
+            autocmd BufEnter,InsertLeave,TextChanged * :call spelling#Update()
+            call spelling#Update()
+            let b:spelling_enabled = 1
+        else
+            call spelling#Clear()
+            let b:spelling_enabled = 0
+        endif
+    augroup END
+endfunction
+
+
 " ----------------------------------------------------------------------------
 "   Theme                                                         theme_anchor
 
 set termguicolors
 set background=dark
-
 let g:onedark_terminal_italics = 1
 " make background darker
 let g:onedark_color_overrides = {
-    \ 'black': {'gui': '#202020', 'cterm': '230'},
-    \}
+\   'black': {'gui': '#202020', 'cterm': '230'},
+\ }
 
 colorscheme onedark
 
@@ -394,7 +410,7 @@ function! FloatingFZF(width, height, top_margin, left_margin)
     autocmd BufWipeout <buffer> execute 'bwipeout' s:frame
 endfunction
 
-let g:fzf_layout = { 'window': 'call FloatingFZF(1, 0.4, 0.6, 0)' }
+let g:fzf_layout = { 'window': 'call FloatingFZF(1, 0.4, 0.599999, 0)' }
 
 let s:fzf_files_exclude = [
     \ '.mypy_cache', '.ipynb_checkpoints', '__pycache__',
@@ -481,6 +497,15 @@ if IsOnBattery()
 else
     call neomake#configure#automake('nrw', 1000)
 endif
+
+" TODO generic function
+function! NeomakeGitFiles()
+    let git_files = systemlist("git diff --name-only --cached  --diff-filter=MA | grep '.py$'")
+    let flake8_maker = deepcopy(neomake#GetMaker('flake8', 'python'))
+    let flake8_maker.args = extend(flake8_maker.args, git_files)
+    let flake8_maker.append_file = 0
+    call neomake#Make({'enabled_makers': [flake8_maker]})
+endfunction
 
 let g:neomake_python_enabled_makers = ['flake8']
 
@@ -571,6 +596,23 @@ nnoremap <Tab> >>_
 nnoremap <S-Tab> <<_
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
+
+" |-------------+---+-------------------+-------+-------------------|
+" | Dotify      | . | someTextToWork    | gIiw. | some.text.to.work |
+" | Dasherize   | - | some_text_to_work | gIiw- | some-text-to-work |
+" | Underscore  | _ | some text to work | gI$_  | some_text_to_work |
+" | Camelize    | c | Some Text To Work | gI$c  | someTextToWork    |
+" | Constantize | C | some text to work | gI$C  | SOME_TEXT_TO_WORK |
+" | Pascalize   | P | some.text.to.work | gIiWP | SomeTextToWork    |
+" | Titleize    | t | some text to work | gI$t  | Some Text To Work |
+" | Normalize   | n | SOME_TEXT_TO_WORK | gI$n  | some text to work |
+" | Slashify    | / | SOME_TEXT_TO_WORK | gIiw/ | some/text/to/work |
+" | FreeBallIt  | f | some text to work | gI$f& | some&text&to&work |
+" | Privatize   | p | some_var          | gI$p  | _some_var         |
+" |-------------+---+-------------------+-------+-------------------|
+"
+nmap gI <Plug>(Inflect)
+vmap gI <Plug>(Inflect)
 
 nmap <ScrollWheelUp> <C-y>
 nmap <ScrollWheelDown> <C-e>
@@ -703,13 +745,15 @@ nnoremap <silent> <Leader>fyl :let @+=expand('%:f').':'.line('.')<CR>
 nnoremap <silent> <Leader>fy<S-l> :let @+=expand('%:p').':'.line('.')<CR>
 
 " +mode
-nnoremap <Leader>mc :ColorizerToggle<CR>
+nnoremap <Leader>mc :ContextToggle<CR>
+nnoremap <Leader>m<S-c> :ColorToggle<CR>
 nnoremap <Leader>mh :HardTimeToggle<CR>
+nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
+nnoremap <expr> <Leader>mr ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
+nnoremap <Leader>ms :call SpellingToggle()<CR>
 nnoremap <Leader>mt :TableModeToggle<CR>
 nnoremap <Leader>mu :UndotreeToggle<CR>
-nnoremap <Leader>mw :call ToggleWhitespace()<CR>
-nnoremap <expr> <Leader>mr ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
-nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
+nnoremap <Leader>mw :call WhitespaceToggle()<CR>
 
 " +marks
 nmap <Leader<S-m> :Marks<CR>
