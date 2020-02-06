@@ -18,6 +18,7 @@ Plug 'jesseleite/vim-agriculture'
 
 " Tags
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'junegunn/gv.vim'
 Plug 'majutsushi/tagbar', {
     \ 'on': 'TagbarToggle'
     \ }

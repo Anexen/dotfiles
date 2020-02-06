@@ -42,15 +42,16 @@ shopt -s checkwinsize
 # Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
 shopt -s cdable_vars
 
+# cd bookmarks
 export projects="${HOME}/projects"
-export dotfiles="${projects}/dotfiles"
+export dotfiles="${HOME}/.dotfiles"
 export aprenita="${projects}/aprenita/aprenita"
 export infrastructure="${projects}/aprenita/aprenita-infrastructure"
 
 # Automatically trim long paths in the prompt
 PROMPT_DIRTRIM=5
 
-# ignoreboth = ignorespace + ignoredups 
+# ignoreboth = ignorespace + ignoredups
 HISTCONTROL=ignoreboth:erasedups
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=5000
@@ -96,11 +97,11 @@ source "${__dir}/aliases.bash"
 
 source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fzf.bash"
+source "${__dir}/plugins/forgit.bash"
 source "${__dir}/plugins/pyenv.bash"
 source "${__dir}/plugins/ssh.bash"
 
 source "${__dir}/completion/third-party.bash"
-source "${__dir}/completion/dotdrop.bash"
 
 # configure preexec
 
@@ -126,7 +127,7 @@ _short_command () {
 
 
 reload_history () {
-  history -a 
+  history -a
   history -c
   history -r
 }

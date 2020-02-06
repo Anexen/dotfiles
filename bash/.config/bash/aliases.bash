@@ -24,8 +24,6 @@ alias sduo='sudo'
 alias ctclip='xclip -sel clip'
 alias uuid-gen='cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1'
 
-alias dotdrop='dotdrop --cfg=~/projects/dotfiles/config.yaml'
-
 alias vim=nvim
 alias vbrc='vim ~/.config/bash/main.bash'
 alias vvrc='vim ~/.config/nvim/init.vim'
