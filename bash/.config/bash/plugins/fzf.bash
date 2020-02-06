@@ -8,7 +8,7 @@ bind -x '"\C-t": ""'
 bind -x '"\C-f": "fzf-file-widget"'
 
 # fzf preview
-export FZF_DEFAULT_OPTS="--layout=reverse"
+export FZF_DEFAULT_OPTS='--layout=reverse  --bind "j:down,k:up,alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up"'
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
