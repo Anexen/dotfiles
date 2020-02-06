@@ -1,4 +1,4 @@
-" _anchor (SPC s w) - Quick jump
+" _anchor (SPC s b) - Quick jump
 
 " ----------------------------------------------------------------------------
 "   Plugins                                                     plugins_anchor
@@ -791,6 +791,7 @@ nnoremap <Leader>pt :terminal<CR>
 nnoremap <Leader>sc :noh<CR>
 nmap <Leader>sa <Plug>AgRawSearch''<Left>
 vmap <Leader>sa <Plug>AgRawVisualSelection<CR>
+nnoremap <expr> <Leader>sb ":BLines ".expand('<cword>')."<CR>"
 nmap <Leader>sw <Plug>AgRawWordUnderCursor<CR>
 nmap <Leader>sl :Ag<UP><CR>
 nnoremap <Leader>st :Tags<CR>
