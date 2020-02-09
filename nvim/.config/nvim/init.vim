@@ -153,13 +153,39 @@ set updatetime=500
 
 set nobackup
 
-" tree view in netrw
-" let g:netrw_liststyle = 3
-
 let g:loaded_sql_completion = 0
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 
+" ----------------------------------------------------------------------------
+"   netrw                                                         netrw_anchor
+
+" NERDtree like setup
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 30
+
+
+function! ExplorerToggle()
+    if exists("t:expl_buf_num")
+        let expl_win_num = bufwinnr(t:expl_buf_num)
+        if expl_win_num != -1
+            let cur_win_nr = winnr()
+            exec expl_win_num . 'wincmd w'
+            close
+            exec cur_win_nr . 'wincmd w'
+            unlet t:expl_buf_num
+        else
+            unlet t:expl_buf_num
+        endif
+    else
+        exec '1wincmd w'
+        Vexplore
+        let t:expl_buf_num = bufnr("%")
+    endif
+endfunction
 
 " ----------------------------------------------------------------------------
 "   Firenvim                                                   firenvim_anchor
@@ -178,7 +204,9 @@ let g:firenvim_config = {
 \   }
 \ }
 
-nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
+if get(g:, "started_by_firenvim")
+    nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
+endif
 
 " ----------------------------------------------------------------------------
 "   Utils                                                         utils_anchor
@@ -454,7 +482,7 @@ let g:tagbar_compact = 1
 
 let g:LanguageClient_serverCommands = {
     \ 'python': ['pyls'],
-    \ 'rust': ['rls'],
+    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
     \ 'javascript': ['tcp://127.0.0.1:5001'],
     \ }
 
@@ -732,9 +760,9 @@ function! s:fzf_neighbouring_files()
         \ })
 endfunction
 
-nnoremap <Leader>jd :e%:p:h<CR>
+nnoremap <Leader>jd :Vexplore %:p:h<CR>
 nnoremap <Leader>jn :call <SID>fzf_neighbouring_files()<CR>
-nnoremap <Leader>jr :e.<CR>
+nnoremap <Leader>jr :Vexplore .<CR>
 nnoremap <Leader>jb :b bash<CR>
 " jump tag
 nnoremap <Leader>jt  <C-]>
@@ -742,6 +770,7 @@ nnoremap <Leader>jt  <C-]>
 " +files
 nnoremap <Leader>fs :update<CR>
 nnoremap <Leader>fr :History<CR>
+nnoremap <Leader>ff :call ExplorerToggle()<CR>
 
 " +files/edit
 nnoremap <Leader>fev :e $MYVIMRC<CR>
