@@ -18,7 +18,6 @@ Plug 'jesseleite/vim-agriculture'
 
 " Tags
 Plug 'ludovicchabant/vim-gutentags'
-Plug 'junegunn/gv.vim'
 Plug 'majutsushi/tagbar', {
     \ 'on': 'TagbarToggle'
     \ }
@@ -47,6 +46,7 @@ Plug 'sbdchd/neoformat'
 " Git
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 
 " Miscellaneous
 Plug 'airblade/vim-rooter'              " changes working directory to the project root
@@ -60,21 +60,25 @@ Plug 'kshenoy/vim-signature'            " show marks in sign column
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
 Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
 Plug 'farfanoide/inflector.vim'         " string inflection
-
 Plug 'ruslan-savina/spelling'
 
+Plug 'tweekmonster/startuptime.vim', {
+\   'on': 'StartupTime'
+\ }
+
 Plug 'wellle/context.vim', {
-    \ 'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
-    \ }
+\   'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
+\ }
 
 Plug 'mbbill/undotree', {
-    \ 'on': 'UndotreeToggle'
-    \ }
+\   'on': 'UndotreeToggle'
+\ }
 
-Plug 'glacambre/firenvim', {
-    \ 'do': { _ -> firenvim#install(0) }
+if get(g:, "started_by_firenvim")
+    Plug 'glacambre/firenvim', {
+    \   'do': { _ -> firenvim#install(0) }
     \ }
-
+endif
 
 " Plug 'neovim/nvim-lsp'
 
@@ -190,9 +194,6 @@ endfunction
 " ----------------------------------------------------------------------------
 "   Firenvim                                                   firenvim_anchor
 
-autocmd BufEnter localhost*ipynb*.txt set filetype=python
-autocmd BufEnter github.com_*.txt set filetype=markdown
-
 let g:firenvim_config = {
 \   'localSettings': {
 \       '.*': {
@@ -205,6 +206,9 @@ let g:firenvim_config = {
 \ }
 
 if get(g:, "started_by_firenvim")
+    autocmd BufEnter localhost*ipynb*.txt set filetype=python
+    autocmd BufEnter github.com_*.txt set filetype=markdown
+
     nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
 endif
 
@@ -469,8 +473,8 @@ let g:gutentags_add_default_project_roots = 1
 
 let g:gutentags_ctags_extra_args = ['--languages=python,javascript,rust']
 let g:gutentags_ctags_exclude = [
-    \   '.git', '.mypy_cache', '.ipynb_checkpoints', '__pycache__', '*.min.js'
-    \ ]
+\   '.git', '.mypy_cache', '.ipynb_checkpoints', '__pycache__', '*.min.js'
+\ ]
 
 let g:tagbar_sort = 0
 let g:tagbar_foldlevel = 0
@@ -481,14 +485,13 @@ let g:tagbar_compact = 1
 "   LSP                                                             lsp_anchor
 
 let g:LanguageClient_serverCommands = {
-    \ 'python': ['pyls'],
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'javascript': ['tcp://127.0.0.1:5001'],
-    \ }
+\   'python': ['pyls'],
+\   'rust': ['rustup', 'run', 'nightly', 'rls'],
+\   'javascript': ['tcp://127.0.0.1:5001'],
+\ }
 
 " Diagnostics are disabled in favor of Neomake
 let g:LanguageClient_diagnosticsEnable = 0
-
 
 " ----------------------------------------------------------------------------
 "   Completion                                               completion_anchor
@@ -553,6 +556,7 @@ function! NeomakeGitDiff()
 endfunction
 
 let g:neomake_python_enabled_makers = ['flake8']
+let g:neomake_clippy_rustup_has_nightly = 1
 
 let g:neomake_place_signs = 1
 let g:neomake_highlight_lines = 0
@@ -584,10 +588,7 @@ let g:neoformat_run_all_formatters = 1
 
 let g:neoformat_enabled_python = ['isort', 'black']
 
-augroup _format
-  autocmd!
-  autocmd BufWritePre * call RemoveTrailingWhitespaces()
-augroup END
+autocmd! BufWritePre * call RemoveTrailingWhitespaces()
 
 " ----------------------------------------------------------------------------
 "   Miscellaneous                                         miscellaneous_anchor
@@ -687,7 +688,7 @@ nnoremap <Leader>2 :2wincmd w<CR>
 nnoremap <Leader>3 :3wincmd w<CR>
 nnoremap <Leader>4 :4wincmd w<CR>
 
-nnoremap <expr> <Leader>? ":vert h ".expand('<cword>')."<CR>"
+nnoremap <expr> K ":vert h ".expand('<cword>')."<CR>"
 
 " +buffers
 
@@ -797,7 +798,7 @@ nnoremap <Leader>m<S-c> :ColorToggle<CR>
 nnoremap <Leader>mh :HardTimeToggle<CR>
 nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
 nnoremap <expr> <Leader>mr ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
-nnoremap <Leader>ms :call SpellingToggle()<CR>
+nnoremap <Leader>ms :SpellingToggle<CR>
 nnoremap <Leader>mt :TableModeToggle<CR>
 nnoremap <Leader>mu :UndotreeToggle<CR>
 nnoremap <Leader>mw :call WhitespaceToggle()<CR>
@@ -877,20 +878,22 @@ nnoremap <Leader>w<S-k> :resize -5<CR>
 "   Local Overrides                                     local_overrides_anchor
 
 function! SetLSPShortcuts()
-    nnoremap <buffer> <LocalLeader>gd :call LanguageClient#textDocument_definition()<CR>
-    nnoremap <buffer> <LocalLeader>g<S-d> :call LanguageClient#textDocument_definition({'gotoCmd': 'vsplit'})<CR>
+    if !has_key(g:LanguageClient_serverCommands, &filetype)
+        return
+    endif
+
+    nnoremap <buffer> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <buffer> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <buffer> g<S-d> :call LanguageClient#textDocument_definition({'gotoCmd': 'vsplit'})<CR>
+
     nnoremap <buffer> <LocalLeader>gt :call LanguageClient#textDocument_typeDefinition()<CR>
     nnoremap <buffer> <LocalLeader>gi :call LanguageClient#textDocument_implementation()<CR>
     nnoremap <buffer> <LocalLeader>gr :call LanguageClient#textDocument_references()<CR>
     nnoremap <buffer> <LocalLeader><S-r> :call LanguageClient#textDocument_rename()<CR>
-    nnoremap <buffer> <LocalLeader>h :call LanguageClient#textDocument_hover()<CR>
     nnoremap <buffer> <LocalLeader>s :call LanguageClient#textDocument_signatureHelp()<CR>
-endfunction()
+endfunction
 
-augroup _lsp
-    autocmd!
-    autocmd FileType python,javascript,rust call SetLSPShortcuts()
-augroup END
+autocmd! FileType * call SetLSPShortcuts()
 
 function! PathAsImport(path, kind)
     let path = substitute(a:path, '/', '.', 'g')
@@ -1013,10 +1016,7 @@ function! SetPythonOverrides()
     " highlight link pythonAssignment Define
 endfunction
 
-augroup _python
-    autocmd!
-    autocmd FileType python call SetPythonOverrides()
-augroup END
+autocmd! FileType python call SetPythonOverrides()
 
 
 function! SetRustOverrides()
@@ -1032,23 +1032,12 @@ function! SetRustOverrides()
 endfunction
 
 
-augroup _rust
-    autocmd!
-    autocmd FileType rust call SetRustOverrides()
-augroup END
+autocmd! FileType rust call SetRustOverrides()
 
+autocmd! Filetype bash setlocal shiftwidth=2 softtabstop=2 expandtab
 
-augroup _bash
-    autocmd!
-    autocmd Filetype bash setlocal shiftwidth=2 softtabstop=2 expandtab
-augroup END
-
-
-augroup _make
-    autocmd!
-    " Set Make tabs to tabs and not spaces
-    autocmd FileType make setlocal noexpandtab shiftwidth=4
-augroup END
+" Set Make tabs to tabs and not spaces
+autocmd! FileType make setlocal noexpandtab shiftwidth=4
 
 " ----------------------------------------------------------------------------
 "   Abbreviations                                         abbreviations_anchor
