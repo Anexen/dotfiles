@@ -6,7 +6,7 @@
 call plug#begin('~/.config/nvim/plugged')
 
 " Theme
-Plug 'joshdick/onedark.vim'
+Plug 'laggardkernel/vim-one'
 
 " Status line
 Plug 'itchyny/lightline.vim'
@@ -74,11 +74,9 @@ Plug 'mbbill/undotree', {
 \   'on': 'UndotreeToggle'
 \ }
 
-if get(g:, "started_by_firenvim")
-    Plug 'glacambre/firenvim', {
-    \   'do': { _ -> firenvim#install(0) }
-    \ }
-endif
+Plug 'glacambre/firenvim', {
+\   'do': { _ -> firenvim#install(0) }
+\ }
 
 " Plug 'neovim/nvim-lsp'
 
@@ -285,15 +283,11 @@ endfunction
 " ----------------------------------------------------------------------------
 "   Theme                                                         theme_anchor
 
+let g:one_allow_italics = 1
+let g:one_dark_syntax_bg='#222222'
 set termguicolors
 set background=dark
-let g:onedark_terminal_italics = 1
-" make background darker
-let g:onedark_color_overrides = {
-\   'black': {'gui': '#202020', 'cterm': '230'},
-\ }
-
-colorscheme onedark
+colorscheme one
 
 " ----------------------------------------------------------------------------
 "   Lighline                                                  lightline_anchor
@@ -367,7 +361,7 @@ augroup END
 
 " TODO: filename: unique_tail_improved
 let g:lightline = {
-    \ 'colorscheme': 'onedark',
+    \ 'colorscheme': 'one',
     \ 'active': {
     \   'left': [
     \       ['winnr'],
