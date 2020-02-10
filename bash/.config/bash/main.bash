@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+if [ -d "${HOME}/bin" ]; then
+    PATH="${HOME}/bin:${PATH}"
+fi
+
+if [ -d "${HOME}/.local/bin" ]; then
+    PATH="${HOME}/.local/bin:${PATH}"
+fi
+
+if [ -f "${HOME}/.secrets.bash" ]; then
+    source "${HOME}/.secrets.bash"
+fi
+
 ## Readline bindings ##
 
 bind '"\e[A": history-search-backward'
