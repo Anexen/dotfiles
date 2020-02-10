@@ -638,17 +638,17 @@ vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
 " |-------------+---+-------------------+-------+-------------------|
-" | Dotify      | . | someTextToWork    | gIiw. | some.text.to.work |
-" | Dasherize   | - | some_text_to_work | gIiw- | some-text-to-work |
-" | Underscore  | _ | some text to work | gI$_  | some_text_to_work |
 " | Camelize    | c | Some Text To Work | gI$c  | someTextToWork    |
+" | Privatize   | p | some_var          | gI$p  | _some_var         |
 " | Constantize | C | some text to work | gI$C  | SOME_TEXT_TO_WORK |
-" | Pascalize   | P | some.text.to.work | gIiWP | SomeTextToWork    |
 " | Titleize    | t | some text to work | gI$t  | Some Text To Work |
 " | Normalize   | n | SOME_TEXT_TO_WORK | gI$n  | some text to work |
-" | Slashify    | / | SOME_TEXT_TO_WORK | gIiw/ | some/text/to/work |
 " | FreeBallIt  | f | some text to work | gI$f& | some&text&to&work |
-" | Privatize   | p | some_var          | gI$p  | _some_var         |
+" | Pascalize   | P | some.text.to.work | gIiWP | SomeTextToWork    |
+" | Slashify    | / | SOME_TEXT_TO_WORK | gIiw/ | some/text/to/work |
+" | Dasherize   | - | some_text_to_work | gIiw- | some-text-to-work |
+" | Dotify      | . | someTextToWork    | gIiw. | some.text.to.work |
+" | Underscore  | _ | some text to work | gI$_  | some_text_to_work |
 " |-------------+---+-------------------+-------+-------------------|
 "
 nmap gI <Plug>(Inflect)
