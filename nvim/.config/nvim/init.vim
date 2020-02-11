@@ -281,6 +281,11 @@ set termguicolors
 set background=dark
 colorscheme one
 
+" neomake/neomake
+call one#highlight('NeomakeErrorSign', 'e06c75', '', '')
+call one#highlight('NeomakeWarningSign', 'e5c07b', '', '')
+call one#highlight('NeomakeInfoSign', '61afef', '', '')
+
 " ----------------------------------------------------------------------------
 "   Lighline                                                  lightline_anchor
 
