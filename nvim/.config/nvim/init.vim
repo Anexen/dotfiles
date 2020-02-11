@@ -3,7 +3,14 @@
 " ----------------------------------------------------------------------------
 "   Plugins                                                     plugins_anchor
 
-call plug#begin('~/.config/nvim/plugged')
+function! SourceLocal(relativePath)
+    let root = expand('$XDG_CONFIG_HOME/nvim')
+    let fullPath = root . '/'. a:relativePath
+    exec 'source ' . fullPath
+endfunction
+
+
+call plug#begin('$XDG_DATA_HOME/nvim/plugged')
 
 " Theme
 Plug 'laggardkernel/vim-one'
@@ -37,7 +44,7 @@ Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-vim' | Plug 'Shougo/neco-vim'
 Plug 'ncm2/ncm2-tagprefix'
 Plug 'ncm2/ncm2-bufword'
-Plug 'fgrsnau/ncm2-otherbuf'
+" Plug 'fgrsnau/ncm2-otherbuf'
 
 " Linters and Fixers
 Plug 'neomake/neomake'
@@ -60,6 +67,7 @@ Plug 'kshenoy/vim-signature'            " show marks in sign column
 Plug 'takac/vim-hardtime'               " Habit breaking, habit making
 Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
 Plug 'farfanoide/inflector.vim'         " string inflection
+
 Plug 'ruslan-savina/spelling'
 
 Plug 'tweekmonster/startuptime.vim', {
@@ -86,7 +94,13 @@ Plug 'glacambre/firenvim', {
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'sirver/ultisnips'
 
+" my plugins
+Plug '$XDG_CONFIG_HOME/nvim/plugins/vim-googler'
+
 call plug#end()
+
+call SourceLocal('config/utils.vim')
+call SourceLocal('config/python.vim')
 
 " ----------------------------------------------------------------------------
 "   Options                                                     options_anchor
@@ -147,7 +161,6 @@ set listchars+=space:·
 
 " Maintain undo history between sessions
 set undofile
-set undodir=~/.config/nvim/undodir
 
 set colorcolumn=0
 
@@ -170,7 +183,7 @@ let g:netrw_altv = 1
 let g:netrw_winsize = 30
 
 
-function! ExplorerToggle()
+function! ExplorerToggle(dir)
     if exists("t:expl_buf_num")
         let expl_win_num = bufwinnr(t:expl_buf_num)
         if expl_win_num != -1
@@ -184,7 +197,7 @@ function! ExplorerToggle()
         endif
     else
         exec '1wincmd w'
-        Vexplore
+        exec 'Vexplore ' . a:dir
         let t:expl_buf_num = bufnr("%")
     endif
 endfunction
@@ -212,27 +225,6 @@ endif
 
 " ----------------------------------------------------------------------------
 "   Utils                                                         utils_anchor
-
-function! IsOnBattery()
-    if filereadable('/sys/class/power_supply/BAT0/status')
-        return readfile('/sys/class/power_supply/BAT0/status') == ['Discharging']
-    endif
-
-    return 0
-endfunction
-
-
-function! IsQuickfixOpen()
-    return len(filter(getwininfo(), 'v:val.quickfix && !v:val.loclist'))
-endfunction
-
-
-function! GoogleSearch(...)
-    let q = substitute(join(a:000, ' '), ' ', '+', 'g')
-    silent! execute '!chromium https://google.com/search?q=' . q
-endfunction
-
-command! -nargs=+ Google call GoogleSearch(<f-args>)
 
 
 function! DisableWhitespace()
@@ -291,64 +283,6 @@ colorscheme one
 
 " ----------------------------------------------------------------------------
 "   Lighline                                                  lightline_anchor
-
-function! LightlineReadonly()
-    return &readonly ? '' : ''
-endfunction
-
-
-function! LightlineFugitive()
-    if exists('*fugitive#head')
-        let branch = fugitive#head()
-        return branch !=# '' ? ' '.branch : ''
-    endif
-    return ''
-endfunction
-
-
-function! LightlineNeomakeErrors()
-    return '%{neomake#statusline#LoclistStatus()}'
-endfunction
-
-
-function! LightlineNeomakeJobs() abort
-    let jobs = neomake#GetJobs()
-
-    if empty(jobs)
-        return ''
-    endif
-
-    let names = map(jobs, 'v:val.name')
-    return '[' . join(names, ', ') . ']'
-endfunction
-
-
-function! LightlineFileFormat()
-    if &fileformat == 'unix'
-        return ''
-    endif
-
-    return winwidth(0) > 70 ? &fileformat : ''
-endfunction
-
-
-function! LightlineFileEncoding()
-    if &fileencoding == 'utf-8'
-        return ''
-    endif
-
-    return winwidth(0) > 70 ? &fileencoding : ''
-endfunction
-
-
-function! LightlineHardTime()
-    if get(b:, 'hardtime_on')
-        return '[hard]'
-    endif
-
-    return ''
-endfunction
-
 
 augroup _lightline_refresher
     autocmd!
@@ -569,14 +503,6 @@ highlight link NeomakeVirtualtextMessage NeomakeMessageSign
 " ----------------------------------------------------------------------------
 "   Neoformat                                                 neoformat_anchor
 
-function! RemoveTrailingWhitespaces()
-    let search = @/
-    let view = winsaveview()
-    silent! %s/\s\+$//e
-    let @/=search
-    call winrestview(view)
-endfunction
-
 " Run all enabled formatters (by default Neoformat stops after the first formatter succeeds)
 let g:neoformat_run_all_formatters = 1
 
@@ -686,12 +612,6 @@ nnoremap <expr> K ":vert h ".expand('<cword>')."<CR>"
 
 " +buffers
 
-function! MoveBuffer(window) abort
-    let current_buffer = bufnr('%')
-    execute a:window.'wincmd w'
-    execute 'b'.current_buffer
-endfunction
-
 nnoremap <silent> <Leader>bq :copen<CR>
 nnoremap <silent> <Leader>bl :lopen<CR>
 nnoremap <silent> <Leader>bb :Buffers<CR>
@@ -745,19 +665,8 @@ nnoremap <expr> <Leader>lc (IsQuickfixOpen() ? ':cc' : ':ll')."\<CR>"
 nnoremap <expr> <Leader>ld (IsQuickfixOpen() ? ':cclose' : ':lclose')."\<CR>"
 
 " +jump
-
-function! s:fzf_neighbouring_files()
-  call fzf#run({
-        \ 'source': 'fd --type f --max-depth=1 --hidden .',
-        \ 'dir': expand('%:p:h'),
-        \ 'sink': 'edit',
-        \ 'down': '40%',
-        \ })
-endfunction
-
-nnoremap <Leader>jd :Vexplore %:p:h<CR>
-nnoremap <Leader>jn :call <SID>fzf_neighbouring_files()<CR>
-nnoremap <Leader>jr :Vexplore .<CR>
+nnoremap <Leader>jd :call ExplorerToggle('%:p:h')<CR>
+nnoremap <Leader>jr :call ExplorerToggle('.')<CR>
 nnoremap <Leader>jb :b bash<CR>
 " jump tag
 nnoremap <Leader>jt  <C-]>
@@ -765,7 +674,7 @@ nnoremap <Leader>jt  <C-]>
 " +files
 nnoremap <Leader>fs :update<CR>
 nnoremap <Leader>fr :History<CR>
-nnoremap <Leader>ff :call ExplorerToggle()<CR>
+nnoremap <Leader>ff :call ExplorerToggle('.')<CR>
 
 " +files/edit
 nnoremap <Leader>fev :e $MYVIMRC<CR>
@@ -796,9 +705,6 @@ nnoremap <Leader>ms :SpellingToggle<CR>
 nnoremap <Leader>mt :TableModeToggle<CR>
 nnoremap <Leader>mu :UndotreeToggle<CR>
 nnoremap <Leader>mw :call WhitespaceToggle()<CR>
-
-" +marks
-nmap <Leader<S-m> :Marks<CR>
 
 " +project
 
@@ -889,98 +795,6 @@ endfunction
 
 autocmd! FileType * call SetLSPShortcuts()
 
-function! PathAsImport(path, kind)
-    let path = substitute(a:path, '/', '.', 'g')
-    let path = substitute(path, '.py$', '', '')
-
-    if a:kind == 'n'
-        return 'import '
-    endif
-
-    return 'from ' . path . ' import '
-endfunction
-
-
-function! s:do_global_import(import_path)
-    execute 'normal ggO' . a:import_path
-endfunction
-
-let g:python_smart_local_import = 1
-
-function! s:do_local_import(import_path)
-    if ! get(g:, 'python_smart_local_import')
-        execute "normal O" . a:import_path
-        return
-    endif
-
-    let prev_indent = indent('.')
-    normal [m
-    let next_indent = indent('.')
-
-    if prev_indent == next_indent
-        " we are at class level
-        execute "normal \<C-o>O" . a:import_path
-    else
-        execute "normal o" . a:import_path
-    endif
-endfunction
-
-
-function! AutoImport(name, local)
-    " find exact tag
-    let tags = taglist('^'.a:name.'$')
-    " filter top-level tags
-    let tags = filter(tags, "v:val['cmd'][2] != ' '")
-
-    if len(tags) < 1
-        echohl WarningMsg
-        echo "[AutoImport] Not found!"
-        echohl None
-        return
-    endif
-
-    let kinds = map(copy(tags), {i, x -> x['kind']})
-    let matched_files = map(tags, {i, x -> x['filename']})
-
-    for tagfile in tagfiles()
-        let base = fnamemodify(tagfile, ':p:h')
-        let matched_files = map(
-        \   matched_files,
-        \   {i, x -> substitute(x, base . '/', '', '')}
-        \ )
-    endfor
-
-    " prepare import strings
-    let matched_files = map(
-    \   matched_files,
-    \   {i, x -> PathAsImport(x, kinds[i]) . a:name}
-    \ )
-
-    let matched_files = uniq(matched_files)
-
-    if a:local
-        let ImportFn = function('s:do_local_import')
-    else
-        let ImportFn = function('s:do_global_import')
-    endif
-
-    " for single tag import immediately
-    if len(matched_files) == 1
-        call ImportFn(matched_files[0])
-    else
-        call fzf#run(fzf#wrap({
-        \   'source': matched_files,
-        \   'sink': ImportFn,
-        \ }))
-    endif
-endfunction
-
-function! OptimizeImports()
-    let fn = expand('%')
-    execute '!isort -rc -sl ' . fn
-    execute '!autoflake --remove-all-unused-imports --in-place ' . fn
-    Neoformat isort
-endfunction
 
 function! SetPythonOverrides()
     let b:textwidth = 79
