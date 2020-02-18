@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# https://wiki.archlinux.org/index.php/XDG_Base_Directory
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
 if [ -d "${HOME}/bin" ]; then
     PATH="${HOME}/bin:${PATH}"
 fi
@@ -11,32 +19,6 @@ fi
 if [ -f "${HOME}/.secrets.bash" ]; then
     source "${HOME}/.secrets.bash"
 fi
-
-## Readline bindings ##
-
-bind '"\e[A": history-search-backward'
-bind '"\e[B": history-search-forward'
-# bind '"\e[1;5D": backward-word'
-# bind '"\e[1;5C": forward-word'
-
-# Perform file completion in a case insensitive fashion
-bind "set completion-ignore-case on"
-# Treat hyphens and underscores as equivalent
-bind "set completion-map-case on"
-# Display matches for ambiguous patterns at first tab press
-# bind "set show-all-if-ambiguous on"
-# Immediately add a trailing slash when autocompleting symlinks to directories
-bind "set mark-symlinked-directories on"
-# color files by types
-bind "set colored-stats on"
-# append char to indicate type
-bind "set visible-stats on"
-# color the common prefix
-bind "set colored-completion-prefix on"
-# color the common prefix in menu-complete
-bind "set menu-complete-display-prefix on"
-# disable deep
-bind "set bell-style none"
 
 # append to the history file, don't overwrite it (from multiple shells)
 shopt -s histappend
@@ -70,31 +52,28 @@ HISTSIZE=5000
 HISTFILESIZE=5000
 
 
-__generate_ps1() {
-  local last_exit_code=$?
-  local environ=""
-  local greet_color
+__prompt_command() {
+    local last_exit_code=$?
+    local environ=""
 
-  if [[ ${last_exit_code} = 0 ]]; then
-    greet_color="${PIGreen}"
-  else
-    greet_color="${PIRed}"
-  fi
+    if [[ -n "${VIRTUAL_ENV}" ]]; then
+        environ="("$(basename "${VIRTUAL_ENV}")") "
+    fi
 
-  if [[ -n "${VIRTUAL_ENV}" ]]; then
-    environ="("$(basename "${VIRTUAL_ENV}")") "
-  fi
+    local time="${PIGreen}[\t]${PColorOff}"
+    local shell="${PIBlue} \u@\h:${PColorOff}"
+    local wd="${PGreen}\w${PColorOff}"
+    local scm="${PYellow}$(__git_ps1)${PColorOff}"
+    local greet="\n${PIGreen}└─ \$${PColorOff} "
 
-  local time="${PIGreen}[\t]${PColorOff}"
-  local shell="${PIBlue} \u@\h:${PColorOff}"
-  local wd="${PGreen}\w${PColorOff}"
-  local scm="${PYellow}$(__git_ps1)${PColorOff}"
-  local greet="\n${greet_color}└─ \$${PColorOff} "
+    export PS1="${environ}${time}${shell}${wd}${scm}${greet}"
 
-  PS1="${environ}${time}${shell}${wd}${scm}${greet}"
+    # get cursor position and add new line if we're not in first column
+    echo -en "\033[6n" && read -sdR CURPOS
+    [[ ${CURPOS##*;} -gt 1 ]] && echo -e "${IRed}↵${ColorOff}"
 }
 
-PROMPT_COMMAND=__generate_ps1
+PROMPT_COMMAND=__prompt_command
 
 # source other files
 
@@ -106,6 +85,7 @@ source "${__dir}/libs/preexec.bash"
 source "${__dir}/theme/colors.bash"
 source "${__dir}/environ.bash"
 source "${__dir}/aliases.bash"
+source "${__dir}/readline.bash"
 
 source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fzf.bash"
@@ -118,30 +98,30 @@ source "${__dir}/completion/third-party.bash"
 # configure preexec
 
 _short_dirname () {
-  local dir_name=`dirs -0`
-  [ ${#dir_name} -gt 8 ] && echo ${dir_name##*/} || echo $dir_name
+    local dir_name=`dirs -0`
+    [ ${#dir_name} -gt 8 ] && echo ${dir_name##*/} || echo $dir_name
 }
 
 
 _short_command () {
-  local input_command="$@"
-  local short=${input_command%% *}
-  local icon=""
+    local input_command="$@"
+    local short=${input_command%% *}
+    local icon=""
 
-  case "${short}" in
-    "docker") icon="🐋 ";;
-    "vim") icon="📗 ";;
-    "make") icon="⚒️ ";;
-  esac
+    case "${short}" in
+        "docker") icon="🐋 ";;
+        "vim") icon="📗 ";;
+        "make") icon="⚒️ ";;
+    esac
 
-  echo ${icon}${short}
+    echo ${icon}${short}
 }
 
 
 reload_history () {
-  history -a
-  history -c
-  history -r
+    history -a
+    history -c
+    history -r
 }
 
 
