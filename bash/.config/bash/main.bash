@@ -67,10 +67,6 @@ __prompt_command() {
     local greet="\n${PIGreen}└─ \$${PColorOff} "
 
     export PS1="${environ}${time}${shell}${wd}${scm}${greet}"
-
-    # get cursor position and add new line if we're not in first column
-    echo -en "\033[6n" && read -sdR CURPOS
-    [[ ${CURPOS##*;} -gt 1 ]] && echo -e "${IRed}↵${ColorOff}"
 }
 
 PROMPT_COMMAND=__prompt_command

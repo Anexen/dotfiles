@@ -15,9 +15,6 @@ call plug#begin('$XDG_DATA_HOME/nvim/plugged')
 " Theme
 Plug 'laggardkernel/vim-one'
 
-" Status line
-Plug 'itchyny/lightline.vim'
-
 " Searching
 Plug '/usr/bin/fzf'
 Plug 'junegunn/fzf.vim'
@@ -168,18 +165,20 @@ set exrc
 set secure
 " always show sign column
 set signcolumn=yes
-
+" use dot to show a space.
 set listchars+=space:·
-
+" characters to fill the statusline separators.
+set fillchars=stl:-,stlnc:-
 " Maintain undo history between sessions
 set undofile
+set nobackup
 
 set colorcolumn=0
 
 set updatetime=500
 
-set nobackup
-
+" disable built-in sql completion
+let g:omni_sql_no_default_maps = 1
 let g:loaded_sql_completion = 0
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
@@ -243,6 +242,7 @@ function! SetREPLShotcuts()
 
     nnoremap <buffer> <Leader>tb O##{<Esc>j
     nnoremap <buffer> <Leader>te o##}<Esc>k
+    nnoremap <buffer> <Leader>tc O##{<Esc>jo##}<Esc>k
 
    " Use gx{text-object} in normal mode
     nmap gx <Plug>(neoterm-repl-send)
@@ -330,70 +330,126 @@ endfunction
 "   Theme                                                         theme_anchor
 
 let g:one_allow_italics = 1
-let g:one_dark_syntax_bg='#222222'
+let g:one_dark_syntax_bg = '#222222'
+
+let g:terminal_color_0  = "#353a44"
+let g:terminal_color_8  = "#353a44"
+let g:terminal_color_1  = "#e88388"
+let g:terminal_color_9  = "#e88388"
+let g:terminal_color_2  = "#a7cc8c"
+let g:terminal_color_10 = "#a7cc8c"
+let g:terminal_color_3  = "#ebca8d"
+let g:terminal_color_11 = "#ebca8d"
+let g:terminal_color_4  = "#72bef2"
+let g:terminal_color_12 = "#72bef2"
+let g:terminal_color_5  = "#d291e4"
+let g:terminal_color_13 = "#d291e4"
+let g:terminal_color_6  = "#65c2cd"
+let g:terminal_color_14 = "#65c2cd"
+let g:terminal_color_7  = "#e3e5e9"
+let g:terminal_color_15 = "#e3e5e9"
+
 set termguicolors
 set background=dark
-colorscheme one
 
-" neomake/neomake
-call one#highlight('NeomakeErrorSign', 'e06c75', '', '')
-call one#highlight('NeomakeWarningSign', 'e5c07b', '', '')
-call one#highlight('NeomakeInfoSign', '61afef', '', '')
+function! MyHighlights() abort
+    highlight link Quote String
+    call Highlight('NeomakeErrorSign', g:terminal_color_1, '', '')
+    call Highlight('NeomakeWarningSign', g:terminal_color_3, '', '')
+    call Highlight('NeomakeInfoSign', g:terminal_color_4, '', '')
+endfunction
 
-" ----------------------------------------------------------------------------
-"   Lighline                                                  lightline_anchor
-
-augroup _lightline_refresher
+augroup MyColors
     autocmd!
-    autocmd User GutentagsUpdating nested call lightline#update()
-    autocmd User GutentagsUpdated nested call lightline#update()
-    autocmd User NeomakeJobStarted nested call lightline#update()
-    autocmd User NeomakeFinished nested call lightline#update()
+    autocmd ColorScheme * call MyHighlights()
 augroup END
 
+colorscheme one
 
-" TODO: filename: unique_tail_improved
-let g:lightline = {
-    \ 'colorscheme': 'one',
-    \ 'active': {
-    \   'left': [
-    \       ['winnr'],
-    \       ['paste'],
-    \       ['readonly', 'relativepath', 'modified'],
-    \   ],
-    \   'right': [
-    \       ['lineinfo'],
-    \       ['percent'],
-    \       ['fileformat', 'fileencoding', 'filetype', 'hardtime'],
-    \       ['neomake_errors', 'gutentags'],
-    \       ['neomake_jobs'],
-    \   ]
-    \ },
-    \ 'inactive': {
-    \   'left': [
-    \       ['winnr'],
-    \       ['readonly', 'filename', 'modified']
-    \   ]
-    \ },
-    \ 'component': {
-    \   'tagbar': '%{tagbar#currenttag("%s", "")}',
-    \   'gutentags': '%{gutentags#statusline("[", "]")}',
-    \ },
-    \ 'component_function': {
-    \   'fugitive': 'LightlineFugitive',
-    \   'readonly': 'LightlineReadonly',
-    \   'fileformat': 'LightlineFileFormat',
-    \   'fileencoding': 'LightlineFileEncoding',
-    \   'hardtime': 'LightlineHardTime',
-    \   'neomake_jobs': 'LightlineNeomakeJobs',
-    \ },
-    \ 'component_expand': {
-    \   'neomake_errors': 'LightlineNeomakeErrors',
-    \ },
-    \ 'component_type' : {
-    \   'neomake_errors': 'error',
-    \ },
-    \}
+
+" ----------------------------------------------------------------------------
+"   statusline                                                statusine_anchor
+
+highlight link StatusLineBase Comment
+call Highlight('StatusLineExtMode', g:terminal_color_5, '', 'bold')
+call Highlight('StatusLineActiveNormalMode', g:terminal_color_0, g:terminal_color_2, 'bold')
+call Highlight('StatusLineActiveInsertMode', g:terminal_color_0, g:terminal_color_4, 'bold')
+call Highlight('StatusLineActiveVisualMode', g:terminal_color_0, g:terminal_color_5, 'bold')
+call Highlight('StatusLineActiveReplaceMode', g:terminal_color_0, g:terminal_color_1, 'bold')
+call Highlight('StatuslineInactiveMode', g:terminal_color_7, g:terminal_color_0, '')
+
+function! ActiveLine()
+    let current_mode = mode()
+
+    if current_mode ==# "i"
+        highlight link StatusLineActiveMode StatusLineActiveInsertMode
+    elseif current_mode ==# "n"
+        highlight link StatusLineActiveMode StatusLineActiveNormalMode
+    elseif current_mode ==# "v" || current_mode ==# 'V' || current_mode ==# "\<C-V>"
+        highlight link StatusLineActiveMode StatusLineActiveVisualMode
+    elseif current_mode ==# "R"
+        highlight link StatusLineActiveMode StatusLineActiveReplaceMode
+    else
+        highlight link StatusLineActiveMode StatusLineActiveNormalMode
+    endif
+
+    let statusline = ""
+    " left:
+    let statusline .= "%(%#StatuslineActiveMode# %{winnr()} %)"
+    let statusline .= "%#Normal# %.40f%m%r "
+    "
+    " if winwidth(0) > 70 && &fileformat != 'unix'
+    "     let statusline .= "[%{&fileformat}]"
+    " endif
+    " if winwidth(0) > 70 && &fileencoding != 'utf-8'
+    "     let statusline .= "[%{&fileencoding}]"
+    " endif
+
+    " right:
+    let statusline .= "%#StatusLineBase#%=%#Normal#"
+    let statusline .= "%{StatuslineNeomakeJobs()}"
+    let statusline .= "%{gutentags#statusline('[', ']')}"
+
+    if empty(neomake#GetJobs())
+        let statusline .= "%#NeomakeErrorSign# ●%{get(neomake#statusline#LoclistCounts(), 'E', 0)}"
+        let statusline .= "%#NeomakeWarningSign# ●%{get(neomake#statusline#LoclistCounts(), 'W', 0)}"
+        let statusline .= "%#NeomakeInfoSign# ●%{get(neomake#statusline#LoclistCounts(), 'I', 0)}"
+    else
+        let statusline .= "%#NeomakeErrorSign# ●?"
+        let statusline .= "%#NeomakeWarningSign# ●?"
+        let statusline .= "%#NeomakeInfoSign# ●?"
+    endif
+
+    let ext_modes = ''
+    let ext_modes .= get(get(g:, "context", {}), "enabled") ? "c" : ""
+    let ext_modes .= get(b:, "hardtime_on") ? "h" : ""
+    let ext_modes .= &paste ? "P" : ""
+    let ext_modes .= get(b:, "spelling_enabled") ? "s" : ""
+    let ext_modes .= get(b:, "whitespace_enabled") ? "w" : ""
+
+    if !empty(ext_modes)
+        let statusline .= " %#StatusLineExtMode#{" . ext_modes . "}"
+    endif
+
+    let statusline .= " %#Visual# %p%% %#StatusLineActiveMode# %3.l:%2.c "
+
+    return statusline
+endfunction
+
+" We'll use this for the inactive statusline
+function! InactiveLine()
+    let statusline = ""
+    " left:
+    let statusline .= "%#StatuslineInactiveMode# %{winnr()} "
+    let statusline .= "%#Normal# %.40f%m%r %#StatusLineBase#"
+    return statusline
+endfunction
+
+augroup Statusline
+  autocmd!
+  autocmd WinEnter,BufEnter * setlocal statusline=%!ActiveLine()
+  autocmd WinLeave,BufLeave * setlocal statusline=%!InactiveLine()
+augroup END
 
 
 " ----------------------------------------------------------------------------

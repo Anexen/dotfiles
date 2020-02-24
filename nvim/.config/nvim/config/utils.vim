@@ -28,12 +28,42 @@ function! IsQuickfixOpen()
 endfunction
 
 
-function! LightlineReadonly()
+function! Highlight(group, fg, bg, attr, ...)
+    let l:attrsp = get(a:, 1, "")
+    " fg, bg, attr, attrsp
+    if !empty(a:fg)
+        exec "hi " . a:group . " guifg=" .  a:fg
+    endif
+    if !empty(a:bg)
+        exec "hi " . a:group . " guibg=" .  a:bg
+    endif
+    if a:attr != ""
+        exec "hi " . a:group . " gui=" .   a:attr
+    endif
+    if !empty(l:attrsp)
+        exec "hi " . a:group . " guisp=" . l:attrsp
+    endif
+endfunction
+
+
+function! HumanSize(bytes) abort
+    let l:bytes = a:bytes
+    let l:sizes = ['B', 'Kb', 'Mb', 'Gb']
+    let l:i = 0
+    while l:bytes >= 1000
+        let l:bytes = l:bytes / 1000.0
+        let l:i += 1
+    endwhile
+    return printf('%.1f%s', l:bytes, l:sizes[l:i])
+endfun
+
+
+function! StatuslineReadonly()
     return &readonly ? '' : ''
 endfunction
 
 
-function! LightlineFugitive()
+function! StatuslineFugitive()
     if exists('*fugitive#head')
         let branch = fugitive#head()
         return branch !=# '' ? ' '.branch : ''
@@ -42,12 +72,12 @@ function! LightlineFugitive()
 endfunction
 
 
-function! LightlineNeomakeErrors()
+function! StatuslineNeomakeErrors()
     return '%{neomake#statusline#LoclistStatus()}'
 endfunction
 
 
-function! LightlineNeomakeJobs() abort
+function! StatuslineNeomakeJobs() abort
     let jobs = neomake#GetJobs()
 
     if empty(jobs)
@@ -59,7 +89,7 @@ function! LightlineNeomakeJobs() abort
 endfunction
 
 
-function! LightlineFileFormat()
+function! StatuslineFileFormat()
     if &fileformat == 'unix'
         return ''
     endif
@@ -68,16 +98,7 @@ function! LightlineFileFormat()
 endfunction
 
 
-function! LightlineFileEncoding()
-    if &fileencoding == 'utf-8'
-        return ''
-    endif
-
-    return winwidth(0) > 70 ? &fileencoding : ''
-endfunction
-
-
-function! LightlineHardTime()
+function! StatuslineHardTime()
     if get(b:, 'hardtime_on')
         return '[hard]'
     endif
