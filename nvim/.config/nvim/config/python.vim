@@ -91,5 +91,5 @@ function! OptimizeImports()
     let fn = expand('%')
     execute '!isort -rc -sl ' . fn
     execute '!autoflake --remove-all-unused-imports --in-place ' . fn
-    Neoformat isort
+    execute 'Neoformat isort'
 endfunction

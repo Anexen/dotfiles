@@ -1,14 +1,4 @@
-" _anchor (SPC s b) - Quick jump
-
-" ----------------------------------------------------------------------------
-"   Plugins                                                     plugins_anchor
-
-function! SourceLocal(relativePath)
-    let root = expand('$XDG_CONFIG_HOME/nvim')
-    let fullPath = root . '/'. a:relativePath
-    exec 'source ' . fullPath
-endfunction
-
+" Plugins {{{
 
 call plug#begin('$XDG_DATA_HOME/nvim/plugged')
 
@@ -58,7 +48,6 @@ Plug 'airblade/vim-rooter'              " changes working directory to the proje
 Plug 'tpope/vim-commentary'             " comment helper
 Plug 'Asheq/close-buffers.vim'          " quickly close (bdelete) several buffers at once
 Plug 'stefandtw/quickfix-reflector.vim' " edit entries in QuickFix window
-Plug 'chrisbra/Colorizer'               " color colornames and codes
 Plug 'dhruvasagar/vim-table-mode'       " automatic table creator & formatter
 Plug 'lambdalisue/suda.vim'             " because sudo trick does not work on neovim.
 Plug 'kshenoy/vim-signature'            " show marks in sign column
@@ -67,6 +56,10 @@ Plug 'jeetsukumaran/vim-pythonsense'    " text objects for python statements
 Plug 'farfanoide/inflector.vim'         " string inflection
 
 Plug 'ruslan-savina/spelling'
+
+Plug 'rrethy/vim-hexokinase', {
+    \ 'do': 'docker run -v $(pwd):/mnt -w /mnt golang:1.13 make hexokinase'
+    \ }
 
 Plug 'tweekmonster/startuptime.vim', {
 \   'on': 'StartupTime'
@@ -96,23 +89,30 @@ Plug 'glacambre/firenvim', {
 Plug '$XDG_CONFIG_HOME/nvim/plugins/vim-googler'
 
 call plug#end()
+" }}}
+
+" {{{ Configs
+
+function! SourceLocal(relativePath)
+    let root = expand('$XDG_CONFIG_HOME/nvim')
+    let fullPath = root . '/'. a:relativePath
+    exec 'source ' . fullPath
+endfunction
 
 call SourceLocal('config/utils.vim')
 call SourceLocal('config/python.vim')
+call SourceLocal('config/statusline.vim')
 
-" augroup Terminal
-"   au!
-"   au TermOpen * let g:last_terminal_job_id = b:terminal_job_id
-" augroup END
+" disable built-in sql completion
+let g:omni_sql_no_default_maps = 1
+let g:loaded_sql_completion = 0
 
-" function! REPLSend(lines)
-"   call jobsend(g:last_terminal_job_id, add(a:lines, ''))
-" endfunction
+let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 
-" command! REPLSendLine call REPLSend([getline('.')])
+" }}}
 
-" ----------------------------------------------------------------------------
-"   Options                                                     options_anchor
+" {{{  Options
+set nowrap
 
 " Enable indentation rules that are file-type specific.
 filetype indent plugin on
@@ -177,14 +177,13 @@ set colorcolumn=0
 
 set updatetime=500
 
-" disable built-in sql completion
-let g:omni_sql_no_default_maps = 1
-let g:loaded_sql_completion = 0
+set foldmethod=marker
 
-let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
+set nofoldenable
 
-" ----------------------------------------------------------------------------
-"   netrw                                                         netrw_anchor
+" }}}
+
+" netrw {{{
 
 " NERDtree like setup
 let g:netrw_banner = 0
@@ -193,7 +192,6 @@ let g:netrw_browse_split = 4
 let g:netrw_altv = 1
 let g:netrw_winsize = 30
 
-
 function! ExplorerToggle(dir)
     if exists("t:expl_buf_num")
         let expl_win_num = bufwinnr(t:expl_buf_num)
@@ -201,7 +199,7 @@ function! ExplorerToggle(dir)
             let cur_win_nr = winnr()
             exec expl_win_num . 'wincmd w'
             close
-            exec cur_win_nr . 'wincmd w'
+            " exec cur_win_nr . 'wincmd w'
             unlet t:expl_buf_num
         else
             unlet t:expl_buf_num
@@ -212,9 +210,10 @@ function! ExplorerToggle(dir)
         let t:expl_buf_num = bufnr("%")
     endif
 endfunction
+" }}}
 
-" ----------------------------------------------------------------------------
-"   Neoterm                                                     neoterm_anchor
+" Neoterm {{{
+
 let g:neoterm_auto_repl_cmd = 0
 let g:neoterm_autoscroll = 1
 
@@ -256,30 +255,9 @@ augroup _repl
     autocmd FileType python call SetREPLShotcuts()
 augroup end
 
-" ----------------------------------------------------------------------------
-"   Firenvim                                                   firenvim_anchor
+" }}}
 
-let g:firenvim_config = {
-\   'localSettings': {
-\       '.*': {
-\           'cmdline': 'neovim',
-\           'priority': 0,
-\           'selector': 'textarea',
-\           'takeover': 'never',
-\       },
-\   }
-\ }
-
-if get(g:, "started_by_firenvim")
-    autocmd BufEnter localhost*ipynb*.txt set filetype=python
-    autocmd BufEnter github.com_*.txt set filetype=markdown
-
-    nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
-endif
-
-" ----------------------------------------------------------------------------
-"   Utils                                                         utils_anchor
-
+" Utils {{{
 
 function! DisableWhitespace()
     setlocal nolist
@@ -325,38 +303,53 @@ function! SpellingToggle()
     augroup END
 endfunction
 
+" }}}
 
-" ----------------------------------------------------------------------------
-"   Theme                                                         theme_anchor
+" Theme {{{
 
 let g:one_allow_italics = 1
 let g:one_dark_syntax_bg = '#222222'
-
-let g:terminal_color_0  = "#353a44"
-let g:terminal_color_8  = "#353a44"
-let g:terminal_color_1  = "#e88388"
-let g:terminal_color_9  = "#e88388"
-let g:terminal_color_2  = "#a7cc8c"
-let g:terminal_color_10 = "#a7cc8c"
-let g:terminal_color_3  = "#ebca8d"
-let g:terminal_color_11 = "#ebca8d"
-let g:terminal_color_4  = "#72bef2"
-let g:terminal_color_12 = "#72bef2"
-let g:terminal_color_5  = "#d291e4"
-let g:terminal_color_13 = "#d291e4"
-let g:terminal_color_6  = "#65c2cd"
-let g:terminal_color_14 = "#65c2cd"
-let g:terminal_color_7  = "#e3e5e9"
-let g:terminal_color_15 = "#e3e5e9"
 
 set termguicolors
 set background=dark
 
 function! MyHighlights() abort
     highlight link Quote String
-    call Highlight('NeomakeErrorSign', g:terminal_color_1, '', '')
-    call Highlight('NeomakeWarningSign', g:terminal_color_3, '', '')
-    call Highlight('NeomakeInfoSign', g:terminal_color_4, '', '')
+
+    highlight link NeomakeVirtualtextError NeomakeErrorSign
+    highlight link NeomakeVirtualtextWarning NeomakeWarningSign
+    highlight link NeomakeVirtualtextInfo NeomakeInfoSign
+    highlight link NeomakeVirtualtextMessage NeomakeMessageSign
+
+    call one#highlight('NeomakeErrorSign', g:terminal_color_1, '', '')
+    call one#highlight('NeomakeWarningSign', g:terminal_color_3, '', '')
+    call one#highlight('NeomakeInfoSign', g:terminal_color_4, '', '')
+
+    call one#highlight('StatusLine', g:one_dark_syntax_bg, g:one_dark_syntax_bg, '')
+    call one#highlight('StatusLineNC', g:one_dark_syntax_bg, g:one_dark_syntax_bg, '')
+
+    call one#highlight('StatusLineActiveNormalMode', g:terminal_color_0, g:terminal_color_2, 'bold')
+    call one#highlight('StatusLineActiveInsertMode', g:terminal_color_0, g:terminal_color_4, 'bold')
+    call one#highlight('StatusLineActiveVisualMode', g:terminal_color_0, g:terminal_color_5, 'bold')
+    call one#highlight('StatusLineActiveReplaceMode', g:terminal_color_1, g:terminal_color_1, 'bold')
+
+    call one#highlight('StatusLineActiveNormalModeText', g:terminal_color_2, g:terminal_color_0, '')
+    call one#highlight('StatusLineActiveInsertModeText', g:terminal_color_4, g:terminal_color_0, '')
+    call one#highlight('StatusLineActiveVisualModeText', g:terminal_color_5, g:terminal_color_0, '')
+    call one#highlight('StatusLineActiveReplaceModeText', g:terminal_color_1, g:terminal_color_0, '')
+
+    call one#highlight('StatusLineText', g:terminal_color_7, g:terminal_color_0, '')
+    call one#highlight('StatusLineTextItalic', g:terminal_color_7, g:terminal_color_0, 'italic')
+
+    call one#highlight('StatusLineInactiveMode', g:terminal_color_0, g:terminal_color_3, 'bold')
+    call one#highlight('StatusLineInactiveModeText', g:terminal_color_3, g:terminal_color_0, '')
+
+    call one#highlight('StatusLineError', g:terminal_color_1, g:terminal_color_0, '')
+    call one#highlight('StatusLineWarning', g:terminal_color_3, g:terminal_color_0, '')
+    call one#highlight('StatusLineInfo', g:terminal_color_4, g:terminal_color_0, '')
+
+    highlight link StatusLineJobsSection StatusLineText
+    call one#highlight('StatusLineExtensionSection', g:terminal_color_5, g:terminal_color_0, 'bold')
 endfunction
 
 augroup MyColors
@@ -366,125 +359,15 @@ augroup END
 
 colorscheme one
 
-
-" ----------------------------------------------------------------------------
-"   statusline                                                statusine_anchor
-
-highlight link StatusLineBase Comment
-call Highlight('StatusLineExtMode', g:terminal_color_5, '', 'bold')
-call Highlight('StatusLineActiveNormalMode', g:terminal_color_0, g:terminal_color_2, 'bold')
-call Highlight('StatusLineActiveInsertMode', g:terminal_color_0, g:terminal_color_4, 'bold')
-call Highlight('StatusLineActiveVisualMode', g:terminal_color_0, g:terminal_color_5, 'bold')
-call Highlight('StatusLineActiveReplaceMode', g:terminal_color_0, g:terminal_color_1, 'bold')
-call Highlight('StatuslineInactiveMode', g:terminal_color_7, g:terminal_color_0, '')
-
-function! ActiveLine()
-    let current_mode = mode()
-
-    if current_mode ==# "i"
-        highlight link StatusLineActiveMode StatusLineActiveInsertMode
-    elseif current_mode ==# "n"
-        highlight link StatusLineActiveMode StatusLineActiveNormalMode
-    elseif current_mode ==# "v" || current_mode ==# 'V' || current_mode ==# "\<C-V>"
-        highlight link StatusLineActiveMode StatusLineActiveVisualMode
-    elseif current_mode ==# "R"
-        highlight link StatusLineActiveMode StatusLineActiveReplaceMode
-    else
-        highlight link StatusLineActiveMode StatusLineActiveNormalMode
-    endif
-
-    let statusline = ""
-    " left:
-    let statusline .= "%(%#StatuslineActiveMode# %{winnr()} %)"
-    let statusline .= "%#Normal# %.40f%m%r "
-    "
-    " if winwidth(0) > 70 && &fileformat != 'unix'
-    "     let statusline .= "[%{&fileformat}]"
-    " endif
-    " if winwidth(0) > 70 && &fileencoding != 'utf-8'
-    "     let statusline .= "[%{&fileencoding}]"
-    " endif
-
-    " right:
-    let statusline .= "%#StatusLineBase#%=%#Normal#"
-    let statusline .= "%{StatuslineNeomakeJobs()}"
-    let statusline .= "%{gutentags#statusline('[', ']')}"
-
-    if empty(neomake#GetJobs())
-        let statusline .= "%#NeomakeErrorSign# ●%{get(neomake#statusline#LoclistCounts(), 'E', 0)}"
-        let statusline .= "%#NeomakeWarningSign# ●%{get(neomake#statusline#LoclistCounts(), 'W', 0)}"
-        let statusline .= "%#NeomakeInfoSign# ●%{get(neomake#statusline#LoclistCounts(), 'I', 0)}"
-    else
-        let statusline .= "%#NeomakeErrorSign# ●?"
-        let statusline .= "%#NeomakeWarningSign# ●?"
-        let statusline .= "%#NeomakeInfoSign# ●?"
-    endif
-
-    let ext_modes = ''
-    let ext_modes .= get(get(g:, "context", {}), "enabled") ? "c" : ""
-    let ext_modes .= get(b:, "hardtime_on") ? "h" : ""
-    let ext_modes .= &paste ? "P" : ""
-    let ext_modes .= get(b:, "spelling_enabled") ? "s" : ""
-    let ext_modes .= get(b:, "whitespace_enabled") ? "w" : ""
-
-    if !empty(ext_modes)
-        let statusline .= " %#StatusLineExtMode#{" . ext_modes . "}"
-    endif
-
-    let statusline .= " %#Visual# %p%% %#StatusLineActiveMode# %3.l:%2.c "
-
-    return statusline
-endfunction
-
-" We'll use this for the inactive statusline
-function! InactiveLine()
-    let statusline = ""
-    " left:
-    let statusline .= "%#StatuslineInactiveMode# %{winnr()} "
-    let statusline .= "%#Normal# %.40f%m%r %#StatusLineBase#"
-    return statusline
-endfunction
-
 augroup Statusline
   autocmd!
-  autocmd WinEnter,BufEnter * setlocal statusline=%!ActiveLine()
-  autocmd WinLeave,BufLeave * setlocal statusline=%!InactiveLine()
+  autocmd WinEnter,BufEnter * setlocal statusline=%!ActiveStatusLine()
+  autocmd WinLeave,BufLeave * setlocal statusline=%!InactiveStatusLine()
 augroup END
 
+" }}}
 
-" ----------------------------------------------------------------------------
-"   FZF                                                             fzf_anchor
-
-function! FloatingFZF(width, height, top_margin, left_margin)
-    function! s:create_float(hl, opts)
-        let buf = nvim_create_buf(v:false, v:true)
-        let opts = extend({'relative': 'editor', 'style': 'minimal'}, a:opts)
-        let win = nvim_open_win(buf, v:true, opts)
-        call setwinvar(win, '&winhighlight', 'NormalFloat:'.a:hl)
-        call setwinvar(win, '&colorcolumn', '')
-        return buf
-    endfunction
-
-    " Size and position
-    let width = float2nr(&columns * a:width)
-    let height = float2nr(&lines * a:height)
-    let row = float2nr(&lines * a:top_margin)
-    let col = float2nr(&lines * a:left_margin)
-
-    " Border
-    let top = '╭' . repeat('─', width - 2) . '╮'
-    let mid = '│' . repeat(' ', width - 2) . '│'
-    let bot = '╰' . repeat('─', width - 2) . '╯'
-    let border = [top] + repeat([mid], height - 2) + [bot]
-
-    " Draw frame
-    let s:frame = s:create_float('Comment', {'row': row, 'col': col, 'width': width, 'height': height})
-    call nvim_buf_set_lines(s:frame, 0, -1, v:true, border)
-
-    " Draw viewport
-    call s:create_float('Normal', {'row': row + 1, 'col': col + 2, 'width': width - 4, 'height': height - 2})
-    autocmd BufWipeout <buffer> execute 'bwipeout' s:frame
-endfunction
+" FZF {{{
 
 let g:fzf_layout = { 'window': 'call FloatingFZF(1, 0.4, 0.599999, 0)' }
 
@@ -504,8 +387,9 @@ command! -bang -nargs=* Ag
     \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
     \                 <bang>0)
 
-" ----------------------------------------------------------------------------
-"   Tags                                                           tags_anchor
+" }}}
+
+" Tags {{{
 
 let g:gutentags_generate_on_new = 0
 let g:gutentags_generate_on_missing = 0
@@ -524,8 +408,9 @@ let g:tagbar_foldlevel = 0
 let g:tagbar_autofocus = 1
 let g:tagbar_compact = 1
 
-" ----------------------------------------------------------------------------
-"   LSP                                                             lsp_anchor
+" }}}
+
+" LSP {{{
 
 let g:LanguageClient_serverCommands = {
 \   'python': ['pyls'],
@@ -536,8 +421,20 @@ let g:LanguageClient_serverCommands = {
 " Diagnostics are disabled in favor of Neomake
 let g:LanguageClient_diagnosticsEnable = 0
 
-" ----------------------------------------------------------------------------
-"   Completion                                               completion_anchor
+" }}}
+
+" Colorizer {{{
+let g:Hexokinase_ftEnabled = []
+let g:Hexokinase_highlighters = ['backgroundfull']
+let g:Hexokinase_refreshEvents = ['TextChanged', 'InsertLeave']
+let g:Hexokinase_optInPatterns = [
+\     'full_hex', 'triple_hex', 'colour_names',
+\     'rgb', 'rgba', 'hsl', 'hsla',
+\ ]
+
+" }}}
+
+" Completion {{{
 
 " important: :help Ncm2PopupOpen for more information
 set completeopt=menuone,noinsert,noselect
@@ -564,8 +461,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 inoremap <silent> <C-Space> <C-r>=ncm2#manual_trigger()<CR>
 
-" ----------------------------------------------------------------------------
-"   Neomake                                                     neomake_anchor
+" }}}
+
+" Neomake {{{
 
 if IsOnBattery()
     call neomake#configure#automake('w', 1000)
@@ -610,13 +508,9 @@ let g:neomake_warning_sign = {'text': '●', 'texthl': 'NeomakeWarningSign'}
 let g:neomake_info_sign = {'text': '●', 'texthl': 'NeomakeInfoSign'}
 let g:neomake_message_sign = {'text': '●', 'texthl': 'NeomakeMessageSign'}
 
-highlight link NeomakeVirtualtextError NeomakeErrorSign
-highlight link NeomakeVirtualtextWarning NeomakeWarningSign
-highlight link NeomakeVirtualtextInfo NeomakeInfoSign
-highlight link NeomakeVirtualtextMessage NeomakeMessageSign
+" }}}
 
-" ----------------------------------------------------------------------------
-"   Neoformat                                                 neoformat_anchor
+" Neoformat {{{
 
 " Run all enabled formatters (by default Neoformat stops after the first formatter succeeds)
 let g:neoformat_run_all_formatters = 1
@@ -625,8 +519,29 @@ let g:neoformat_enabled_python = ['isort', 'black']
 
 autocmd! BufWritePre * call RemoveTrailingWhitespaces()
 
-" ----------------------------------------------------------------------------
-"   Miscellaneous                                         miscellaneous_anchor
+" }}}
+
+" Miscellaneous {{{
+
+" Plugin: firenvim
+
+let g:firenvim_config = {
+\   'localSettings': {
+\       '.*': {
+\           'cmdline': 'neovim',
+\           'priority': 0,
+\           'selector': 'textarea',
+\           'takeover': 'never',
+\       },
+\   }
+\ }
+
+if get(g:, "started_by_firenvim")
+    autocmd BufEnter localhost*ipynb*.txt set filetype=python
+    autocmd BufEnter github.com_*.txt set filetype=markdown
+
+    nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
+endif
 
 " Plugin: gitgutter
 
@@ -645,8 +560,8 @@ let g:rooter_use_lcd = 1
 let g:rooter_patterns = [
     \ 'init.vim',
     \ 'main.bash',
-    \ '.git',
     \ '.git/',
+    \ '.git',
     \ '.python-version',
     \ 'Cargo.toml',
     \ ]
@@ -659,6 +574,8 @@ let g:table_mode_disable_mappings = 1
 
 " disable signature mappings
 let g:SignatureMap = {}
+
+" }}}
 
 " ----------------------------------------------------------------------------
 "   Keybindings                                             keybindings_anchor
@@ -731,8 +648,8 @@ nnoremap <silent> <Leader>bq :copen<CR>
 nnoremap <silent> <Leader>bl :lopen<CR>
 nnoremap <silent> <Leader>bb :Buffers<CR>
 nnoremap <silent> <Leader>bm :messages<CR>
-" nnoremap <silent> <Leader>bd :b#\|bd#<CR>
 nnoremap <silent> <Leader>bd :bd<CR>
+nnoremap <silent> <Leader>b<S-d> :b#\|bd#<CR>
 nnoremap <silent> <Leader>bn :bnext<CR>
 nnoremap <silent> <Leader>bp :bprev<CR>
 nnoremap <silent> <Leader>bt :TagbarToggle<CR>
@@ -812,7 +729,7 @@ nnoremap <silent> <Leader>fy<S-l> :let @+=expand('%:p').':'.line('.')<CR>
 
 " +mode
 nnoremap <Leader>mc :ContextToggle<CR>
-nnoremap <Leader>m<S-c> :ColorToggle<CR>
+nnoremap <Leader>m<S-c> :HexokinaseToggle<CR>
 nnoremap <Leader>mh :HardTimeToggle<CR>
 nnoremap <expr> <Leader>mn ":setlocal ".(&relativenumber ? "no" : "")."relativenumber<CR>"
 nnoremap <expr> <Leader>mr ":setlocal colorcolumn=".(&colorcolumn == '0' ? get(b:, 'textwidth', 0) : '0')."<CR>"
@@ -852,13 +769,13 @@ nnoremap <Leader>pt :terminal<CR>
 
 " +search
 nnoremap <Leader>sc :noh<CR>
-nmap <Leader>sa <Plug>AgRawSearch''<Left>
-vmap <Leader>sa <Plug>AgRawVisualSelection<CR>
-nnoremap <expr> <Leader>sb ":BLines ".expand('<cword>')."<CR>"
-nmap <Leader>sw <Plug>AgRawWordUnderCursor<CR>
-nmap <Leader>sl :Ag<UP><CR>
+nmap <Leader>sa <Plug>RgRawSearch''<Left>
+vmap <Leader>sa <Plug>RgRawVisualSelection<CR>
+nnoremap <Leader>sb :BLines<CR>
+nmap <Leader>sw <Plug>RgRawWordUnderCursor<CR>
+nmap <Leader>sl :Rg<Up><CR>
 nnoremap <Leader>st :Tags<CR>
-nnoremap <Leader>sp :Ag<CR>
+nnoremap <Leader>sp :Rg<CR>
 
 nnoremap <Leader>sg :call GoogleSearch(expand('<cword>'))<CR>
 vnoremap <Leader>sg :call GoogleSearch(@*)<CR>
@@ -876,18 +793,13 @@ nnoremap <Leader>wd <C-w>c
 nnoremap <Leader>ws <C-w>s
 nnoremap <Leader>wv <C-w>v
 
-nnoremap <Leader>wh <C-w>h
-nnoremap <Leader>wj <C-w>j
-nnoremap <Leader>wk <C-w>k
-nnoremap <Leader>wl <C-w>l
-
 " balance windows
 nnoremap <Leader>w= <C-w>=
 " resise window
-nnoremap <Leader>w<S-h> <C-w>5<
-nnoremap <Leader>w<S-j> :resize +5<CR>
-nnoremap <Leader>w<S-l> <C-w>5<
-nnoremap <Leader>w<S-k> :resize -5<CR>
+nnoremap <Leader>wh <C-w>5<
+nnoremap <Leader>wj :resize +5<CR>
+nnoremap <Leader>wl <C-w>5<
+nnoremap <Leader>wk :resize -5<CR>
 
 " ----------------------------------------------------------------------------
 "   Local Overrides                                     local_overrides_anchor
@@ -914,7 +826,7 @@ autocmd! FileType * call SetLSPShortcuts()
 function! SetPythonOverrides()
     let b:textwidth = 79
 
-    setlocal foldmethod=indent nofoldenable foldlevel=1
+    setlocal foldmethod=indent nofoldenable foldlevel=5
 
     " import yank path as import
     nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c')<CR>
@@ -962,8 +874,7 @@ autocmd! Filetype bash setlocal shiftwidth=2 softtabstop=2 expandtab
 " Set Make tabs to tabs and not spaces
 autocmd! FileType make setlocal noexpandtab shiftwidth=4
 
-" ----------------------------------------------------------------------------
-"   Abbreviations                                         abbreviations_anchor
+" Abbreviations {{{
 
 " open help in vertical split
 cnoreabbrev H vert h
@@ -975,3 +886,23 @@ abbr fitler filter
 abbr calss class
 abbr imoprt import
 abbr improt import
+
+" }}}
+
+" augroup Terminal
+"   au!
+"   au TermOpen * let g:last_terminal_job_id = b:terminal_job_id
+" augroup END
+
+" function! REPLSend(lines)
+"   call jobsend(g:last_terminal_job_id, add(a:lines, ''))
+" endfunction
+
+" command! REPLSendLine call REPLSend([getline('.')])
+
+" function! ShowMarks()
+"   redir => cout
+"   silent marks
+"   redir END
+"   let marks = split(cout, "\n")
+" endfunction

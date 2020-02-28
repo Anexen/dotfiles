@@ -28,24 +28,6 @@ function! IsQuickfixOpen()
 endfunction
 
 
-function! Highlight(group, fg, bg, attr, ...)
-    let l:attrsp = get(a:, 1, "")
-    " fg, bg, attr, attrsp
-    if !empty(a:fg)
-        exec "hi " . a:group . " guifg=" .  a:fg
-    endif
-    if !empty(a:bg)
-        exec "hi " . a:group . " guibg=" .  a:bg
-    endif
-    if a:attr != ""
-        exec "hi " . a:group . " gui=" .   a:attr
-    endif
-    if !empty(l:attrsp)
-        exec "hi " . a:group . " guisp=" . l:attrsp
-    endif
-endfunction
-
-
 function! HumanSize(bytes) abort
     let l:bytes = a:bytes
     let l:sizes = ['B', 'Kb', 'Mb', 'Gb']
@@ -58,51 +40,33 @@ function! HumanSize(bytes) abort
 endfun
 
 
-function! StatuslineReadonly()
-    return &readonly ? '' : ''
+function! FloatingFZF(width, height, top_margin, left_margin)
+    function! s:create_float(hl, opts)
+        let buf = nvim_create_buf(v:false, v:true)
+        let opts = extend({'relative': 'editor', 'style': 'minimal'}, a:opts)
+        let win = nvim_open_win(buf, v:true, opts)
+        call setwinvar(win, '&winhighlight', 'NormalFloat:'.a:hl)
+        call setwinvar(win, '&colorcolumn', '')
+        return buf
+    endfunction
+
+    " Size and position
+    let width = float2nr(&columns * a:width)
+    let height = float2nr(&lines * a:height)
+    let row = float2nr(&lines * a:top_margin)
+    let col = float2nr(&lines * a:left_margin)
+
+    " Border
+    let top = '╭' . repeat('─', width - 2) . '╮'
+    let mid = '│' . repeat(' ', width - 2) . '│'
+    let bot = '╰' . repeat('─', width - 2) . '╯'
+    let border = [top] + repeat([mid], height - 2) + [bot]
+
+    " Draw frame
+    let s:frame = s:create_float('Comment', {'row': row, 'col': col, 'width': width, 'height': height})
+    call nvim_buf_set_lines(s:frame, 0, -1, v:true, border)
+
+    " Draw viewport
+    call s:create_float('Normal', {'row': row + 1, 'col': col + 2, 'width': width - 4, 'height': height - 2})
+    autocmd BufWipeout <buffer> execute 'bwipeout' s:frame
 endfunction
-
-
-function! StatuslineFugitive()
-    if exists('*fugitive#head')
-        let branch = fugitive#head()
-        return branch !=# '' ? ' '.branch : ''
-    endif
-    return ''
-endfunction
-
-
-function! StatuslineNeomakeErrors()
-    return '%{neomake#statusline#LoclistStatus()}'
-endfunction
-
-
-function! StatuslineNeomakeJobs() abort
-    let jobs = neomake#GetJobs()
-
-    if empty(jobs)
-        return ''
-    endif
-
-    let names = map(jobs, 'v:val.name')
-    return '[' . join(names, ', ') . ']'
-endfunction
-
-
-function! StatuslineFileFormat()
-    if &fileformat == 'unix'
-        return ''
-    endif
-
-    return winwidth(0) > 70 ? &fileformat : ''
-endfunction
-
-
-function! StatuslineHardTime()
-    if get(b:, 'hardtime_on')
-        return '[hard]'
-    endif
-
-    return ''
-endfunction
-
