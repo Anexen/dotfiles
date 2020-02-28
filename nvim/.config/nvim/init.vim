@@ -223,13 +223,18 @@ function! StartDjangoShell()
     call g:neoterm.repl.exec(["%autoindent"])
 endfunctio
 
+function! TREPLSendFile()
+    let l:lines = getline(0, "$")
+    let l:term_id = g:neoterm.instances[g:neoterm.last_active].termid
+    call jobsend(l:term_id, extend(filter(l:lines, 'v:val != ""'), ['', '']))
+endfunction
+
 function! TREPLSendCell()
     let l:start = search('##{', 'bcn') + 1
     let l:end = search('##}', 'cn') - 1
     let l:lines = getline(l:start, l:end)
     let l:term_id = g:neoterm.instances[g:neoterm.last_active].termid
     call jobsend(l:term_id, extend(filter(l:lines, 'v:val != ""'), ['', '']))
-    " call neoterm#repl#line(l:start + 1, l:end - 1)
 endfunction
 
 function! SetREPLShotcuts()
@@ -237,7 +242,7 @@ function! SetREPLShotcuts()
     nnoremap <buffer> <Leader>tl :TREPLSendLine<CR>
     nnoremap <buffer> <Leader>tv :TREPLSendSelection<CR>
     nnoremap <buffer> <Leader>ts :call TREPLSendCell()<CR>
-    nnoremap <buffer> <Leader>tf :TREPLSendFile<CR>
+    nnoremap <buffer> <Leader>tf :call TREPLSendFile()<CR>
 
     nnoremap <buffer> <Leader>tb O##{<Esc>j
     nnoremap <buffer> <Leader>te o##}<Esc>k
@@ -324,6 +329,10 @@ function! MyHighlights() abort
     call one#highlight('NeomakeErrorSign', g:terminal_color_1, '', '')
     call one#highlight('NeomakeWarningSign', g:terminal_color_3, '', '')
     call one#highlight('NeomakeInfoSign', g:terminal_color_4, '', '')
+
+    call one#highlight('NeomakeError', g:terminal_color_1, '', 'underline')
+    call one#highlight('NeomakeWarning', g:terminal_color_3, '', 'underline')
+    call one#highlight('NeomakeInfo', g:terminal_color_4, '', 'underline')
 
     call one#highlight('StatusLine', g:one_dark_syntax_bg, g:one_dark_syntax_bg, '')
     call one#highlight('StatusLineNC', g:one_dark_syntax_bg, g:one_dark_syntax_bg, '')
@@ -501,7 +510,7 @@ let g:neomake_clippy_rustup_has_nightly = 1
 
 let g:neomake_place_signs = 1
 let g:neomake_highlight_lines = 0
-let g:neomake_highlight_columns = 0
+let g:neomake_highlight_columns = 1
 
 let g:neomake_error_sign = {'text': '●', 'texthl': 'NeomakeErrorSign'}
 let g:neomake_warning_sign = {'text': '●', 'texthl': 'NeomakeWarningSign'}

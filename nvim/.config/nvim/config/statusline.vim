@@ -73,7 +73,6 @@ function! ActiveStatusLine()
     let jobs .= StatuslineNeomakeJobs('[', ']')
     let jobs .= gutentags#statusline('[', ']')
 
-    echo jobs
     if !empty(jobs)
         let statusline .= " %#StatusLineJobsSection#" . jobs . ""
     endif
@@ -97,7 +96,7 @@ function! ActiveStatusLine()
     let statusline .= " %#StatusLineInfo#●" . (has_running_jobs ? '?' : get(linter_errors, 'I', 0))
 
     let statusline .= " %#StatusLineText#%2.p%%"
-    let statusline .= " %#StatusLineActiveMode# %3.l:%-2.c "
+    let statusline .= " %#StatusLineActiveMode# %3.l:%-2.c %#Normal#"
 
     return statusline
 endfunction
@@ -108,5 +107,7 @@ function! InactiveStatusLine()
     " left:
     let statusline .= "%#StatusLineInactiveMode# %{winnr()} "
     let statusline .= "%#StatusLineTextItalic# %" . (winwidth(0) > 100 ? "" : ".40") . "f%m%r%#StatusLineInactiveModeText# "
+    " reght
+    let statusline .= "%=%#Normal#"
     return statusline
 endfunction
