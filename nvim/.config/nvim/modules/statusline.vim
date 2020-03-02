@@ -81,6 +81,7 @@ function! ActiveStatusLine()
     let ext_modes .= get(get(g:, "context", {}), "enabled") ? "c" : ""
     let ext_modes .= get(b:, "hexokinase_is_on") ? "C" : ""
     let ext_modes .= get(b:, "hardtime_on") ? "h" : ""
+    let ext_modes .= g:neomake_live_mode ? "N" : ""
     let ext_modes .= &paste ? "P" : ""
     let ext_modes .= get(b:, "spelling_enabled") ? "s" : ""
     let ext_modes .= get(b:, "whitespace_enabled") ? "w" : ""
@@ -111,3 +112,10 @@ function! InactiveStatusLine()
     let statusline .= "%=%#Normal#"
     return statusline
 endfunction
+
+augroup Statusline
+  autocmd!
+  autocmd WinEnter,BufEnter * setlocal statusline=%!ActiveStatusLine()
+  autocmd WinLeave,BufLeave * setlocal statusline=%!InactiveStatusLine()
+augroup END
+

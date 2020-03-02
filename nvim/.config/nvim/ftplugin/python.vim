@@ -1,3 +1,5 @@
+let b:textwidth = 79
+
 let g:python_smart_local_import = 1
 
 
@@ -93,3 +95,28 @@ function! OptimizeImports()
     execute '!autoflake --remove-all-unused-imports --in-place ' . fn
     execute 'Neoformat isort'
 endfunction
+
+
+setlocal foldmethod=indent nofoldenable foldlevel=5
+
+" import yank path as import
+nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c')<CR>
+" import paste
+nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'), 1)<CR>
+nnoremap <buffer> <silent> <LocalLeader>i<S-p> :call AutoImport(expand('<cword>'), 0)<CR>
+nnoremap <buffer> <silent> <LocalLeader>ii :Neoformat isort<CR>
+nnoremap <buffer> <silent> <LocalLeader>io :silent call OptimizeImports()<CR>
+
+nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
+
+" debug
+nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
+
+" lint
+nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>
+nnoremap <buffer> <LocalLeader>lf :Neomake flake8<CR>
+nnoremap <buffer> <LocalLeader>lp :Neomake pylint<CR>
+
+" syntax match pythonFunction /\v[[:alpha:]_]+\ze(\s?\()/
+" syntax match pythonAssignment /\v[[:alpha:]_]+\ze\s?\=/
+" highlight link pythonAssignment Define
