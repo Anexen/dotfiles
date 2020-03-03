@@ -1,5 +1,5 @@
 " Plugin: polyglot
-let g:polyglot_disabled = ['python-indent']
+let g:python_pep8_indent_searchpair_timeout = 10
 
 " Plugin: Hexokinase
 let g:Hexokinase_ftEnabled = []
