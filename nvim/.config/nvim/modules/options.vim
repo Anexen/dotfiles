@@ -54,7 +54,7 @@ set signcolumn=yes
 " use dot to show a space.
 set listchars+=space:·
 " characters to fill the statusline separators.
-set fillchars=stl:-,stlnc:-
+" set fillchars=stl:-,stlnc:-
 " Maintain undo history between sessions
 set undofile
 set nobackup

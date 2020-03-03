@@ -67,6 +67,7 @@ Plug 'wellle/context.vim', {
 \   'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
 \ }
 
+
 Plug 'mbbill/undotree', {
 \   'on': 'UndotreeToggle'
 \ }
@@ -82,5 +83,7 @@ Plug 'glacambre/firenvim', {
 " Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'sirver/ultisnips'
+" Plug 'ripxorip/aerojump.nvim'
+" Plug 'habamax/vim-sendtoterm'
 
 call plug#end()

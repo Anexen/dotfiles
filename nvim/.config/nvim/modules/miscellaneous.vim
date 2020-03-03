@@ -1,5 +1,7 @@
-" Plugin: Hexokinase
+" Plugin: polyglot
+let g:polyglot_disabled = ['python-indent']
 
+" Plugin: Hexokinase
 let g:Hexokinase_ftEnabled = []
 let g:Hexokinase_highlighters = ['backgroundfull']
 let g:Hexokinase_refreshEvents = ['TextChanged', 'InsertLeave']
