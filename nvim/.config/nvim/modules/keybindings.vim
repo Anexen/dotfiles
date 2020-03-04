@@ -153,9 +153,9 @@ nnoremap <Leader>fr :History<CR>
 nnoremap <Leader>ff :call ExplorerToggle('.')<CR>
 
 " +files/edit
-nnoremap <Leader>fev :e $MYVIMRC<CR>
+nnoremap <Leader>fev :e $MYVIMRC <bar> :Rooter<CR>
 nnoremap <Leader>fer :source $MYVIMRC<CR>
-nnoremap <Leader>feb :e ~/.config/bash/main.bash<CR>
+nnoremap <Leader>feb :e ~/.config/bash/main.bash <bar> :Rooter<CR>
 
 " +files/yank
 " file name under cursor
@@ -192,6 +192,7 @@ endfunction
 
 function! s:handle_selected_project(directory)
     execute 'edit '.fnameescape(a:directory)
+    Rooter
     FZF
     call feedkeys('i')
 endfunction
@@ -208,7 +209,7 @@ command! Projects call SwitchToProject()
 
 
 nnoremap <Leader>pf :Files<CR>
-nnoremap <Leader>po :e TODOs.org<CR>
+nnoremap <Leader>po :e notes.md<CR>
 nnoremap <Leader>pp :Projects<CR>
 nnoremap <Leader>pr :Rooter<CR>
 nnoremap <Leader>pt :terminal<CR>

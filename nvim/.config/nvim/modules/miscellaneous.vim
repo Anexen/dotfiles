@@ -39,6 +39,7 @@ let g:gitgutter_sign_allow_clobber = 0
 
 " Plugin: rooter
 
+let g:rooter_manual_only = 1
 " change directory for the current window only
 let g:rooter_use_lcd = 1
 " In case of non-project files, change to file's directory
