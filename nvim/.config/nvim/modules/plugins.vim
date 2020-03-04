@@ -1,10 +1,10 @@
-call plug#begin('$XDG_DATA_HOME/nvim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 
 " Theme
 Plug 'laggardkernel/vim-one'
 
 " Searching
-Plug '/usr/bin/fzf'
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'jesseleite/vim-agriculture'
 

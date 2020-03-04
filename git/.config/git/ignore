@@ -1,1 +1,8 @@
 notes.md
+.nvimrc
+.vimrc
+.exrc
+.vim/
+tags
+tags.lock
+tags.temp
