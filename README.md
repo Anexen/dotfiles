@@ -4,15 +4,16 @@ Clone repository in ~/.dotfiles
 $ git clone https://github.com/Anexen/dotfiles.git ~/.dotfiles
 ```
 
-Create symlinks:
+Create symlinks (I'am using [GNU Stow](https://www.gnu.org/software/stow/)):
 
 ```bash
-$ show bash
-$ show nvim
-$ show git
+$ stow bash
+$ stow nvim
+$ stow git
 ```
 
-Neovim config dependencies:
+Dependencies:
+* stow
 * aspell
 * fd
 * fzf
