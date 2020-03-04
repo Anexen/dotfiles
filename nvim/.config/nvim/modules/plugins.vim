@@ -59,22 +59,14 @@ Plug 'rrethy/vim-hexokinase', {
     \ 'do': 'docker run -v $(pwd):/mnt -w /mnt golang:1.13 make hexokinase'
     \ }
 
-Plug 'tweekmonster/startuptime.vim', {
-\   'on': 'StartupTime'
-\ }
+Plug 'tweekmonster/startuptime.vim', { 'on': 'StartupTime' }
 
-Plug 'wellle/context.vim', {
-\   'on': ['ContextActivate', 'ContextEnable', 'ContextToggle']
-\ }
+Plug 'wellle/context.vim', { 'on': 'ContextToggle' }
 
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
-Plug 'mbbill/undotree', {
-\   'on': 'UndotreeToggle'
-\ }
-
-Plug 'glacambre/firenvim', {
-\   'do': { _ -> firenvim#install(0) }
-\ }
+Plug 'glacambre/firenvim', { 'do': { -> firenvim#install(0) } }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 
 " Plug 'neovim/nvim-lsp'
 
