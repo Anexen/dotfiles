@@ -6,6 +6,7 @@ let g:LanguageClient_serverCommands = {
 
 " Diagnostics are disabled in favor of Neomake
 let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_hasSnippetSupport = 1
 
 function! SetLSPShortcuts()
     if !has_key(g:LanguageClient_serverCommands, &filetype)

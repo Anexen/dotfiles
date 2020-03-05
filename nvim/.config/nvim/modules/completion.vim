@@ -8,6 +8,10 @@ set shortmess+=c
 
 let g:ncm2#matcher = 'substrfuzzy'
 
+let g:UltiSnipsExpandTrigger = "<Plug>(ultisnips_expand)"
+" c-j c-k for moving in snippet
+let g:UltiSnipsJumpForwardTrigger = "<C-j>"
+let g:UltiSnipsJumpBackwardTrigger = "<C-k>"
 
 " When the <Enter> key is pressed while the popup menu is visible, it only
 " hides the menu. Use this mapping to close the menu and also start a new line.
@@ -18,6 +22,12 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 inoremap <silent> <C-Space> <C-r>=ncm2#manual_trigger()<CR>
+
+imap <expr> <C-s> ncm2_ultisnips#expand_or("\<Plug>(ultisnips_expand)", 'm')
+vmap <C-s> <Plug>(ultisnips_expand)
+
+inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
+
 
 augroup _ncm2
     autocmd!

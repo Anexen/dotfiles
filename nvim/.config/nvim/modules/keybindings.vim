@@ -43,7 +43,6 @@ nnoremap <Tab> >>_
 nnoremap <S-Tab> <<_
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
-
 " |-------------+---+-------------------+-------+-------------------|
 " | Camelize    | c | Some Text To Work | gI$c  | someTextToWork    |
 " | Privatize   | p | some_var          | gI$p  | _some_var         |
