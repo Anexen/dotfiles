@@ -2,6 +2,8 @@ let g:LanguageClient_serverCommands = {
 \   'python': ['pyls'],
 \   'rust': ['rustup', 'run', 'nightly', 'rls'],
 \   'javascript': ['tcp://127.0.0.1:5001'],
+\   'c': ['clangd', '--background-index'],
+\   'cpp': ['clangd', '--background-index'],
 \ }
 
 " Diagnostics are disabled in favor of Neomake

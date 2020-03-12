@@ -67,6 +67,8 @@ set foldmethod=marker
 
 set nofoldenable
 
+set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
 " disable built-in sql completion
 let g:omni_sql_no_default_maps = 1
 let g:loaded_sql_completion = 0

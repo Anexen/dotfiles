@@ -6,7 +6,7 @@ let g:gutentags_generate_on_write = 1
 let g:gutentags_project_root = ['Cargo.toml']
 let g:gutentags_add_default_project_roots = 1
 
-let g:gutentags_ctags_extra_args = ['--languages=python,javascript,rust']
+let g:gutentags_ctags_extra_args = ['--languages=python,javascript,rust,cpp,c']
 let g:gutentags_ctags_exclude = [
 \   '.git', '.mypy_cache', '.ipynb_checkpoints', '__pycache__', '*.min.js'
 \ ]
