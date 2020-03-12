@@ -51,34 +51,13 @@ HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=5000
 HISTFILESIZE=5000
 
-
-__prompt_command() {
-    local last_exit_code=$?
-    local environ=""
-
-    if [[ -n "${VIRTUAL_ENV}" ]]; then
-        environ="("$(basename "${VIRTUAL_ENV}")") "
-    fi
-
-    local time="${PIGreen}[\t]${PColorOff}"
-    local shell="${PIBlue} \u@\h:${PColorOff}"
-    local wd="${PGreen}\w${PColorOff}"
-    local scm="${PYellow}$(__git_ps1)${PColorOff}"
-    local greet="\n${PIGreen}└─ \$${PColorOff} "
-
-    export PS1="${environ}${time}${shell}${wd}${scm}${greet}"
-}
-
-PROMPT_COMMAND=__prompt_command
-
 # source other files
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "${__dir}/libs/helpers.bash"
-source "${__dir}/libs/preexec.bash"
 
-source "${__dir}/theme/colors.bash"
+# source "${__dir}/theme/colors.bash"
 source "${__dir}/environ.bash"
 source "${__dir}/aliases.bash"
 source "${__dir}/readline.bash"
@@ -92,6 +71,7 @@ source "${__dir}/plugins/ssh.bash"
 source "${__dir}/completion/third-party.bash"
 
 # configure preexec
+source "${__dir}/libs/preexec.bash"
 
 _short_dirname () {
     local dir_name=`dirs -0`
@@ -114,55 +94,30 @@ _short_command () {
 }
 
 
-reload_history () {
+function reload_history () {
     history -a
     history -c
     history -r
 }
 
 
-function preexec_xterm_title_install () {
-    # These functions are defined here because they only make sense with the
-    # preexec_install below.
-    function precmd () {
-        local screen_info=" "
-        if [[ -n $SCREEN_HOST ]]; then
-            screen_info=" (${USER}@${SCREEN_HOST}) "
-        fi
-        preexec_xterm_title "$(_short_dirname)${screen_info}$PROMPTCHAR"
-        if [[ "${TERM}" == screen ]]; then
-            preexec_screen_title "`preexec_screen_user_at_host`${PROMPTCHAR}"
-        fi
-        reload_history
-    }
-
-    function preexec () {
-        local screen_info=""
-        if [[ -n $SCREEN_HOST ]]; then
-            screen_info=" (${USER}@${SCREEN_HOST}) "
-        fi
-        preexec_xterm_title "$(_short_command $1)${screen_info}"
-        if [[ "${TERM}" == screen ]]; then
-            local cutit="$1"
-            local cmdtitle=`echo "$cutit" | cut -d " " -f 1`
-            if [[ "$cmdtitle" == "exec" ]]
-            then
-                local cmdtitle=`echo "$cutit" | cut -d " " -f 2`
-            fi
-            if [[ "$cmdtitle" == "screen" ]]
-            then
-                # Since stacked screens are quite common, it would be nice to
-                # just display them as '$$'.
-                local cmdtitle="${PROMPTCHAR}"
-            else
-                local cmdtitle=":$cmdtitle"
-            fi
-            preexec_screen_title "`preexec_screen_user_at_host`${PROMPTCHAR}$cmdtitle"
-        fi
-    }
-
-    preexec_install
+function preexec_xterm_title () {
+    local title="$1"
+    echo -ne "\033]0;$title\007" > /dev/stderr
 }
 
-preexec_xterm_title_install
+
+function _precmd () {
+    preexec_xterm_title "$(_short_dirname)$PROMPTCHAR"
+}
+
+
+function _preexec () {
+    preexec_xterm_title "$(_short_command $1)"
+}
+
+precmd_functions+=(_precmd reload_history)
+preexec_functions+=(_preexec)
+
+eval "$(starship init bash)"
 
