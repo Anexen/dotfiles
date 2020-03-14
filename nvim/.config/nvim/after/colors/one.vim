@@ -19,7 +19,7 @@ call one#highlight('StatusLineNC', g:one_dark_syntax_bg, g:one_dark_syntax_bg, '
 call one#highlight('StatusLineActiveNormalMode', g:terminal_color_0, g:terminal_color_2, 'bold')
 call one#highlight('StatusLineActiveInsertMode', g:terminal_color_0, g:terminal_color_4, 'bold')
 call one#highlight('StatusLineActiveVisualMode', g:terminal_color_0, g:terminal_color_5, 'bold')
-call one#highlight('StatusLineActiveReplaceMode', g:terminal_color_1, g:terminal_color_1, 'bold')
+call one#highlight('StatusLineActiveReplaceMode', g:terminal_color_0, g:terminal_color_1, 'bold')
 
 call one#highlight('StatusLineActiveNormalModeText', g:terminal_color_2, g:terminal_color_0, '')
 call one#highlight('StatusLineActiveInsertModeText', g:terminal_color_4, g:terminal_color_0, '')

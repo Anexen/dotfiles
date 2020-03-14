@@ -76,7 +76,6 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " Plug 'neovim/nvim-lsp'
 
 " to try:
-" Plug 'sakhnik/nvim-gdb'                 " gdb integration
 " Plug 'justinmk/vim-sneak'               " ? replaces s, but faster then f
 " Plug 'scrooloose/nerdtree'              " ? better file/dir management (move, rename, delete)
 " Plug 'ripxorip/aerojump.nvim'

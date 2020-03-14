@@ -28,15 +28,15 @@ show_percentage = true
 disabled = false
 
 [git_branch]
-style = "yellow"
+style = "bold yellow"
 
 [time]
 disabled = false
-style = "green"
+style = "bold green"
 format = "[%T]"
 
 [directory]
-style = "blue"
+style = "bold blue"
 truncate_to_repo = false
 truncation_length = 5
 

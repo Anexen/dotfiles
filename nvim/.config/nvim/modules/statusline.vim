@@ -36,7 +36,7 @@ endfunction
 function! ActiveStatusLine()
     let current_mode = mode()
 
-    if current_mode ==# "i"
+    if current_mode ==# "i" || current_mode ==# "t"
         highlight link StatusLineActiveMode StatusLineActiveInsertMode
         highlight link StatusLineActiveModeText StatusLineActiveInsertModeText
     elseif current_mode ==# "v" || current_mode ==# 'V' || current_mode ==# "\<C-V>"
