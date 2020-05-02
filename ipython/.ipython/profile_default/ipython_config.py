@@ -54,6 +54,7 @@ c.TerminalInteractiveShell.highlighting_style_overrides = {
     token.Name.Builtin.Pseudo: hue_5,  # self
     token.Operator: hue_3,
     token.Operator.Word: f'{hue_3} nobold',
+    token.Punctuation: syntax_fg,
 
     token.Token.Prompt: hue_4,
     token.Token.PromptNum: f'{hue_4} bold',

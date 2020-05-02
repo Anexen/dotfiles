@@ -1,5 +1,7 @@
 set nowrap
-
+" always show some lines after the cursor
+set scrolloff=5
+set sidescrolloff=5
 " Enable indentation rules that are file-type specific.
 filetype indent plugin on
 " Enable syntax highlighting

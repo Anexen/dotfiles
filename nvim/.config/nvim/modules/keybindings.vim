@@ -126,6 +126,11 @@ nnoremap <Leader>gb :Gblame<CR>
 nnoremap <Leader>gc :BCommits<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gha :GitGutterStageHunk<CR>
+nnoremap <Leader>ghu :GitGutterUndoHunk<CR>
+nnoremap <Leader>ghn :GitGutterNextHunk<CR>
+nnoremap <Leader>ghp :GitGutterPrevHunk<CR>
+nnoremap <Leader>ghq :GitGutterQuickFix<CR>
 
 " +insert
 nnoremap <Leader>ik O<Esc>j
@@ -223,8 +228,7 @@ nmap <Leader>sl :Rg<Up><CR>
 nnoremap <Leader>st :Tags<CR>
 nnoremap <Leader>sp :Rg<CR>
 
-nnoremap <Leader>sg :call GoogleSearch(expand('<cword>'))<CR>
-vnoremap <Leader>sg :call GoogleSearch(@*)<CR>
+nnoremap <Leader>sg :call WebSearch(expand('<cword>'))<CR>
 
 " +tabs
 nnoremap <Leader>tn :tabnext<CR>

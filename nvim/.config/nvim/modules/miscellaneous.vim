@@ -58,3 +58,11 @@ let g:rooter_patterns = [
 
 let g:table_mode_disable_mappings = 1
 
+" Web search
+
+function! WebSearch(...)
+    let q = substitute(join(a:000, ' '), ' ', '+', 'g')
+    silent! execute "!brave 'https://duckduckgo.com/?q=" . q . "'"
+endfunction
+
+command! -nargs=+ WebSearch call WebSearch(<f-args>)

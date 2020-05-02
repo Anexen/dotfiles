@@ -60,9 +60,7 @@ Plug 'farfanoide/inflector.vim'         " string inflection
 
 Plug 'ruslan-savina/spelling'
 
-Plug 'rrethy/vim-hexokinase', {
-    \ 'do': 'docker run -v $(pwd):/mnt -w /mnt golang:1.13 make hexokinase'
-    \ }
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
 Plug 'tweekmonster/startuptime.vim', { 'on': 'StartupTime' }
 
@@ -72,6 +70,8 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 
 Plug 'glacambre/firenvim', { 'do': { -> firenvim#install(0) } }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+
+Plug 'weilbith/vim-localrc'
 
 " Plug 'neovim/nvim-lsp'
 

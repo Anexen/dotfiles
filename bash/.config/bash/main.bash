@@ -8,13 +8,7 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-if [ -d "${HOME}/bin" ]; then
-    PATH="${HOME}/bin:${PATH}"
-fi
-
-if [ -d "${HOME}/.local/bin" ]; then
-    PATH="${HOME}/.local/bin:${PATH}"
-fi
+PATH="${PATH}:${HOME}/bin:${HOME}/local/bin:${HOME}/.cargo/bin"
 
 if [ -f "${HOME}/.secrets.bash" ]; then
     source "${HOME}/.secrets.bash"
