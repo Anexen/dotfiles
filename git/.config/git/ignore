@@ -1,8 +1,16 @@
+# general
 notes.md
-.nvimrc
-.vimrc
-.exrc
-.vim/
 tags
 tags.lock
 tags.temp
+.autoenv
+.autoenv.leave
+
+# python
+.python-version
+
+# vim
+.exrc
+.nvimrc
+.vim/
+.vimrc
