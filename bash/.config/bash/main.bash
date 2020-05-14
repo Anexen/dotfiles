@@ -42,8 +42,8 @@ PROMPT_DIRTRIM=5
 # ignoreboth = ignorespace + ignoredups
 HISTCONTROL=ignoreboth:erasedups
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=5000
-HISTFILESIZE=5000
+HISTSIZE=20000
+HISTFILESIZE=20000
 
 # source other files
 
@@ -58,13 +58,13 @@ source "${__dir}/readline.bash"
 
 source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fzf.bash"
-source "${__dir}/plugins/forgit.bash"
 source "${__dir}/plugins/pyenv.bash"
 source "${__dir}/plugins/ssh.bash"
 
 source "${__dir}/completion/third-party.bash"
 
-# configure preexec
+source "${__dir}/libs/forgit.bash"
+source "${__dir}/libs/autoenv.bash"
 source "${__dir}/libs/preexec.bash"
 
 _short_dirname () {

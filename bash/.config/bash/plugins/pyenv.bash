@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
 pathmunge "$PYENV_ROOT/bin"
 
 if _command_exists pyenv; then
