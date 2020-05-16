@@ -24,8 +24,8 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ }
 
 " snippets
-Plug 'sirver/ultisnips'
-Plug 'honza/vim-snippets'
+" Plug 'sirver/ultisnips'
+" Plug 'honza/vim-snippets'
 
 " Completion
 Plug 'ncm2/ncm2' | Plug 'roxma/nvim-yarp'
@@ -33,7 +33,7 @@ Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-vim' | Plug 'Shougo/neco-vim'
 Plug 'ncm2/ncm2-tagprefix'
 Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-ultisnips'
+" Plug 'ncm2/ncm2-ultisnips'
 " Plug 'fgrsnau/ncm2-otherbuf'
 
 " Linters and Fixers

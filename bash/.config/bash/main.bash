@@ -63,9 +63,10 @@ source "${__dir}/plugins/ssh.bash"
 
 source "${__dir}/completion/third-party.bash"
 
-source "${__dir}/libs/forgit.bash"
-source "${__dir}/libs/autoenv.bash"
+source "${__dir}/libs/forgit/forgit.plugin.sh"
+source "${__dir}/libs/autoenv/activate.sh"
 source "${__dir}/libs/preexec.bash"
+
 
 _short_dirname () {
     local dir_name=`dirs -0`
