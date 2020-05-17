@@ -11,5 +11,5 @@ export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUPSTREAM="auto"
 
 export AUTOENV_ENV_FILENAME=".autoenv"
-export AUTOENV_ENV_LEAVE_FILENAME="$.autoenv.leave}"
+export AUTOENV_ENV_LEAVE_FILENAME=".autoenv.leave"
 export AUTOENV_ENABLE_LEAVE=1

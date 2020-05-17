@@ -48,10 +48,11 @@ let g:rooter_use_lcd = 1
 let g:rooter_patterns = [
     \ 'init.vim',
     \ 'main.bash',
-    \ '.git/',
-    \ '.git',
     \ '.python-version',
     \ 'Cargo.toml',
+    \ 'site-packages/',
+    \ '.git/',
+    \ '.git',
     \ ]
 
 " Plugin: Table mode

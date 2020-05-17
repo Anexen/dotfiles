@@ -97,6 +97,19 @@ function! OptimizeImports()
 endfunction
 
 
+function! GenerateSitePackagesTags()
+    py3 << EOF
+import site, os
+site_packages = site.getsitepackages() + [os.path.dirname(os.__file__)]
+for path in site_packages:
+    os.chdir(path)
+    os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
+    os.system("sed -i '/\/\^ /d' tags")
+EOF
+    echo "Done"
+endfunction
+
+
 setlocal foldmethod=indent nofoldenable foldlevel=5
 
 " import yank path as import
