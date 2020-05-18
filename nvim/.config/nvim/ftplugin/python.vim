@@ -1,7 +1,5 @@
 let b:textwidth = 79
 
-let g:python_smart_local_import = 1
-
 
 function! PathAsImport(path, kind)
     let path = substitute(a:path, '/', '.', 'g')
@@ -21,11 +19,6 @@ endfunction
 
 
 function! s:do_local_import(import_path)
-    if ! get(g:, 'python_smart_local_import')
-        execute "normal O" . a:import_path
-        return
-    endif
-
     let prev_indent = indent('.')
     normal [m
     let next_indent = indent('.')
@@ -98,14 +91,15 @@ endfunction
 
 
 function! GenerateSitePackagesTags()
-    py3 << EOF
-import site, os
-site_packages = site.getsitepackages() + [os.path.dirname(os.__file__)]
-for path in site_packages:
-    os.chdir(path)
-    os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
-    os.system("sed -i '/\/\^ /d' tags")
-EOF
+	let text =<< trim END
+	import site, os
+	site_packages = site.getsitepackages() + [os.path.dirname(os.__file__)]
+	for path in site_packages:
+		os.chdir(path)
+		os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
+		os.system("sed -i '/\/\^ /d' tags")
+	END
+	call system('python -', text)
     echo "Done"
 endfunction
 
@@ -129,7 +123,3 @@ nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
 nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>
 nnoremap <buffer> <LocalLeader>lf :Neomake flake8<CR>
 nnoremap <buffer> <LocalLeader>lp :Neomake pylint<CR>
-
-" syntax match pythonFunction /\v[[:alpha:]_]+\ze(\s?\()/
-" syntax match pythonAssignment /\v[[:alpha:]_]+\ze\s?\=/
-" highlight link pythonAssignment Define
