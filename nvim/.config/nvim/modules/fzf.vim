@@ -32,19 +32,14 @@ endfunction
 
 let g:fzf_layout = { 'window': 'call FloatingFZF(1, 0.4, 0.599999, 0)' }
 
-let s:fzf_files_exclude = [
-    \ '.mypy_cache', '.ipynb_checkpoints', '__pycache__',
-    \ '.git', 'undodir', '.eggs', '*.pyc'
-    \ ]
+" excluded files are in ~/.fdignore
+let $FZF_DEFAULT_COMMAND= 'fd --type f --hidden --no-ignore-vcs'
 
-let $FZF_DEFAULT_COMMAND= 'fd '
-    \ . '--type f --hidden --no-ignore-vcs '
-    \ . join(map(s:fzf_files_exclude, '"--exclude " . v:val'), ' ')
 
 " Ag with preview on '?'
-command! -bang -nargs=* Rg
-    \ call fzf#vim#rg(<q-args>,
-    \                 <bang>0 ? fzf#vim#with_preview('up:30%')
-    \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \                 <bang>0)
+" command! -bang -nargs=* Ag
+"     \ call fzf#vim#ag(<q-args>,
+"     \                 <bang>0 ? fzf#vim#with_preview('up:30%')
+"     \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+"     \                 <bang>0)
 

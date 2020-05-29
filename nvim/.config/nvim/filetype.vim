@@ -9,4 +9,7 @@ augroup filetypedetect
     autocmd BufNewFile,BufRead .gitignore setfiletype gitignore
     autocmd BufNewFile,BufRead */info/exclude setfiletype gitignore
     autocmd BufNewFile,BufRead ~/.config/git/ignore setfiletype gitignore
+    autocmd BufNewFile,BufRead .fdignore setfiletype gitignore
+    autocmd BufNewFile,BufRead .ignore setfiletype gitignore
+    autocmd BufNewFile,BufRead .dockerignore setfiletype gitignore
 augroup END

@@ -90,16 +90,31 @@ function! OptimizeImports()
 endfunction
 
 
+function! FindSitePackagesPaths()
+    let code =<< trim END
+    import site, os;
+    site_packages = site.getsitepackages() + [os.path.dirname(os.__file__)]
+    for path in site_packages:
+        print(path)
+    END
+
+    return systemlist("python -", code)
+endfunction
+
+
 function! GenerateSitePackagesTags()
-	let text =<< trim END
-	import site, os
-	site_packages = site.getsitepackages() + [os.path.dirname(os.__file__)]
-	for path in site_packages:
+    let site_packages = FindSitePackagesPaths()
+
+	let code =<< trim END
+	import sys
+	for path in sys.argv[1:]:
 		os.chdir(path)
 		os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
 		os.system("sed -i '/\/\^ /d' tags")
 	END
-	call system('python -', text)
+
+    call system('python - ' . join(site_packages, ' '), code)
+
     echo "Done"
 endfunction
 

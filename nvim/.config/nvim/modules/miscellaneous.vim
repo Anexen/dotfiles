@@ -1,3 +1,6 @@
+" Plugin: undotree
+let g:undotree_WindowLayout = 2
+
 " Plugin: polyglot
 let g:python_pep8_indent_searchpair_timeout = 10
 
