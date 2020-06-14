@@ -1,3 +1,6 @@
+highlight Normal guibg=none ctermbg=none
+highlight SignColumn guibg=none ctermbg=none
+
 highlight link Quote String
 
 highlight link NeomakeVirtualtextError NeomakeErrorSign
