@@ -1,0 +1,8 @@
+[core]
+    pager = delta --keep-plus-minus-markers --theme='OneHalfDark'
+
+[interactive]
+    diffFilter = delta --color-only --theme='OneHalfDark'
+
+[pull]
+	rebase = false

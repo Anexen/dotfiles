@@ -1,0 +1,51 @@
+window:
+  decorations: none
+  startup_mode: Maximized
+  scrolling: 9999
+
+font:
+  size: 11.0
+  normal:
+    family: Source Code Pro
+    style: Regular
+  bold:
+    family: Source Code Pro
+    style: Bold
+
+  italic:
+    family: Source Code Pro
+    style: Italic
+
+# One dark
+colors:
+  # Default colors
+  primary:
+    background: '#222222'
+    foreground: '#E3E5E9'
+
+  # Normal colors
+  normal:
+    black:   '#353A44'
+    red:     '#E88388'
+    green:   '#A7CC8C'
+    yellow:  '#EBCA8D'
+    blue:    '#72BEF2'
+    magenta: '#D291E4'
+    cyan:    '#65C2CD'
+    white:   '#E3E5E9'
+
+  # Bright colors
+  bright:
+    black:   '#353A44'
+    red:     '#E88388'
+    green:   '#A7CC8C'
+    yellow:  '#EBCA8D'
+    blue:    '#72BEF2'
+    magenta: '#D291E4'
+    cyan:    '#65C2CD'
+    white:   '#E3E5E9'
+
+
+background_opacity: 0.95
+dynamic_title: true
+
