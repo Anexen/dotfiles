@@ -1,7 +1,6 @@
 [submodule "/home/archer/.config/bash/libs/forgit"]
 	path = /home/archer/.config/bash/libs/forgit
-    url = https://github.com/wfxr/forgit
-
+	url = https://github.com/wfxr/forgit
 [submodule "/home/archer/.config/bash/libs/autoenv"]
 	path = /home/archer/.config/bash/libs/autoenv
 	url = https://github.com/inishchith/autoenv
