@@ -191,11 +191,11 @@ nnoremap <Leader>mw :call WhitespaceToggle()<CR>
 " +project
 
 function! s:get_projects()
-    return 'fd --type d --hidden ".git$" --max-depth=3 ~/projects | xargs dirname | sed "s#${HOME}#~#g"'
+    return 'fd --type d --no-ignore --hidden --max-depth=3 ".git$" ~/projects | xargs dirname | sed "s#${HOME}/projects/##g"'
 endfunction
 
 function! s:handle_selected_project(directory)
-    execute 'edit '.fnameescape(a:directory)
+    execute 'edit '.fnameescape('~/projects/' . a:directory)
     Rooter
     FZF
     call feedkeys('i')
@@ -216,7 +216,7 @@ nnoremap <Leader>pf :Files<CR>
 nnoremap <Leader>po :e notes.md<CR>
 nnoremap <Leader>pp :Projects<CR>
 nnoremap <Leader>pr :Rooter<CR>
-nnoremap <Leader>pt :terminal<CR>
+nnoremap <Leader>pt :botright 12split +terminal \| startinsert<CR>
 
 " +search
 nnoremap <Leader>sc :noh<CR>

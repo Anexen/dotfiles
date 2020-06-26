@@ -31,10 +31,7 @@ shopt -s checkwinsize
 shopt -s cdable_vars
 
 # cd bookmarks
-export projects="${HOME}/projects"
 export dotfiles="${HOME}/.dotfiles"
-export aprenita="${projects}/aprenita/aprenita"
-export infrastructure="${projects}/aprenita/aprenita-infrastructure"
 
 # Automatically trim long paths in the prompt
 PROMPT_DIRTRIM=5
@@ -65,6 +62,7 @@ source "${__dir}/completion/third-party.bash"
 
 source "${__dir}/libs/forgit/forgit.plugin.sh"
 source "${__dir}/libs/autoenv/activate.sh"
+source "${__dir}/libs/fzf-marks/fzf-marks.plugin.bash"
 # source "${__dir}/libs/preexec.bash"
 
 short_dirname () {

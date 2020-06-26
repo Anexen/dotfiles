@@ -11,6 +11,14 @@ bind -x '"\C-f": "fzf-file-widget"'
 export FZF_DEFAULT_OPTS='--layout=reverse  --bind "alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up"'
 export FZF_CTRL_T_OPTS="--preview '(bat --color=always --style=plain --theme TwoDark {} || tree -C {}) 2> /dev/null | head -200'"
 
+# fzf rm
+frm() {
+    local files
+    IFS=$'\n' files=($(fzf-tmux --query="$1" --multi --select-1 --exit-0))
+
+    [[ -n "$files" ]] && rm "${files[@]}"
+}
+
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
 #   - Bypass fuzzy finder if there's only one match (--select-1)
 #   - Exit if there's no match (--exit-0)
