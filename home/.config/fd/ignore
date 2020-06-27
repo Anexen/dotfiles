@@ -1,0 +1,15 @@
+.git
+undodir
+
+# python
+*.egg-info
+*.pyc
+.ipynb_checkpoints
+.mypy_cache
+.pytest_cache
+__pycache__
+
+# rust
+target/debug
+target/release
+target/rls
