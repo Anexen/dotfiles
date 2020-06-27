@@ -1,9 +1,9 @@
-[submodule "bash/.config/bash/libs/autoenv"]
-	path = bash/.config/bash/libs/autoenv
-	url = https://github.com/inishchith/autoenv
 [submodule "bash/.config/bash/libs/forgit"]
 	path = bash/.config/bash/libs/forgit
 	url = https://github.com/wfxr/forgit
 [submodule "bash/.config/bash/libs/fzf-marks"]
 	path = bash/.config/bash/libs/fzf-marks
 	url = https://github.com/urbainvaes/fzf-marks.git
+[submodule "bash/.config/bash/libs/ondir"]
+	path = bash/.config/bash/libs/ondir
+	url = https://github.com/alecthomas/ondir.git

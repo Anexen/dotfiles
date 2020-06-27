@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # https://wiki.archlinux.org/index.php/XDG_Base_Directory
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
@@ -47,38 +46,34 @@ HISTFILESIZE=20000
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "${__dir}/libs/helpers.bash"
-
+# source "${__dir}/libs/preexec.bash"
 # source "${__dir}/theme/colors.bash"
+
 source "${__dir}/environ.bash"
 source "${__dir}/aliases.bash"
 source "${__dir}/readline.bash"
 
-source "${__dir}/plugins/battery.bash"
+# source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fzf.bash"
 source "${__dir}/plugins/pyenv.bash"
 source "${__dir}/plugins/ssh.bash"
+source "${__dir}/plugins/sharship.bash"
 
 source "${__dir}/completion/third-party.bash"
 
-source "${__dir}/libs/forgit/forgit.plugin.sh"
-source "${__dir}/libs/autoenv/activate.sh"
-source "${__dir}/libs/fzf-marks/fzf-marks.plugin.bash"
-# source "${__dir}/libs/preexec.bash"
+# build ondir: cd libs/ondir && sudo make install
+if _command_exists ondir; then
+    source "${__dir}/libs/ondir/scripts.sh"
+else
+    echo "Ondir is not installed"
+fi
 
-short_dirname () {
-    local dir_name=`dirs -0`
-    [ ${#dir_name} -gt 8 ] && echo ${dir_name##*/} || echo $dir_name
-}
-
-reload_history () {
-    history -a
-    history -c
-    history -r
-}
-
-starship_precmd_user_func="reload_history"
-
-eval "$(starship init bash)"
+if  _command_exists fzf; then
+    source "${__dir}/libs/forgit/forgit.plugin.sh"
+    source "${__dir}/libs/fzf-marks/fzf-marks.plugin.bash"
+else
+    echo "FZF is not installed"
+fi
 
 if [[ "${TERM}" = "alacritty" && -z "${TMUX}" ]]; then
     exec tmux

@@ -77,3 +77,9 @@ let g:loaded_sql_completion = 0
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 
+" disable cursor line for inactive buffers
+augroup CursorLine
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup END

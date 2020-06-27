@@ -22,11 +22,9 @@ alias suod='sudo'
 alias sduo='sudo'
 
 alias ctclip='xclip -sel clip'
-alias passgen='cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1'
+alias passgen='cat /dev/urandom | tr -dc "a-zA-Z0-9" | fold -w 32 | head -n 1'
 
 alias tree='tree -I __pycache__'
-
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 alias vim=nvim
 alias vbrc='vim ~/.config/bash/main.bash'

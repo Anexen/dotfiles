@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
-. /usr/share/fzf/completion.bash
-. /usr/share/fzf/key-bindings.bash
+if [[ -d /usr/share/fzf ]]; then
+    source /usr/share/fzf/completion.bash
+    source /usr/share/fzf/key-bindings.bash
 
-# remap fzf CTRL-T to CTRL-F
-bind -x '"\C-t": ""'
-bind -x '"\C-f": "fzf-file-widget"'
+    # remap fzf CTRL-T to CTRL-F
+    bind -x '"\C-t": ""'
+    bind -x '"\C-f": "fzf-file-widget"'
+else
+    echo "FZF completion file not found"
+fi
 
 # fzf preview
 export FZF_DEFAULT_OPTS='--layout=reverse  --bind "alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up"'
