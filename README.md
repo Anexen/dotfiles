@@ -7,9 +7,10 @@ $ git clone https://github.com/Anexen/dotfiles.git ~/.dotfiles
 Create symlinks (I'm using [GNU Stow](https://www.gnu.org/software/stow/)):
 
 ```bash
-$ stow bash
-$ stow nvim
-$ stow git
+# install user configs
+$ stow home
+# install system configs
+$ stow --target / system
 ```
 
 Dependencies:
@@ -18,3 +19,5 @@ Dependencies:
 * fd
 * fzf
 * ripgrep
+* tree
+* bat
