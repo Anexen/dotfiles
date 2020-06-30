@@ -4,6 +4,12 @@ Clone the repository in ~/.dotfiles
 $ git clone https://github.com/Anexen/dotfiles.git ~/.dotfiles
 ```
 
+There is a list of third-party tools integrated as submodules:
+* forgit
+* ondir
+* fzf-marks
+* etc
+
 Create symlinks (I'm using [GNU Stow](https://www.gnu.org/software/stow/)):
 
 ```bash
@@ -14,7 +20,10 @@ $ stow --target / system
 ```
 
 Dependencies:
-* stow
+* alacritty
+* tmux
+* starship
+* neovim
 * aspell
 * fd
 * fzf
