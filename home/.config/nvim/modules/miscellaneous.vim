@@ -70,3 +70,13 @@ function! WebSearch(...)
 endfunction
 
 command! -nargs=+ WebSearch call WebSearch(<f-args>)
+
+" Highlight Yanked Text
+" works in neovim 0.5
+" for older versions use https://github.com/machakann/vim-highlightedyank.
+if exists('##TextYankPost')
+    augroup LuaHighlight
+        autocmd!
+        autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+    augroup END
+endif
