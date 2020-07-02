@@ -49,3 +49,5 @@ colors:
 background_opacity: 0.95
 dynamic_title: true
 
+env:
+  WINIT_X11_SCALE_FACTOR: "1.0"
