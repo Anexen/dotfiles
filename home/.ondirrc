@@ -1,9 +1,9 @@
 enter ~/projects/((aprenita/)?[^/]+)
     if [[ -r ${ONDIRWD}/.python-version && -z ${VIRTUAL_ENV} ]]; then
-        pyenv activate $(cat ${ONDIRWD}/.python-version)
+        source ${PYENV_ROOT}/versions/$(cat ${ONDIRWD}/.python-version)/bin/activate
     fi
 
 leave ~/projects/((aprenita/)?[^/]+)
     if [[ -n ${VIRTUAL_ENV} ]]; then
-        pyenv deactivate
+        deactivate
     fi
