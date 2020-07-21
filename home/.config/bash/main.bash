@@ -7,7 +7,9 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-PATH="${PATH}:${HOME}/bin:${HOME}/local/bin:${HOME}/.cargo/bin"
+if [[ "${TERM}" = "alacritty" && -z "${TMUX}" ]]; then
+    exec tmux
+fi
 
 if [ -f "${HOME}/.secrets.bash" ]; then
     source "${HOME}/.secrets.bash"
@@ -53,6 +55,11 @@ source "${__dir}/environ.bash"
 source "${__dir}/aliases.bash"
 source "${__dir}/readline.bash"
 
+path_add "${HOME}/bin"
+path_add "${HOME}/.local/bin"
+path_add "${HOME}/.local/pydev-bin"
+path_add "${HOME}/.cargo/bin"
+
 # source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fzf.bash"
 source "${__dir}/plugins/pyenv.bash"
@@ -75,6 +82,3 @@ else
     echo "FZF is not installed"
 fi
 
-if [[ "${TERM}" = "alacritty" && -z "${TMUX}" ]]; then
-    exec tmux
-fi

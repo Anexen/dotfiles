@@ -1,0 +1,5 @@
+#!/bin/bash
+
+exec "${PYENV_ROOT}/versions/${PYDEV_VENV}/bin/pylint" \
+    --init-hook="import pylint_venv as pv;pv.activate_venv(pv.detect_venv())" \
+    "$@"
