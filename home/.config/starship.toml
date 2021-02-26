@@ -1,27 +1,29 @@
-prompt_order = [
-    "time",
-    "directory",
-    "git_branch",
-    "git_commit",
-    "git_state",
-    "git_status",
-    "python",
-    "rust",
-    "memory_usage",
-    "env_var",
-    "cmd_duration",
-    "jobs",
-    "battery",
-    "line_break",
-    "character",
-]
+format = """\
+    $time\
+    $directory\
+    $git_branch\
+    $git_commit\
+    $git_state\
+    $git_status\
+    $python\
+    $rust\
+    $terraform\
+    $aws\
+    $memory_usage\
+    $env_var\
+    $cmd_duration\
+    $jobs\
+    $battery\
+    $line_break\
+    $character\
+    """
+[aws]
+format = "on [$symbol$profile]($style) "
+style = "bold blue"
 
 [character]
-symbol = "└─ $"
-error_symbol = "└─ ✗"
-use_symbol_for_status = true
-style_success = "bold green"
-style_failure = "bold green"
+success_symbol = "[└─ \\$](bold green)"
+error_symbol = "[└─ ✗](bold green)"
 
 [memory_usage]
 show_percentage = true
@@ -34,7 +36,8 @@ style = "bold yellow"
 [time]
 disabled = false
 style = "bold green"
-format = "[%T]"
+format = "[$time]($style) "
+time_format = "[%T]"
 
 [directory]
 style = "bold blue"

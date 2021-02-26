@@ -55,7 +55,7 @@ function! ActiveStatusLine()
     " left:
     let statusline .= "%#StatuslineActiveMode# %{winnr()} "
 
-    let statusline .= "%#StatusLineTextItalic# %" . (winwidth(0) > 100 ? "" : ".40") . "f%m%r"
+    let statusline .= "%#StatusLineTextItalic# (%{fnamemodify(getcwd(), ':t')}) %" . (winwidth(0) > 100 ? "" : ".40") . "f%m%r"
 
     if winwidth(0) > 70 && &fileformat != 'unix'
         let statusline .= "[%{&fileformat}]"
@@ -83,7 +83,7 @@ function! ActiveStatusLine()
     let ext_modes .= get(b:, "hardtime_on") ? "h" : ""
     let ext_modes .= g:neomake_live_mode ? "N" : ""
     let ext_modes .= &paste ? "P" : ""
-    let ext_modes .= get(b:, "spelling_enabled") ? "s" : ""
+    let ext_modes .= get(g:, "spelling_enabled") ? "s" : ""
     let ext_modes .= get(b:, "whitespace_enabled") ? "w" : ""
 
     if !empty(ext_modes)
@@ -107,7 +107,7 @@ function! InactiveStatusLine()
     let statusline = ""
     " left:
     let statusline .= "%#StatusLineInactiveMode# %{winnr()} "
-    let statusline .= "%#StatusLineTextItalic# %" . (winwidth(0) > 100 ? "" : ".40") . "f%m%r%#StatusLineInactiveModeText# "
+    let statusline .= "%#StatusLineTextItalic# (%{fnamemodify(getcwd(), ':t')}) %" . (winwidth(0) > 100 ? "" : ".40") . "f%m%r%#StatusLineInactiveModeText# "
     " reght
     let statusline .= "%=%#Normal#"
     return statusline

@@ -28,6 +28,22 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
 
+let g:vim_dadbod_completion_mark = ''
+
+call ncm2#register_source({
+\   'name' : 'sql',
+\   'priority': 9,
+\   'subscope_enable': 1,
+\   'scope': ['sql'],
+\   'mark': 'sql',
+\   'word_pattern': '[\w_]+',
+\   'complete_pattern': '\."_',
+\   'on_complete': [
+\       'ncm2#on_complete#omni',
+\       'vim_dadbod_completion#omni',
+\   ],
+\ })
+
 
 augroup _ncm2
     autocmd!

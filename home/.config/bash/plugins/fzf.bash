@@ -13,7 +13,7 @@ fi
 
 # fzf preview
 export FZF_DEFAULT_OPTS='--layout=reverse  --bind "alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up"'
-export FZF_CTRL_T_OPTS="--preview '(bat --color=always --style=plain --theme TwoDark {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_T_OPTS="--preview '(bat --color=always --style=plain {} || tree -C {}) 2> /dev/null | head -200'"
 
 # fzf rm
 frm() {
@@ -62,4 +62,11 @@ function dcr() {
     cid=$(docker ps -a | sed 1d | fzf -q "$1" | awk '{print $1}')
 
     [[ -n "$cid" ]] && docker rm "$cid"
+}
+
+# Select a docker image to remove
+function dcri() {
+    local images
+    IFS=$'\n' images=$(docker images | sed 1d | fzf --multi -q "$1" | awk '{print $3}')
+    [[ -n "$images" ]] && docker rmi "${images[@]}"
 }

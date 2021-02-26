@@ -2,7 +2,7 @@
 let g:undotree_WindowLayout = 2
 
 " Plugin: polyglot
-let g:python_pep8_indent_searchpair_timeout = 10
+let g:python_pep8_indent_searchpair_timeout = 20
 
 " Plugin: Hexokinase
 let g:Hexokinase_ftEnabled = []
@@ -12,6 +12,12 @@ let g:Hexokinase_optInPatterns = [
 \     'full_hex', 'triple_hex', 'colour_names',
 \     'rgb', 'rgba', 'hsl', 'hsla',
 \ ]
+
+" Plugin: spelling
+
+" let g:spelling_enabled = 0
+let g:spelling_ignore_buffer_types = ['qf', 'tagbar', 'vim-plug']
+let g:spelling_update_events = ['TextChanged', 'InsertLeave', 'BufEnter', 'WinEnter']
 
 " Plugin: firenvim
 
@@ -44,7 +50,7 @@ let g:gitgutter_sign_allow_clobber = 0
 
 let g:rooter_manual_only = 1
 " change directory for the current window only
-let g:rooter_use_lcd = 1
+let g:rooter_cd_cmd = "lcd"
 " In case of non-project files, change to file's directory
 " let g:rooter_change_directory_for_non_project_files = 'current'
 
@@ -53,14 +59,20 @@ let g:rooter_patterns = [
     \ 'main.bash',
     \ '.python-version',
     \ 'Cargo.toml',
-    \ 'site-packages/',
+    \ '=site-packages/',
+    \ '=lib/python*/',
     \ '.git/',
     \ '.git',
     \ ]
 
 " Plugin: Table mode
-
 let g:table_mode_disable_mappings = 1
+
+" Plugin: quickfix-reflector
+" let g:qf_write_changes = 0
+
+" Plugin: vim-terraform
+let g:terraform_fmt_on_save = 1
 
 " Web search
 

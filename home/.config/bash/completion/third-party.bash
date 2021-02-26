@@ -8,6 +8,19 @@ if ! shopt -oq posix; then
   fi
 fi
 
-source /usr/share/git/completion/git-prompt.sh
-source /usr/share/git/completion/git-completion.bash
+# aws cli v2 completion
+complete -C aws_completer aws
 
+if [[ -f /usr/share/git/completion/git-prompt.sh ]]; then
+    source /usr/share/git/completion/git-prompt.sh
+    source /usr/share/git/completion/git-completion.bash
+fi
+
+if [[ -f /usr/share/bash-complete-alias/complete_alias ]]; then
+    source /usr/share/bash-complete-alias/complete_alias
+
+    # make sure aliases.bash was loaded first
+    for a in $(alias | cut -d= -f1 | cut -d' ' -f2); do
+        complete -F _complete_alias $a;
+    done
+fi

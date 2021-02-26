@@ -14,26 +14,8 @@ function! IsQuickfixOpen()
 endfunction
 
 
-function! SpellingToggle()
-    augroup _spelling_update_group
-        autocmd!
-        if !get(b:, 'spelling_enabled', 0)
-            autocmd BufEnter,InsertLeave,TextChanged * :call spelling#Update()
-            call spelling#Update()
-            let b:spelling_enabled = 1
-        else
-            call spelling#Clear()
-            let b:spelling_enabled = 0
-        endif
-    augroup END
-endfunction
-
-
 " https://github.com/junegunn/fzf.vim/issues/544
 tnoremap <expr> <Esc> (&filetype == "fzf") ? "<Esc>" : "<C-\><C-n>"
-
-" exit insert mode by pressing jk
-inoremap jk <Esc>
 
 onoremap il :<c-u>normal! _vg_<cr>
 vnoremap il :<c-u>normal! _vg_<cr>
@@ -43,6 +25,7 @@ nnoremap <Tab> >>_
 nnoremap <S-Tab> <<_
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
+
 " |-------------+---+-------------------+-------+-------------------|
 " | Camelize    | c | Some Text To Work | gI$c  | someTextToWork    |
 " | Privatize   | p | some_var          | gI$p  | _some_var         |
@@ -56,7 +39,6 @@ vnoremap <S-Tab> <gv
 " | Dotify      | . | someTextToWork    | gIiw. | some.text.to.work |
 " | Underscore  | _ | some text to work | gI$_  | some_text_to_work |
 " |-------------+---+-------------------+-------+-------------------|
-"
 nmap gI <Plug>(Inflect)
 vmap gI <Plug>(Inflect)
 
@@ -65,7 +47,7 @@ nmap <ScrollWheelDown> <C-e>
 
 function! s:visualSearch(cmdtype)
     let temp = @s
-    norm! gv"sy
+    normal! gv"sy
     let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'), '\n', '\\n', 'g')
     let @s = temp
 endfunction
@@ -154,7 +136,10 @@ nnoremap <Leader>jt  <C-]>
 " +files
 nnoremap <Leader>fs :update<CR>
 nnoremap <Leader>fr :History<CR>
+nnoremap <Leader>f<S-r> :!rm %<CR>
 nnoremap <Leader>ff :call ExplorerToggle('.')<CR>
+nnoremap <expr> <Leader>fd ':Files '.expand('%:h').'<CR>'
+nnoremap <expr> <Leader>fc ':e '.expand('%:h').'/'
 
 " +files/edit
 nnoremap <Leader>fev :e $MYVIMRC <bar> :Rooter<CR>
@@ -195,22 +180,24 @@ function! s:get_projects()
 endfunction
 
 function! s:handle_selected_project(directory)
-    execute 'edit '.fnameescape('~/projects/' . a:directory)
-    Rooter
-    FZF
-    call feedkeys('i')
+    execute 'cd '.fnameescape('~/projects/' . a:directory)
+    Files
+    " Fixes issue with NeoVim
+    " See https://github.com/junegunn/fzf/issues/426#issuecomment-158115912
+    if has('nvim') && !has('nvim-0.5.0')
+        call feedkeys('i')
+    endif
 endfunction
 
 function! SwitchToProject()
     call fzf#run(fzf#wrap({
-        \ 'source': <SID>get_projects(),
-        \ 'sink': function('<SID>handle_selected_project'),
-        \ 'down': '40%',
+        \ 'source': s:get_projects(),
+        \ 'sink': function('s:handle_selected_project'),
+        \ 'layout': g:fzf_layout,
         \ }))
 endfunction
 
 command! Projects call SwitchToProject()
-
 
 nnoremap <Leader>pf :Files<CR>
 nnoremap <Leader>po :e notes.md<CR>
@@ -220,14 +207,14 @@ nnoremap <Leader>pt :botright 12split +terminal \| startinsert<CR>
 
 " +search
 nnoremap <Leader>sc :noh<CR>
-nmap <Leader>sa <Plug>RgRawSearch''<Left>
+nmap <Leader>sa <Plug>RgRawSearch--<Space>''<Left>
 vmap <Leader>sa <Plug>RgRawVisualSelection<CR>
 nnoremap <Leader>sb :BLines<CR>
 nmap <Leader>sw <Plug>RgRawWordUnderCursor<CR>
 nmap <Leader>sl :Rg<Up><CR>
 nnoremap <Leader>st :Tags<CR>
+nnoremap <expr> <Leader>sd ":Tags " . expand('<cword>') . "<CR>"
 nnoremap <Leader>sp :Rg<CR>
-
 nnoremap <Leader>sg :call WebSearch(expand('<cword>'))<CR>
 
 " +tabs
@@ -251,17 +238,6 @@ nnoremap <Leader>wj :resize +5<CR>
 nnoremap <Leader>wl <C-w>5<
 nnoremap <Leader>wk :resize -5<CR>
 
-
-" augroup Terminal
-"   au!
-"   au TermOpen * let g:last_terminal_job_id = b:terminal_job_id
-" augroup END
-
-" function! REPLSend(lines)
-"   call jobsend(g:last_terminal_job_id, add(a:lines, ''))
-" endfunction
-
-" command! REPLSendLine call REPLSend([getline('.')])
 
 " function! ShowMarks()
 "   redir => cout

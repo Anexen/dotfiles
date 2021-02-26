@@ -7,3 +7,9 @@
 [submodule "home/.config/bash/libs/ondir"]
 	path = home/.config/bash/libs/ondir
 	url = https://github.com/alecthomas/ondir.git
+[submodule "home/.config/tmux/plugins/tpm"]
+	path = home/.config/tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
+[submodule "home/.config/tmux/plugins/tmux-thumbs"]
+	path = home/.config/tmux/plugins/tmux-thumbs
+	url = https://github.com/fcsonline/tmux-thumbs

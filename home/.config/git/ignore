@@ -5,9 +5,11 @@ tags.lock
 tags.temp
 .autoenv
 .autoenv.leave
+.notags
 
 # python
 .python-version
+_internal.py
 
 # vim
 .exrc

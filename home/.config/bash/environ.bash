@@ -1,6 +1,6 @@
 export EDITOR=nvim
 export VISUAL=nvim
-# export TERM="xterm-256color"
+# export TERM="alacritty"
 
 export SWT_GTK3=0
 
@@ -11,3 +11,7 @@ export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUPSTREAM=auto
 
 export PYDEV_VENV=dev
+
+export BAT_THEME=TwoDark
+
+export NVIM_LOG_FILE="${XDG_DATA_HOME}/nvim/log"

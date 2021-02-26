@@ -38,10 +38,18 @@ export dotfiles="${HOME}/.dotfiles"
 PROMPT_DIRTRIM=5
 
 # ignoreboth = ignorespace + ignoredups
-HISTCONTROL=ignoreboth:erasedups
+export HISTCONTROL=ignoreboth:erasedups
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=20000
-HISTFILESIZE=20000
+export HISTSIZE=20000
+# export HISTFILESIZE=20000
+
+function deduplicate_history {
+    tmp=$(mktemp)
+    nl ~/.bash_history | sort -k 2  -k 1,1nr| uniq -f 1 | sort -n | cut -f 2 > $tmp
+    mv $tmp ~/.bash_history
+}
+
+trap deduplicate_history EXIT
 
 # source other files
 

@@ -1,6 +1,3 @@
-let b:textwidth = 79
-
-
 function! PathAsImport(path, kind)
     let path = substitute(a:path, '/', '.', 'g')
     let path = substitute(path, '.py$', '', '')
@@ -106,7 +103,7 @@ function! GenerateSitePackagesTags()
     let site_packages = FindSitePackagesPaths()
 
 	let code =<< trim END
-	import sys
+	import sys, os
 	for path in sys.argv[1:]:
 		os.chdir(path)
 		os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
@@ -118,6 +115,8 @@ function! GenerateSitePackagesTags()
     echo "Done"
 endfunction
 
+
+let b:textwidth = 79
 
 setlocal foldmethod=indent nofoldenable foldlevel=5
 

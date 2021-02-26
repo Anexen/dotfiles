@@ -63,17 +63,13 @@ set nobackup
 
 set colorcolumn=0
 
-set updatetime=500
+set updatetime=250
 
 set foldmethod=marker
 
 set nofoldenable
 
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
-
-" disable built-in sql completion
-let g:omni_sql_no_default_maps = 1
-let g:loaded_sql_completion = 0
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 

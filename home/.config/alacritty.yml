@@ -2,6 +2,7 @@ window:
   decorations: none
   startup_mode: Maximized
   scrolling: 9999
+  dynamic_title: true
 
 font:
   size: 11.0
@@ -47,7 +48,6 @@ colors:
 
 
 background_opacity: 0.95
-dynamic_title: true
 
 env:
   WINIT_X11_SCALE_FACTOR: "1.0"

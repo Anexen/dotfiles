@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-_command_exists ()
+function _command_exists ()
 {
     # checks for existence of a command
     # param '1: command to check'
