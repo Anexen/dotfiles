@@ -13,12 +13,6 @@ let g:Hexokinase_optInPatterns = [
 \     'rgb', 'rgba', 'hsl', 'hsla',
 \ ]
 
-" Plugin: spelling
-
-" let g:spelling_enabled = 0
-let g:spelling_ignore_buffer_types = ['qf', 'tagbar', 'vim-plug']
-let g:spelling_update_events = ['TextChanged', 'InsertLeave', 'BufEnter', 'WinEnter']
-
 " Plugin: firenvim
 
 let g:firenvim_config = {
@@ -73,6 +67,9 @@ let g:table_mode_disable_mappings = 1
 
 " Plugin: vim-terraform
 let g:terraform_fmt_on_save = 1
+
+" Plugin: agriculture
+let g:agriculture#rg_options = '--smart-case'
 
 " Web search
 

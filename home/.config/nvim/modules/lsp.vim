@@ -1,7 +1,7 @@
 let g:LanguageClient_serverCommands = {
 \   'python': ['pyls'],
 \   'terraform': ['terraform-ls', 'serve'],
-\   'rust': ['rustup', 'run', 'nightly', 'rls'],
+\   'rust': ['rustup', 'run', 'stable', 'rls'],
 \   'javascript': ['tcp://127.0.0.1:5001'],
 \   'c': ['clangd', '--background-index'],
 \   'cpp': ['clangd', '--background-index'],

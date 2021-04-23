@@ -69,10 +69,11 @@ path_add "${HOME}/.local/pydev-bin"
 path_add "${HOME}/.cargo/bin"
 
 # source "${__dir}/plugins/battery.bash"
+source "${__dir}/plugins/fonts.bash"
 source "${__dir}/plugins/fzf.bash"
 source "${__dir}/plugins/pyenv.bash"
 source "${__dir}/plugins/ssh.bash"
-source "${__dir}/plugins/sharship.bash"
+source "${__dir}/plugins/starship.bash"
 
 source "${__dir}/completion/third-party.bash"
 

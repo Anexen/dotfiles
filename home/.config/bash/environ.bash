@@ -15,3 +15,6 @@ export PYDEV_VENV=dev
 export BAT_THEME=TwoDark
 
 export NVIM_LOG_FILE="${XDG_DATA_HOME}/nvim/log"
+
+export AWS_SESSION_TOKEN_TTL=16h
+# export AWS_FEDERATION_TOKEN_TTL=8h

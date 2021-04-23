@@ -46,6 +46,8 @@ let g:neomake_git_diff_config = {
 \ }
 
 let g:neomake_python_enabled_makers = ['flake8']
+" let g:neomake_python_pylint_remove_invalid_entries = 1
+
 let g:neomake_clippy_rustup_has_nightly = 1
 
 let g:neomake_place_signs = 1

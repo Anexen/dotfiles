@@ -71,8 +71,6 @@ Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'glacambre/firenvim', { 'do': { -> firenvim#install(0) } }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 
-Plug 'ruslan-savina/spelling'
-" Plug '/home/archer/projects/spelling'
 " Plug 'neovim/nvim-lsp'
 
 " to try:

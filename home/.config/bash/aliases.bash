@@ -34,7 +34,9 @@ alias src='source ~/.bashrc'
 alias bat='bat --theme TwoDark'
 alias delta='delta --theme TwoDark'
 
-ch_client_image=yandex/clickhouse-client:20.3.18.10
+alias bmake='make -C ~/projects/aprenita/aprenita-infrastructure'
+
+ch_client_image=yandex/clickhouse-client:21.3.4
 
 for (( i = 0; i < ${#SECRET_CH_PROD_IPS[@]}; i++ )); do
     alias "ch_prod_n$(( i + 1))"="docker run --rm -it ${ch_client_image} \

@@ -5,7 +5,7 @@ set sidescrolloff=5
 " Enable indentation rules that are file-type specific.
 filetype indent plugin on
 " Enable syntax highlighting
-syntax enable
+syntax on
 " Display a confirmation dialog when closing an unsaved file
 set confirm
 " do not automatically wrap
@@ -70,6 +70,11 @@ set foldmethod=marker
 set nofoldenable
 
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
+" spelling
+set spell spelllang=en_us spelloptions=camel spellcapcheck=""
+" syntax spell toplevel
+autocmd FileType * syntax spell toplevel
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 

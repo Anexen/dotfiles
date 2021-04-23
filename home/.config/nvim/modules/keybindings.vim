@@ -201,6 +201,7 @@ command! Projects call SwitchToProject()
 
 nnoremap <Leader>pf :Files<CR>
 nnoremap <Leader>po :e notes.md<CR>
+nnoremap <Leader>pq :e .queries.sql<CR>
 nnoremap <Leader>pp :Projects<CR>
 nnoremap <Leader>pr :Rooter<CR>
 nnoremap <Leader>pt :botright 12split +terminal \| startinsert<CR>

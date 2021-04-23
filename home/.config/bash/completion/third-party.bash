@@ -11,6 +11,8 @@ fi
 # aws cli v2 completion
 complete -C aws_completer aws
 
+# complete -W "$(_parse_help ./myscript)" ./myscript
+
 if [[ -f /usr/share/git/completion/git-prompt.sh ]]; then
     source /usr/share/git/completion/git-prompt.sh
     source /usr/share/git/completion/git-completion.bash

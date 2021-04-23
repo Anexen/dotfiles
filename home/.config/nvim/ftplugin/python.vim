@@ -121,7 +121,7 @@ let b:textwidth = 79
 setlocal foldmethod=indent nofoldenable foldlevel=5
 
 " import yank path as import
-nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c')<CR>
+nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c').expand('<cword>')<CR>
 " import paste
 nnoremap <buffer> <silent> <LocalLeader>ip :call AutoImport(expand('<cword>'), 1)<CR>
 nnoremap <buffer> <silent> <LocalLeader>i<S-p> :call AutoImport(expand('<cword>'), 0)<CR>

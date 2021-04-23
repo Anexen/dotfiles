@@ -56,17 +56,12 @@ function dcs() {
     [[ -n "$cid" ]] && docker stop "$cid"
 }
 
-# Select a docker container to remove
-function dcr() {
-    local cid
-    cid=$(docker ps -a | sed 1d | fzf -q "$1" | awk '{print $1}')
-
-    [[ -n "$cid" ]] && docker rm "$cid"
+# Same as above, but allows multi selection:
+function drm() {
+  docker ps -a | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $1 }' | xargs -r docker rm
 }
 
-# Select a docker image to remove
-function dcri() {
-    local images
-    IFS=$'\n' images=$(docker images | sed 1d | fzf --multi -q "$1" | awk '{print $3}')
-    [[ -n "$images" ]] && docker rmi "${images[@]}"
+# Select a docker image or images to remove
+function drmi() {
+  docker images | sed 1d | fzf -q "$1" --no-sort -m --tac | awk '{ print $3 }' | xargs -r docker rmi
 }
