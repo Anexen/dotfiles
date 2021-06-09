@@ -11,6 +11,7 @@ undodir
 __pycache__
 
 # rust
-target/debug
-target/release
-target/rls
+target
+# target/debug
+# target/release
+# target/rls

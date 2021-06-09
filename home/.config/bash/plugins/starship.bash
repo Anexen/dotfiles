@@ -1,3 +1,6 @@
+
+export STARSHIP_CONFIG="${XDG_CONFIG_HOME}/starship/default.toml"
+
 short_dirname () {
     local dir_name=`dirs -0`
     [ ${#dir_name} -gt 8 ] && echo ${dir_name##*/} || echo $dir_name

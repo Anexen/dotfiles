@@ -9,6 +9,7 @@ tags.temp
 .notags
 
 # python
+.breakpoints
 .python-version
 _internal.py
 
