@@ -69,18 +69,27 @@ set foldmethod=marker
 
 set nofoldenable
 
-set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+set termguicolors
 
-" spelling
-set spell spelllang=en_us spelloptions=camel spellcapcheck=""
-" syntax spell toplevel
-autocmd FileType * syntax spell toplevel
+set background=dark
+
+set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
 
 let g:python3_host_prog = expand('~/.pyenv/versions/dev/bin/python')
 
+function! EnableSpelling()
+    syntax spell toplevel
+    setlocal spell spelllang=en_us spelloptions=camel spellcapcheck=""
+endfunction
+
+augroup Spelling
+    autocmd!
+    autocmd FileType python,javascript,markdown,rust call EnableSpelling()
+augroup END
+
 " disable cursor line for inactive buffers
 augroup CursorLine
-  autocmd!
-  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  autocmd WinLeave * setlocal nocursorline
+    autocmd!
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
 augroup END

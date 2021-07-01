@@ -6,6 +6,3 @@ let g:neoformat_enabled_python = ['isort', 'black']
 
 let g:neoformat_hcl_hclfmt = {'exe': 'hclfmt'}
 let g:neoformat_enabled_hcl = ['hclfmt']
-
-autocmd! BufWritePre * call RemoveTrailingWhitespaces()
-

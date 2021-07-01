@@ -26,6 +26,9 @@ nnoremap <S-Tab> <<_
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+vnoremap <silent> t :Translate<CR>
+vnoremap <silent> <S-t> :Translate!<CR>
+
 " |-------------+---+-------------------+-------+-------------------|
 " | Camelize    | c | Some Text To Work | gI$c  | someTextToWork    |
 " | Privatize   | p | some_var          | gI$p  | _some_var         |
@@ -84,12 +87,6 @@ nnoremap <silent> <Leader>b2 :call MoveBuffer(2)<CR>
 nnoremap <silent> <Leader>b3 :call MoveBuffer(3)<CR>
 nnoremap <silent> <Leader>b4 :call MoveBuffer(4)<CR>
 
-" +comment
-nmap <Leader>cl gcc
-vmap <Leader>cl gc
-nmap <Leader>cp gcap
-vmap <Leader>cp <Esc>gcap
-
 " +errors
 nnoremap <Leader>ee :call NeomakeLiveModeToggle()<CR>
 nnoremap <Leader>ed :lclose<CR>
@@ -142,9 +139,9 @@ nnoremap <expr> <Leader>fd ':Files '.expand('%:h').'<CR>'
 nnoremap <expr> <Leader>fc ':e '.expand('%:h').'/'
 
 " +files/edit
-nnoremap <Leader>fev :e $MYVIMRC <bar> :Rooter<CR>
+nnoremap <Leader>fev :e $MYVIMRC <bar> :lcd %:h<CR>
 nnoremap <Leader>fer :source $MYVIMRC<CR>
-nnoremap <Leader>feb :e ~/.config/bash/main.bash <bar> :Rooter<CR>
+nnoremap <Leader>feb :e ~/.config/bash/main.bash <bar> :lcd %:h<CR>
 
 " +files/yank
 " file name under cursor

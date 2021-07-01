@@ -35,3 +35,5 @@ function! WhitespaceToggle()
         call EnableWhitespace()
     endif
 endfunction
+
+autocmd! BufWritePre * call RemoveTrailingWhitespaces()
