@@ -39,7 +39,7 @@ function! NeomakeLiveModeToggle()
 endfunction
 
 let g:neomake_live_mode = 0
-call SetNeomakeLiveMode(g:neomake_live_mode)
+" call SetNeomakeLiveMode(g:neomake_live_mode)
 
 let g:neomake_git_diff_config = {
 \   'py': {'filetype': 'python', 'makers': ['flake8']},
@@ -49,6 +49,8 @@ let g:neomake_python_enabled_makers = ['flake8']
 " let g:neomake_python_pylint_remove_invalid_entries = 1
 
 let g:neomake_clippy_rustup_has_nightly = 1
+
+let g:neomake_disable = 1
 
 let g:neomake_place_signs = 1
 let g:neomake_highlight_lines = 0

@@ -1,6 +1,9 @@
-
 vim.o.completeopt = "menuone,noselect"
 vim.o.pumheight = 20
+
+vim.cmd('inoremap <silent><expr> <C-Space> compe#complete()')
+vim.cmd('inoremap <expr> <Tab> pumvisible() ? "<C-n>" : "<Tab>"')
+vim.cmd('inoremap <expr> <S-Tab> pumvisible() ? "<C-p>" : "<S-Tab>"')
 
 require'compe'.setup {
     enabled = true,
@@ -12,7 +15,3 @@ require'compe'.setup {
         vim_dadbod_completion = true,
     };
 }
-
-vim.cmd('inoremap <silent><expr> <C-Space> compe#complete()')
-vim.cmd('inoremap <expr> <Tab> pumvisible() ? "<C-n>" : "<Tab>"')
-vim.cmd('inoremap <expr> <S-Tab> pumvisible() ? "<C-p>" : "<S-Tab>"')

@@ -1,9 +1,12 @@
-augroup Colors
-    autocmd!
-    autocmd ColorScheme * execute "runtime after/colors/".expand("<amatch>").".vim"
-augroup END
+" TODO: move to plugin/ directory
+runtime! modules/**/*.vim
 
-autocmd BufWritePost plugins.lua PackerCompile
+function! WebSearch(...)
+    let q = substitute(join(a:000, ' '), ' ', '+', 'g')
+    silent! execute "!brave 'https://duckduckgo.com/?q=" . q . "'"
+endfunction
+
+command! -nargs=+ WebSearch call WebSearch(<f-args>)
 
 " load packer on demand
 " command! PackerBootstrap lua require('plugins').packer_bootstrap()
@@ -17,4 +20,30 @@ command! PackerUpdate packadd packer.nvim | lua require('plugins').update()
 command! -nargs=+ -complete=customlist,v:lua.require'packer'.loader_complete
     \ PackerLoad lua require('plugins').loader(<q-args>)
 
-runtime! modules/**/*.vim
+
+function! EnableSpelling()
+    syntax spell toplevel
+    setlocal spell spelllang=en_us spelloptions=camel spellcapcheck=""
+endfunction
+
+augroup common
+    autocmd!
+
+    " color scheme overrides
+    autocmd ColorScheme * execute "runtime after/colors/".expand("<amatch>").".vim"
+
+    " highlight on yank
+    if exists('##TextYankPost')
+        autocmd TextYankPost * silent! lua require'vim.highlight'.on_yank()
+    endif
+
+    " automatic PackerCompile on save
+    autocmd BufWritePost plugins.lua PackerCompile
+
+    " disable cursor line for inactive buffers
+    autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+
+    " spelling
+    autocmd FileType python,javascript,markdown,rust call EnableSpelling()
+augroup END
