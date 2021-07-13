@@ -9,4 +9,5 @@ vim.g.rooter_patterns = {
     "=site-packages/",
     ".git/",
     ".git",
+    "init.vim"
 }

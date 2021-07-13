@@ -101,7 +101,7 @@ nnoremap <Leader>ec :ll<CR>
 nnoremap <Leader>es :call setqflist(getloclist(winnr()))<CR>
 
 " +git/version control
-nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gc :BCommits<CR>
 nnoremap <Leader>gl :Glog<CR>
 nnoremap <Leader>gs :Gstatus<CR>
@@ -135,8 +135,9 @@ nnoremap <Leader>fs :update<CR>
 nnoremap <Leader>fr :History<CR>
 nnoremap <Leader>f<S-r> :!rm %<CR>
 nnoremap <Leader>ff :call ExplorerToggle('.')<CR>
-nnoremap <expr> <Leader>fd ':Files '.expand('%:h').'<CR>'
 nnoremap <expr> <Leader>fc ':e '.expand('%:h').'/'
+nnoremap <expr> <Leader>fd ':Files '.expand('%:h').'<CR>'
+nnoremap <expr> <Leader>fm ':!mv '.expand('%').' '.expand('%:h').'/'
 
 " +files/edit
 nnoremap <Leader>fev :e $MYVIMRC <bar> :lcd %:h<CR>

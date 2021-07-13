@@ -28,8 +28,33 @@ local function init()
     -- Packer can manage itself
     use {"wbthomason/packer.nvim", opt = true}
 
-    -- Theme & Syntax highlighting
+    -- Theme
+    use {
+        "navarasu/onedark.nvim",
+        config = function()
+            vim.g.onedark_style = "warmer"
+            require('onedark').setup()
+            vim.cmd("colorscheme onedark")
+        end
+    }
+
+    -- Status Line and Bufferline
+    -- use {"glepnir/galaxyline.nvim"}
+
+    -- Syntax highlighting
     use "sheerun/vim-polyglot"
+
+    use {
+        "nvim-treesitter/nvim-treesitter",
+        -- disable = true,
+        run = ":TSUpdate",
+        requires = {
+            "nvim-treesitter/nvim-treesitter-textobjects",
+            {"windwp/nvim-ts-autotag", ft = {"html", "xml"}}, -- autoclose and autorename html tag
+            {"romgrk/nvim-treesitter-context", cmd = "TSContextToggle"},
+        },
+        config = function() require"plugins.treesitter" end
+    }
 
     use {
         "hashivim/vim-terraform",
@@ -39,34 +64,12 @@ local function init()
         end
     }
 
-    use {
-        "navarasu/onedark.nvim",
-        config = function()
-            vim.g.onedark_style = "warmer"
-            vim.cmd("colorscheme onedark")
-        end
-    }
-
-    -- Status Line and Bufferline
-    -- use {"glepnir/galaxyline.nvim"}
-
-    use {
-        "nvim-treesitter/nvim-treesitter",
-        -- disable = true,
-        run = ":TSUpdate",
-        requires = {
-            "nvim-treesitter/nvim-treesitter-textobjects",
-            {"romgrk/nvim-treesitter-context", cmd = "TSContextToggle"},
-        },
-        config = function() require"plugins.treesitter" end
-    }
-
     -- Git
     use {
         "lewis6991/gitsigns.nvim",
-        requires = { "nvim-lua/plenary.nvim" },
         event = "BufRead",
-        config = function() require("gitsigns") end
+        config = function() require("gitsigns").setup() end,
+        requires = { "nvim-lua/plenary.nvim" },
     }
     use {"tpope/vim-fugitive", event = "BufRead"}
     use {"junegunn/gv.vim", cmd = "GV"}
@@ -87,12 +90,13 @@ local function init()
     use {
         "neovim/nvim-lspconfig",
         config = function() require"plugins.lsp" end,
-        requires = {"kabouzeid/nvim-lspinstall"}
+        {"kabouzeid/nvim-lspinstall"}
     }
     use {
         "hrsh7th/nvim-compe",
         event = "InsertEnter",
         requires = {
+            -- "ray-x/lsp_signature.nvim",
             {"tpope/vim-dadbod", ft="sql"},
             {"kristijanhusak/vim-dadbod-completion", ft="sql"},
         },
@@ -117,8 +121,8 @@ local function init()
     use { -- generate tags in background
         "ludovicchabant/vim-gutentags",
         config = function() require"plugins.tags" end,
-        requires = { {"majutsushi/tagbar", cmd = "TagbarToggle"} }
     }
+    use {"majutsushi/tagbar", cmd = "TagbarToggle"}
 
     use {
         "mbbill/undotree",

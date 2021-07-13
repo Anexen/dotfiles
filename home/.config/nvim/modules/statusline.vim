@@ -91,10 +91,26 @@ function! ActiveStatusLine()
     endif
 
     let has_running_jobs = !empty(neomake#GetJobs())
-    let linter_errors = neomake#statusline#LoclistCounts()
-    let statusline .= " %#StatusLineError#●" . (has_running_jobs ? '?' : get(linter_errors, 'E', 0))
-    let statusline .= " %#StatusLineWarning#●" . (has_running_jobs ? '?' : get(linter_errors, 'W', 0))
-    let statusline .= " %#StatusLineInfo#●" . (has_running_jobs ? '?' : get(linter_errors, 'I', 0))
+    let sl_errors = 0
+    let sl_warnings = 0
+    let sl_info = 0
+
+    if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+        let sl_errors += luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
+        let sl_warnings += luaeval("vim.lsp.diagnostic.get_count(0, [[Warning]])")
+        let sl_info += luaeval("vim.lsp.diagnostic.get_count(0, [[Info]])")
+    endif
+
+    if !has_running_jobs
+        let linter_errors = neomake#statusline#LoclistCounts()
+        let sl_errors += get(linter_errors, 'E', 0)
+        let sl_warnings += get(linter_errors, 'W', 0)
+        let sl_info += get(linter_errors, 'I', 0)
+    endif
+
+    let statusline .= " %#StatusLineError#●" . (has_running_jobs ? '?' : sl_errors)
+    let statusline .= " %#StatusLineWarning#●" . (has_running_jobs ? '?' : sl_warnings)
+    let statusline .= " %#StatusLineInfo#●" . (has_running_jobs ? '?' : sl_info)
 
     let statusline .= " %#StatusLineText#%2.p%%"
     let statusline .= " %#StatusLineActiveMode# %3.l:%-2.c %#Normal#"
