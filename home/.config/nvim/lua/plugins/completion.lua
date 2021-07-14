@@ -9,8 +9,13 @@ require'compe'.setup {
     enabled = true,
     source = {
         path = true,
-        buffer = true,
-        tags = true,
+        -- set buffer priority higher than tags
+        buffer = {
+            priority = 100
+        },
+        tags = {
+            priority = 90
+        },
         nvim_lsp = true,
         vim_dadbod_completion = true,
     };
