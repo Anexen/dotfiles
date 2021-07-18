@@ -103,13 +103,13 @@ nnoremap <Leader>es :call setqflist(getloclist(winnr()))<CR>
 " +git/version control
 nnoremap <Leader>gb :Git blame<CR>
 nnoremap <Leader>gc :BCommits<CR>
-nnoremap <Leader>gl :Glog<CR>
-nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gha :GitGutterStageHunk<CR>
-nnoremap <Leader>ghu :GitGutterUndoHunk<CR>
-nnoremap <Leader>ghn :GitGutterNextHunk<CR>
-nnoremap <Leader>ghp :GitGutterPrevHunk<CR>
-nnoremap <Leader>ghq :GitGutterQuickFix<CR>
+nnoremap <Leader>gl :Gclog<CR>
+nnoremap <Leader>gs :Git<CR>
+nnoremap <Leader>gha :Gitsigns stage_hunk<CR>
+nnoremap <Leader>ghu :Gitsigns reset_hunk<CR>
+nnoremap <Leader>ghn :Gitsigns next_hunk<CR>
+nnoremap <Leader>ghp :Gitsigns prev_hunk<CR>
+nnoremap <Leader>ghs :Gitsigns stage_buffer<CR>
 
 " +insert
 nnoremap <Leader>ik O<Esc>j

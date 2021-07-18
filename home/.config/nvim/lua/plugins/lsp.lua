@@ -83,11 +83,11 @@ nvim_lsp.bash.setup{ on_attach = M.on_attach }
 --     on_attach = setup_keybindings,
 -- };
 
-nvim_lsp.pyls.setup {
+nvim_lsp.pylsp.setup {
     on_attach = M.on_attach,
-    -- available settings at https://github.com/palantir/python-language-server/blob/develop/vscode-client/package.json
+    -- available settings at https://github.com/python-lsp/python-lsp-server/blob/develop/pylsp/config/schema.json
     settings = {
-        pyls = {
+        pylsp = {
             plugins = {
                 pycodestyle = { enabled = false },
                 pylint = { enabled = false },
