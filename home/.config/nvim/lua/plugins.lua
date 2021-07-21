@@ -85,12 +85,24 @@ local function init()
             vim.g["agriculture#rg_options"] = "--smart-case"
         end
     }
+    use {
+        'nvim-telescope/telescope.nvim',
+        requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
+        config=function()
+            require('telescope').setup{
+                defaults = {
+                    file_sorter =  require'telescope.sorters'.get_fzy_sorter,
+                    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
+                }
+            }
+        end
+    }
 
     -- LSP
     use {
         "neovim/nvim-lspconfig",
+        requires = {"kabouzeid/nvim-lspinstall"},
         config = function() require"plugins.lsp" end,
-        {"kabouzeid/nvim-lspinstall"}
     }
     use {
         "hrsh7th/nvim-compe",
@@ -180,8 +192,8 @@ local function init()
 
     use { -- Interactive Repls Over Neovim
         "hkupty/iron.nvim",
+        config = function() require"plugins.iron" end,
         opt = true,
-        config = function() require"plugins.iron" end
     }
 
     --Plug "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
