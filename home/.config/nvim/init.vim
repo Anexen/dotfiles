@@ -1,6 +1,3 @@
-" TODO: move to plugin/ directory
-runtime! modules/**/*.vim
-
 function! WebSearch(...)
     let q = substitute(join(a:000, ' '), ' ', '+', 'g')
     silent! execute "!brave 'https://duckduckgo.com/?q=" . q . "'"

@@ -97,6 +97,8 @@ nvim_lsp.pylsp.setup {
     }
 }
 
+nvim_lsp.rust_analyzer.setup{ on_attach = M.on_attach }
+
 -- :LspInstall vim
 nvim_lsp.vim.setup{ on_attach = M.on_attach }
 
