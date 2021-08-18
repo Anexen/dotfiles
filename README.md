@@ -1,22 +1,27 @@
+![preview](https://user-images.githubusercontent.com/5568591/129841532-a8f676b4-3049-471d-b61e-0698e96896b9.png)
+
 Clone the repository in ~/.dotfiles
 
 ```bash
 $ git clone https://github.com/Anexen/dotfiles.git ~/.dotfiles
 ```
 
-There is a list of third-party tools integrated as submodules:
-* forgit
-* ondir
-* fzf-marks
-* etc
+Integrated third-party tools:
+* [ondir](https://github.com/alecthomas/ondir)
+* [forgit](https://github.com/wfxr/forgit)
+* [fzf-marks](https://github.com/urbainvaes/fzf-marks)
 
 Create symlinks (I'm using [GNU Stow](https://www.gnu.org/software/stow/)):
 
 ```bash
 # install user configs
 $ stow home
+# install specific programm configs
+$ stow --target ~/.config --dir home/.config nvim
 # install system configs
 $ stow --target / system
+# dry-run
+$ stow --simulate home
 ```
 
 Dependencies:
