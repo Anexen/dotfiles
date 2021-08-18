@@ -9,7 +9,7 @@ require"nvim-treesitter.configs".setup {
         "javascript", "typescript", "tsx",
         "html", "toml", "json",
     },
-    highlight = { enable = true },
+    highlight = { enable = false },
     incremental_selection = { enable = true },
     -- indent = { enable = true },
     autotag = { -- windwp/nvim-ts-autotag plugin

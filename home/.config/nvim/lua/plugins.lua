@@ -30,16 +30,28 @@ local function init()
 
     -- Theme
     use {
-        "navarasu/onedark.nvim",
+        'laggardkernel/vim-one',
         config = function()
-            vim.g.onedark_style = "warmer"
-            require('onedark').setup()
-            vim.cmd("colorscheme onedark")
+            vim.g.one_allow_italics = 1
+            vim.g.one_dark_syntax_bg = '#222222'
+            vim.cmd("colorscheme one")
         end
     }
+    -- use {
+    --     "navarasu/onedark.nvim",
+    --     -- 'laggardkernel/vim-one',
+    --     config = function()
+    --         vim.g.onedark_style = "warmer"
+    --         require('onedark').setup()
+    --         vim.cmd("colorscheme onedark")
+    --     end
+    -- }
 
     -- Status Line and Bufferline
-    -- use {"glepnir/galaxyline.nvim"}
+    -- use {
+    --     "glepnir/galaxyline.nvim",
+    --     config = function() require'plugins.galaxyline' end,
+    -- }
 
     -- Syntax highlighting
     use "sheerun/vim-polyglot"
@@ -130,6 +142,11 @@ local function init()
     use {"wellle/context.vim", cmd = "ContextToggle"}
     use {"tweekmonster/startuptime.vim", cmd = "StartupTime"}
 
+--     use {  -- displays latest package versions in package.json file as virtual text.
+--         "vuki656/package-info.nvim",
+--         config = function () require("package-info").setup() end
+--     }
+
     use { -- generate tags in background
         "ludovicchabant/vim-gutentags",
         config = function() require"plugins.tags" end,
@@ -144,9 +161,26 @@ local function init()
         end
     }
 
+    -- use { -- changes working directory to the project root
+    --     "airblade/vim-rooter",
+    --     config = function() require"plugins.rooter" end,
+    -- }
+
     use { -- changes working directory to the project root
-        "airblade/vim-rooter",
-        config = function() require"plugins.rooter" end,
+        "ahmedkhalf/project.nvim",
+        config = function()
+            require("project_nvim").setup {
+                manual_mode = true,
+                patterns = {
+                    ".python-version",
+                    "Cargo.toml",
+                    "=site-packages/",
+                    ".git/",
+                    ".git",
+                    "init.vim",
+                }
+            }
+        end
     }
 
     use {

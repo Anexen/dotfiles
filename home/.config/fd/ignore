@@ -3,12 +3,13 @@
 undodir
 
 # python
+__pycache__
 *.egg-info
 *.pyc
 .ipynb_checkpoints
 .mypy_cache
 .pytest_cache
-__pycache__
+.tox
 
 # rust
 target
