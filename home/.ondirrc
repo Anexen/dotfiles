@@ -1,6 +1,6 @@
 enter ~/projects/((aprenita/)?[^/]+)
-    if [[ -r ${ONDIRWD}/.python-version && -z ${VIRTUAL_ENV} ]]; then
-        source ${PYENV_ROOT}/versions/$(cat ${ONDIRWD}/.python-version)/bin/activate
+    if [[ -r "${ONDIRWD}/.python-version" && -z ${VIRTUAL_ENV} ]]; then
+        workon $(cat "${ONDIRWD}/.python-version")
     fi
 
 leave ~/projects/((aprenita/)?[^/]+)

@@ -8,6 +8,7 @@ function! DBConnect(...)
     endif
     let b:db = conn
     DB b:db
+    call vim_dadbod_completion#fetch(bufnr())
 endfunction
 
 

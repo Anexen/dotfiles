@@ -127,6 +127,11 @@ local function init()
         config = function() require"plugins.completion" end
     }
 
+    use {
+        "hrsh7th/vim-vsnip",
+        requires = {"hrsh7th/vim-vsnip-integ"}
+    }
+
     -- Linters and Fixers
     use "neomake/neomake"
     use "sbdchd/neoformat"
@@ -171,11 +176,11 @@ local function init()
         config = function()
             require("project_nvim").setup {
                 manual_mode = true,
+                detection_methods = { "pattern" },
                 patterns = {
                     ".python-version",
                     "Cargo.toml",
-                    "=site-packages/",
-                    ".git/",
+                    "=site-packages",
                     ".git",
                     "init.vim",
                 }
@@ -229,7 +234,7 @@ local function init()
         config = function() require"plugins.iron" end,
         opt = true,
     }
-
+    -- use 'mfussenegger/nvim-dap'
     --Plug "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
     --Plug "dhruvasagar/vim-table-mode"       " automatic table creator & formatter
 

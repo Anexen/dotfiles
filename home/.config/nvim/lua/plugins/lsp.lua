@@ -3,11 +3,26 @@
 -- :LspIntall python -> nvim_lsp.python.setup(), not nvim_lsp.pyls
 require'lspinstall'.setup()
 
-local lsp_util = require'lspconfig/util'
 local nvim_lsp = require'lspconfig'
 local utils = require'utils'
 
 local M = {}
+
+vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
+    vim.lsp.handlers["textDocument/references"], {
+        -- Use location list instead of quickfix list
+        loclist = true,
+    }
+)
+
+-- local goto_definition = vim.lsp.handlers["textDocument/definition"];
+
+-- vim.lsp.handlers["textDocument/definition"] = function(
+--     err, method, result, client_id, bufnr, config
+-- )
+--     print(vim.inspect(result))
+--     return goto_definition(err, method, result, client_id, bufnr, config)
+-- end
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -63,14 +78,14 @@ function M.on_attach(client, bufnr)
 end
 
 -- :LspIntall dockerfile
-nvim_lsp.dockerfile.setup{
-    on_attach = M.on_attach,
-    root_dir = function(fname)
-        return lsp_util.root_pattern("Dockerfile")(fname)
-            or lsp_util.root_pattern("dockerfiles")(fname)
-            or lsp_util.path.dirname(fname)
-    end;
-};
+-- nvim_lsp.dockerfile.setup{
+--     on_attach = M.on_attach,
+--     root_dir = function(fname)
+--         return lsp_util.root_pattern("Dockerfile")(fname)
+--             or lsp_util.root_pattern("dockerfiles")(fname)
+--             or lsp_util.path.dirname(fname)
+--     end;
+-- };
 
 -- :LspIntall bash
 nvim_lsp.bash.setup{ on_attach = M.on_attach }
@@ -97,9 +112,25 @@ nvim_lsp.pylsp.setup {
     }
 }
 
-nvim_lsp.terraformls.setup { on_attach = M.on_attach }
+local function make_rust_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+    capabilities.textDocument.completion.completionItem.resolveSupport = {
+        properties = {
+            'documentation',
+            'detail',
+            'additionalTextEdits',
+        }
+    }
+    return capabilities
+end
 
-nvim_lsp.rust_analyzer.setup { on_attach = M.on_attach }
+nvim_lsp.rust_analyzer.setup {
+    on_attach = M.on_attach,
+    capabilities = make_rust_capabilities(),
+}
+
+nvim_lsp.terraformls.setup { on_attach = M.on_attach }
 
 -- :LspInstall vim
 nvim_lsp.vim.setup { on_attach = M.on_attach }

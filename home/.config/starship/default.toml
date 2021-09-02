@@ -26,8 +26,9 @@ success_symbol = "[└─ \\$](bold green)"
 error_symbol = "[└─ ✗](bold green)"
 
 [memory_usage]
-show_percentage = true
-threshold = 90
+format = "$symbol${ram_pct}($style) "
+style = "bold dimmed orange"
+threshold = 85
 disabled = false
 
 [git_branch]

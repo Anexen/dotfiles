@@ -9,7 +9,17 @@ source "${PYENV_ROOT}/completions/pyenv.bash"
 
 workon () {
     local _name="${1:-$(cat .python-version)}"
-    source "${PYENV_ROOT}/versions/${_name}/bin/activate"
+    local _venv="${PYENV_ROOT}/versions/${_name}"
+    source "${_venv}/bin/activate"
+
+    # mimics virtualenvwrapper postactivate
+    # https://virtualenvwrapper.readthedocs.io/en/latest/scripts.html#postactivate
+    if [[ -f "${_venv}/bin/postactivate" ]]; then
+        source "${_venv}/bin/postactivate"
+    fi
+
+    # TODO: postdeactivate hook
+    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/src/f481be386e527c53bb2cc81ed965b66a93d4e792/virtualenvwrapper.sh?at=master#lines-789
 }
 
 # get rid of shims
