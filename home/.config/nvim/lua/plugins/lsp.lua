@@ -169,18 +169,19 @@ nvim_lsp.lua.setup {
 }
 
 --: LspInstall css
--- local function css_capabilities()
---     -- vscode-css-language-server only provides completions when snippet support is
---     -- enabled. To enable completion, install a snippet plugin and add the following
---     -- override to your language client capabilities during setup.
---     local capabilities = vim.lsp.protocol.make_client_capabilities()
---     capabilities.textDocument.completion.completionItem.snippetSupport = true
--- end
+local function make_css_capabilities()
+    -- vscode-css-language-server only provides completions when snippet support is
+    -- enabled. To enable completion, install a snippet plugin and add the following
+    -- override to your language client capabilities during setup.
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.textDocument.completion.completionItem.snippetSupport = true
+    return capabilities
+end
 
--- nvim_lsp.css.setup {
---     capabilities = css_capabilities,
---     on_attach = M.on_attach
--- }
+nvim_lsp.css.setup {
+    capabilities = make_css_capabilities(),
+    on_attach = M.on_attach
+}
 
 -- :LspIntall typescript
 -- enable per project
