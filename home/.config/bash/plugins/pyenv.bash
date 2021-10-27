@@ -2,6 +2,7 @@
 
 export PYENV_ROOT="${HOME}/.pyenv"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export PYTHON_CONFIGURE_OPTS="--enable-shared"
 
 path_add "${PYENV_ROOT}/bin"
 

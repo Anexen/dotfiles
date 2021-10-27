@@ -1,9 +1,14 @@
+" disable built-in sql completion
+let g:omni_sql_no_default_maps = 1
+let g:loaded_sql_completion = 0
+
+let g:sql_default_database = 'default'
 
 function! DBConnect(...)
-    let alias = get(a:, 1, 'default')
+    let alias = get(a:, 1, g:sql_default_database)
     let conn = get(get(g:, "databases", {}), alias, v:null)
     if empty(conn)
-        echo "Connection " . name . " is not defined."
+        echo "Connection " . alias . " is not defined."
         return
     endif
     let b:db = conn
@@ -36,12 +41,6 @@ function! DBSendQuery()
     call DBSendLines(l:start, l:end)
 endfunction
 
-
-" disable built-in sql completion
-let g:omni_sql_no_default_maps = 1
-let g:loaded_sql_completion = 0
-
-autocmd! FileType sql call DBConnect()
 
 command! -nargs=? -complete=customlist,DBConnections DBConnect call DBConnect(<f-args>)
 command! DBSendQuery call DBSendQuery()

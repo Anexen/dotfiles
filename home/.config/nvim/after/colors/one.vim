@@ -2,6 +2,7 @@ highlight Normal guibg=none ctermbg=none
 highlight SignColumn guibg=none ctermbg=none
 
 highlight link Quote String
+highlight link pythonClass Typedef
 
 highlight link NeomakeVirtualtextError NeomakeErrorSign
 highlight link NeomakeVirtualtextWarning NeomakeWarningSign

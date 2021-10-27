@@ -53,3 +53,6 @@ symbol = "✦ "
 
 [python]
 symbol = ""
+
+# [cmd_duration]
+# show_notifications = true

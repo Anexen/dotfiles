@@ -1,7 +1,8 @@
+let s:neomake_exists = exists('neomake#GetJobs')
+
 function! StatuslineReadonly()
     return &readonly ? '' : ''
 endfunction
-
 
 function! StatuslineFugitive()
     if exists('*fugitive#head')
@@ -13,6 +14,10 @@ endfunction
 
 
 function! StatuslineNeomakeJobs(prefix, suffix) abort
+    if !s:neomake_exists
+        return ''
+    endif
+
     let jobs = neomake#GetJobs()
 
     if empty(jobs)
@@ -71,7 +76,9 @@ function! ActiveStatusLine()
 
     let jobs = ''
     let jobs .= StatuslineNeomakeJobs('[', ']')
-    let jobs .= gutentags#statusline('[', ']')
+    if exists('gutentags#statusline')
+        let jobs .= gutentags#statusline('[', ']')
+    endif
 
     if !empty(jobs)
         let statusline .= " %#StatusLineJobsSection#" . jobs . ""
@@ -90,7 +97,7 @@ function! ActiveStatusLine()
         let statusline .= " %#StatusLineExtensionSection#{" . ext_modes . "}"
     endif
 
-    let has_running_jobs = !empty(neomake#GetJobs())
+    let has_running_jobs = s:neomake_exists ? !empty(neomake#GetJobs()) : 0
     let sl_errors = 0
     let sl_warnings = 0
     let sl_info = 0
@@ -101,7 +108,7 @@ function! ActiveStatusLine()
         let sl_info += luaeval("vim.lsp.diagnostic.get_count(0, [[Info]])")
     endif
 
-    if !has_running_jobs
+    if !has_running_jobs && s:neomake_exists
         let linter_errors = neomake#statusline#LoclistCounts()
         let sl_errors += get(linter_errors, 'E', 0)
         let sl_warnings += get(linter_errors, 'W', 0)

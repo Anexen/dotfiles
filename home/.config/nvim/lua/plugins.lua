@@ -37,15 +37,24 @@ local function init()
             vim.cmd("colorscheme one")
         end
     }
-    -- use {
-    --     "navarasu/onedark.nvim",
-    --     -- 'laggardkernel/vim-one',
-    --     config = function()
-    --         vim.g.onedark_style = "warmer"
-    --         require('onedark').setup()
-    --         vim.cmd("colorscheme onedark")
-    --     end
-    -- }
+
+--     use {
+--         "navarasu/onedark.nvim",
+--         config = function()
+--             vim.g.onedark_style = "warmer"
+--             require('onedark').setup()
+--             vim.cmd("colorscheme onedark")
+--         end
+--     }
+
+--     use {
+--         "folke/tokyonight.nvim",
+--         config = function()
+--             vim.g.tokyonight_style = "storm"
+--             vim.g.tokyonight_italic_functions = true
+--             vim.cmd("colorscheme tokyonight")
+--         end
+--     }
 
     -- Status Line and Bufferline
     -- use {
@@ -121,8 +130,8 @@ local function init()
         event = "InsertEnter",
         requires = {
             -- "ray-x/lsp_signature.nvim",
-            {"tpope/vim-dadbod", ft="sql"},
-            {"kristijanhusak/vim-dadbod-completion", ft="sql"},
+            {"tpope/vim-dadbod", ft = "sql"},
+            {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
         },
         config = function() require"plugins.completion" end
     }

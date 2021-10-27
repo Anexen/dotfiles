@@ -1,22 +1,13 @@
 [color]
 
-bg = #404552
+bg = #222222
+# bg = #161719
 fg = #FFFFFF
 fg-alt = #A9ABB0
 
 urgent = #ff6666
 unfocused = #7c818c
 
-shade0 = #383c4a
-shade9 = #343845
-shade8 = #303440
-shade7 = #2c2f3a
-shade6 = #282b35
-shade5 = #242730
-shade4 = #20232b
-shade3 = #1d1f26
-shade2 = #191a21
-shade1 = #15161b
 
 red = #e53935
 pink = #d81b60
@@ -39,41 +30,47 @@ grey = #757575
 blue-gray = #546e7a
 
 [bar/main]
-height = 32
+height = 56
+dpi = 189
 bottom = true
 tray-position = center
 
-tray-maxsize = 24
+tray-maxsize = 36
 background = ${color.bg}
 foreground = ${color.fg}
 
-font-0 = "SF Pro Text:size=12;2"
-font-1 = "DroidSansMono Nerd Font:size=12;2"
-font-2 = "DroidSansMono Nerd Font:size=12;2"
-font-3 = "DejaVu Sans:style=Oblique:size=12;2"
+font-0 = "Sauce Code Pro Nerd Font:size=11;3"
 
 enable-ipc = true
 cursor-click = pointer
-modules-left = powermenu menu i3 cpu memory
-modules-right = wireless-network xkeyboard battery backlight volume date
+modules-left = menu i3 cpu memory
+modules-right = wireless-network xkeyboard battery backlight volume date dunst powermenu
 
 # [module/power]
 # type = custom/text
 # content = ⏻
-# content-padding = 2
-# content-background = ${color.shade1}
+# content-padding = 1
+# content-background = ${color.bg}
 # content-foreground = ${color.fg}
 # click-left = "echo 'sdf sdf' b | rofi -sep ' ' -dmenu"
 # click-right = "rofi -show run"
+
+[module/dunst]
+type = custom/ipc
+initial = 1
+format-background = ${color.bg}
+format-foreground = ${color.fg}
+hook-0 = echo "%{A1:dunstctl set-paused true && polybar-msg hook dunst 2:} %{A}"
+hook-1 = echo "%{A1:dunstctl set-paused false && polybar-msg hook dunst 1:}%{F#e53935} %{F-}%{A}"
 
 [module/powermenu]
 type = custom/menu
 
 expand-right = true
 format = <label-toggle><menu>
-format-spacing = 1
+format-spacing = 0
 format-foreground = ${color.fg}
-format-background = ${color.shade1}
+format-background = ${color.bg}
 
 label-open = ⏻
 label-open-padding = 1
@@ -81,15 +78,10 @@ label-open-padding = 1
 label-close = x
 label-close-padding = 1
 
-# menu-0-0 = " Reboot |"
-# menu-0-0-exec = menu-open-1
-# menu-0-1 = " Shutdown "
-# menu-0-1-exec = menu-open-2
-
 menu-0-0 = " ⏾ |"
 menu-0-0-exec = systemctl suspend
 
-menu-0-1 = "  |"
+menu-0-1 = "  |"
 menu-0-1-exec = systemctl reboot
 
 menu-0-2 = " ⏻ "
@@ -99,7 +91,7 @@ menu-0-2-exec = systemctl poweroff
 type = custom/text
 content = 
 content-padding = 2
-content-background = ${color.shade1}
+content-background = ${color.bg}
 content-foreground = ${color.fg}
 click-left = "rofi -show drun"
 click-right = "rofi -show run"
@@ -120,41 +112,36 @@ format-background = ${color.bg}
 # ws-icon-default =
 
 label-focused = %index%
-label-focused-padding = 2
-label-focused-font = 3
-label-focused-background = ${color.shade2}
+label-focused-padding = 1
+label-focused-background = ${color.bg}
 label-focused-foreground = ${color.fg}
-label-focused-underline = ${color.shade2}
+label-focused-underline = ${color.bg}
 
 label-unfocused = %index%
-label-unfocused-padding = 2
-label-unfocused-font = 3
-label-unfocused-background = ${color.shade2}
+label-unfocused-padding = 1
+label-unfocused-background = ${color.bg}
 label-unfocused-foreground = ${color.unfocused}
-label-unfocused-underline = ${color.shade2}
+label-unfocused-underline = ${color.bg}
 
 label-visible = %index%
-label-visible-padding = 2
-label-visible-font = 3
+label-visible-padding = 1
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 
 label-urgent = %index%
-label-urgent-padding = 2
-label-urgent-font = 3
+label-urgent-padding = 1
 label-urgent-background = ${self.label-focused-background}
 label-urgent-foreground = ${color.urgent}
 
 [module/cpu]
 type = internal/cpu
 format = <label> <ramp-coreload>
-format-background = ${color.shade3}
+format-background = ${color.bg}
 
 label = ﬙ %percentage%%
-label-font = 3
-label-padding = 2
+label-padding = 1
 
-ramp-coreload-spacing = 1
+ramp-coreload-spacing = 0
 ramp-coreload-0 = ▁
 ramp-coreload-1 = ▂
 ramp-coreload-2 = ▃
@@ -169,9 +156,8 @@ type = internal/memory
 interval = 3
 format = <label>
 label =  %gb_used%
-label-font = 3
-label-padding = 2
-label-background = ${color.shade4}
+label-padding = 1
+label-background = ${color.bg}
 bar-used-indicator =
 
 bar-used-width = 50
@@ -209,22 +195,22 @@ format-spacing = 0
 label-layout = %icon%
 layout-icon-0 = ru; RU
 layout-icon-1 = us; US
-label-layout-font = 3
-label-layout-padding = 2
-label-layout-background = ${color.shade5}
+label-layout-padding = 1
+label-layout-background = ${color.bg}
 
 [module/volume]
 # type = internal/alsa
 type = internal/pulseaudio
+click-right = pavucontrol
 
 format-volume = <ramp-volume> <label-volume>
-format-volume-padding = 2
-format-volume-background = ${color.shade4}
+format-volume-padding = 1
+format-volume-background = ${color.bg}
 label-volume = %percentage%%
 label-volume-font = 3
 label-muted = "婢"
-label-muted-background = ${color.shade4}
-label-muted-padding = 2
+label-muted-background = ${color.bg}
+label-muted-padding = 1
 ramp-volume-0 = "奄 "
 ramp-volume-1 = "奄 "
 ramp-volume-2 = "奔 "
@@ -236,28 +222,17 @@ ramp-volume-6 = "墳 "
 # [module/backlight]
 # type = internal/xbacklight
 # output = eDP-1
-# enable-scroll = true
-# format = <ramp> <label>
-# format-background = ${color.shade3}
-# ramp-font = 4
-# ramp-0 = 🌕
-# ramp-1 = 🌔
-# ramp-2 = 🌓
-# ramp-3 = 🌒
-# ramp-4 = 🌑
-
 [module/backlight]
 type = internal/backlight
 card = intel_backlight
 enable-scroll = true
 format = <ramp> <label>
-format-background = ${color.shade3}
-ramp-font = 4
-ramp-0 = 🌕
-ramp-1 = 🌔
-ramp-2 = 🌓
-ramp-3 = 🌒
-ramp-4 = 🌑
+format-background = ${color.bg}
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-4 = 
 
 [module/battery]
 type = internal/battery
@@ -265,28 +240,34 @@ full-at = 99
 time-format = %H:%M
 battery = BAT0
 adapter = AC
+
 label-charging = %percentage%%
 label-charging-font = 3
-format-charging = <animation-charging> <label-charging>
-format-charging-background = ${color.shade3}
-format-charging-padding = 2
-label-discharging = %percentage%%
+# label-discharging = %percentage%% (%time%, %consumption%)
+label-discharging = %percentage%% (%time%)
 label-discharging-font = 3
-format-full = <label-full>
+
+format-charging = <animation-charging> <label-charging>
+format-charging-background = ${color.bg}
+format-charging-padding = 1
 format-discharging = <ramp-capacity> <label-discharging>
-format-discharging-background = ${color.shade3}
-format-discharging-padding = 2
-format-full-prefix = 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
-ramp-capacity-3 = 
-ramp-capacity-4 = 
-ramp-capacity-5 = 
-ramp-capacity-6 = 
-ramp-capacity-7 = 
-ramp-capacity-8 = 
-ramp-capacity-9 = 
+format-discharging-background = ${color.bg}
+format-discharging-padding = 1
+format-full = <label-full>
+format-full-prefix = 
+format-full-background = ${color.bg}
+format-full-padding = 1
+
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-5 = 
+ramp-capacity-6 = 
+ramp-capacity-7 = 
+ramp-capacity-8 = 
+ramp-capacity-9 = 
 ramp-capacity-0-foreground = ${color.red}
 ramp-capacity-1-foreground = ${color.red}
 ramp-capacity-foreground   = ${color.fg}
@@ -298,15 +279,16 @@ type = internal/date
 interval = 1
 label = %time%
 label-font = 3
-label-padding = 2
-label-background = ${color.shade2}
+label-padding = 1
+label-background = ${color.bg}
 time =  %H:%M
 time-alt =  %a, %d %B
 
 [module/wireless-network]
 type = internal/network
-interface = wlp1s0
+interface = wlo1
 
-label-connected = %upspeed:9%/%downspeed:9%
+label-connected = %upspeed:5%|%downspeed:5%
+label-connected-padding = 1
 
 # vim: ft=dosini commentstring=#\ %s

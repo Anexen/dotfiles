@@ -18,3 +18,4 @@ _internal.py
 .nvimrc
 .vim/
 .vimrc
+*session.vim

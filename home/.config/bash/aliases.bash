@@ -26,9 +26,8 @@ alias passgen='cat /dev/urandom | tr -dc "a-zA-Z0-9" | fold -w 32 | head -n 1'
 
 alias tree='tree -I __pycache__'
 
-alias vim=nvim
-alias vbrc='vim ~/.config/bash/main.bash'
-alias vvrc='vim ~/.config/nvim/init.vim'
+alias vbrc='nvim ~/.config/bash/main.bash'
+alias vvrc='nvim ~/.config/nvim/init.vim'
 alias src='source ~/.bashrc'
 
 alias bat='bat --theme TwoDark'
