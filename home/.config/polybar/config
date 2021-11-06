@@ -43,8 +43,8 @@ font-0 = "Sauce Code Pro Nerd Font:size=11;3"
 
 enable-ipc = true
 cursor-click = pointer
-modules-left = menu i3 cpu memory
-modules-right = wireless-network xkeyboard battery backlight volume date dunst powermenu
+modules-left = menu i3 cpu memory wireless-network wired-network
+modules-right = xkeyboard battery backlight volume microphone date dunst powermenu
 
 # [module/power]
 # type = custom/text
@@ -60,8 +60,8 @@ type = custom/ipc
 initial = 1
 format-background = ${color.bg}
 format-foreground = ${color.fg}
-hook-0 = echo "%{A1:dunstctl set-paused true && polybar-msg hook dunst 2:} %{A}"
-hook-1 = echo "%{A1:dunstctl set-paused false && polybar-msg hook dunst 1:}%{F#e53935} %{F-}%{A}"
+hook-0 = echo "%{A1:dunstctl set-paused true && polybar-msg hook dunst 2:} %{A}"
+hook-1 = echo "%{A1:dunstctl set-paused false && polybar-msg hook dunst 1:}%{F#e53935} %{F-}%{A}"
 
 [module/powermenu]
 type = custom/menu
@@ -207,17 +207,24 @@ format-volume = <ramp-volume> <label-volume>
 format-volume-padding = 1
 format-volume-background = ${color.bg}
 label-volume = %percentage%%
-label-volume-font = 3
-label-muted = "婢"
-label-muted-background = ${color.bg}
+label-muted = " 婢 "
+label-muted-foreground = ${color.red}
 label-muted-padding = 1
-ramp-volume-0 = "奄 "
-ramp-volume-1 = "奄 "
-ramp-volume-2 = "奔 "
-ramp-volume-3 = "奔 "
-ramp-volume-4 = "墳 "
-ramp-volume-5 = "墳 "
-ramp-volume-6 = "墳 "
+ramp-volume-0 = 奄
+ramp-volume-1 = 奄
+ramp-volume-2 = 奔
+ramp-volume-3 = 奔
+ramp-volume-4 = 墳
+ramp-volume-5 = 墳
+ramp-volume-6 = 墳
+
+[module/microphone]
+type = custom/script
+exec = ~/.config/polybar/mic.sh
+tail = true
+click-left = ~/.config/polybar/mic.sh --toggle &
+scroll-up = ~/.config/polybar/mic.sh --increase &
+scroll-down = ~/.config/polybar/mic.sh --decrease &
 
 # [module/backlight]
 # type = internal/xbacklight
@@ -242,10 +249,8 @@ battery = BAT0
 adapter = AC
 
 label-charging = %percentage%%
-label-charging-font = 3
 # label-discharging = %percentage%% (%time%, %consumption%)
 label-discharging = %percentage%% (%time%)
-label-discharging-font = 3
 
 format-charging = <animation-charging> <label-charging>
 format-charging-background = ${color.bg}
@@ -278,7 +283,6 @@ animation-charging-0 = 
 type = internal/date
 interval = 1
 label = %time%
-label-font = 3
 label-padding = 1
 label-background = ${color.bg}
 time =  %H:%M
@@ -287,8 +291,13 @@ time-alt =  %a, %d %B
 [module/wireless-network]
 type = internal/network
 interface = wlo1
+label-connected =  %downspeed:3%
+label-connected-padding = 1
 
-label-connected = %upspeed:5%|%downspeed:5%
+[module/wired-network]
+type = internal/network
+interface = eno2
+label-connected =  %downspeed:3%
 label-connected-padding = 1
 
 # vim: ft=dosini commentstring=#\ %s
