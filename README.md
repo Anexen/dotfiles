@@ -1,4 +1,4 @@
-![preview](https://user-images.githubusercontent.com/5568591/129841532-a8f676b4-3049-471d-b61e-0698e96896b9.png)
+![preview](https://user-images.githubusercontent.com/5568591/140620519-59ed439e-b9e1-4098-8521-37e19509ae06.png)
 
 Clone the repository in ~/.dotfiles
 
@@ -16,8 +16,6 @@ Create symlinks (I'm using [GNU Stow](https://www.gnu.org/software/stow/)):
 ```bash
 # install user configs
 $ stow home
-# install specific programm configs
-$ stow --target ~/.config --dir home/.config nvim
 # install system configs
 $ stow --target / system
 # dry-run
