@@ -128,6 +128,17 @@ end
 nvim_lsp.rust_analyzer.setup {
     on_attach = M.on_attach,
     capabilities = make_rust_capabilities(),
+    settings = {
+        ["rust-analyzer"] = {
+            cargo = {
+                loadOutDirsFromCheck = true,
+                allFeatures = true,
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
 }
 
 nvim_lsp.terraformls.setup { on_attach = M.on_attach }

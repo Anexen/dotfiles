@@ -65,8 +65,11 @@ source "${__dir}/readline.bash"
 
 path_add "${HOME}/bin"
 path_add "${HOME}/.local/bin"
-path_add "${HOME}/.local/pydev-bin"
 path_add "${HOME}/.cargo/bin"
+
+if [[ -n "${GOPATH}" ]]; then
+    path_add "${GOPATH}/bin"
+fi
 
 # source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fonts.bash"
