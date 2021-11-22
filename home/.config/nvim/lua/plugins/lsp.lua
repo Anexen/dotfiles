@@ -198,6 +198,9 @@ nvim_lsp.css.setup {
 -- enable per project
 -- nvim_lsp.typescript.setup { on_attach = M.on_attach }
 
+-- :LspIntall go
+nvim_lsp.go.setup { on_attach = M.on_attach }
+
 -- paru -S deno
 -- nvim_lsp.denols.setup{
 --     on_attach = M.setup_keybindings,
