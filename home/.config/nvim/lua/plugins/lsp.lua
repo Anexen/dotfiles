@@ -1,10 +1,7 @@
--- important. creates servers in lspconfig
--- server name must match name in lspinstall
--- :LspIntall python -> nvim_lsp.python.setup(), not nvim_lsp.pyls
-require'lspinstall'.setup()
 
-local nvim_lsp = require'lspconfig'
-local utils = require'utils'
+local lsp_installer = require("nvim-lsp-installer")
+local nvim_lsp = require("lspconfig")
+local utils = require("utils")
 
 local M = {}
 
@@ -69,13 +66,31 @@ function M.on_attach(client, bufnr)
     M.setup_keybindings(client, bufnr)
 
     if utils.isModuleAvailable("lsp_signature") then
-        require"lsp_signature".on_attach{
+        require"lsp_signature".on_attach {
             bind = true,
             hint_enable = false,
             handler_opts = { border = "single" }
         }
     end
 end
+
+
+lsp_installer.on_server_ready(function(server)
+    -- This setup() function is exactly the same as lspconfig's setup function.
+    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+
+    if server.name == "rust_analyzer" then return SetupRust(server) end
+    if server.name == "sumneko_lua" then return SetupLua(server) end
+    if server.name == "cssls" then return SetupCSS(server) end
+
+    local others = {"vimls", "bashls", "gopls", "terraformls"}
+
+    if vim.tbl_contains(others, server.name) then
+        return server:setup { on_attach = M.on_attach }
+    end
+
+    error("Unknown language server: " .. server.name)
+end)
 
 -- :LspIntall dockerfile
 -- nvim_lsp.dockerfile.setup{
@@ -85,17 +100,6 @@ end
 --             or lsp_util.root_pattern("dockerfiles")(fname)
 --             or lsp_util.path.dirname(fname)
 --     end;
--- };
-
--- :LspIntall bash
-nvim_lsp.bash.setup{ on_attach = M.on_attach }
-
-
--- :LspInstall python
--- pyright under the hood
--- very slow and memory hungry
--- nvim_lsp.python.setup{
---     on_attach = setup_keybindings,
 -- };
 
 nvim_lsp.pylsp.setup {
@@ -112,7 +116,7 @@ nvim_lsp.pylsp.setup {
     }
 }
 
-local function make_rust_capabilities()
+function SetupRust(server)
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = true
     capabilities.textDocument.completion.completionItem.resolveSupport = {
@@ -122,13 +126,11 @@ local function make_rust_capabilities()
             'additionalTextEdits',
         }
     }
-    return capabilities
-end
 
-nvim_lsp.rust_analyzer.setup {
-    on_attach = M.on_attach,
-    capabilities = make_rust_capabilities(),
-    settings = {
+    local opts = server:get_default_options()
+    opts.on_attach = M.on_attach
+    opts.capabilities = capabilities
+    opts.settings = {
         ["rust-analyzer"] = {
             cargo = {
                 loadOutDirsFromCheck = true,
@@ -137,81 +139,71 @@ nvim_lsp.rust_analyzer.setup {
             procMacro = {
                 enable = true
             },
+            diagnostics = {
+                disabled = {"unresolved-proc-macro"}
+            }
         }
     }
-}
 
-nvim_lsp.terraformls.setup { on_attach = M.on_attach }
+    -- server:setup {
+    --     on_attach = M.on_attach,
+    --     capabilities = capabilities,
+    --     settings = settings
+    -- }
+    require("rust-tools").setup({server = opts})
+end
 
--- :LspInstall vim
-nvim_lsp.vim.setup { on_attach = M.on_attach }
 
--- :LspInstall lua
-
-local function lua_runtime_path()
+function SetupLua(server)
     local runtime_path = vim.split(package.path, ';')
     table.insert(runtime_path, "lua/?.lua")
     table.insert(runtime_path, "lua/?/init.lua")
-    return runtime_path
-end
 
-nvim_lsp.lua.setup {
-    on_attach = M.on_attach,
-    settings = {
-        Lua = {
-            runtime = {
-                version = 'LuaJIT',
-                path = lua_runtime_path(),
-            },
-            diagnostics = {
-                -- Get the language server to recognize the `vim` global
-                globals = {'vim'},
-            },
-            workspace = {
-                -- Make the server aware of Neovim runtime files
-                library = vim.api.nvim_get_runtime_file("", true),
-            },
-            -- Do not send telemetry data containing a randomized but unique identifier
-            telemetry = {
-                enable = false,
+    server:setup {
+        on_attach = M.on_attach,
+        settings = {
+            Lua = {
+                runtime = {
+                    version = 'LuaJIT',
+                    path = runtime_path,
+                },
+                diagnostics = {
+                    -- Get the language server to recognize the `vim` global
+                    globals = {'vim'},
+                },
+                workspace = {
+                    -- Make the server aware of Neovim runtime files
+                    library = vim.api.nvim_get_runtime_file("", true),
+                },
+                -- Do not send telemetry data containing a randomized but unique identifier
+                telemetry = {
+                    enable = false,
+                },
             },
         },
-    },
-}
+    }
+end
 
---: LspInstall css
-local function make_css_capabilities()
+
+-- :LspInstall css
+function SetupCSS(server)
     -- vscode-css-language-server only provides completions when snippet support is
     -- enabled. To enable completion, install a snippet plugin and add the following
     -- override to your language client capabilities during setup.
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = true
-    return capabilities
-end
 
-nvim_lsp.css.setup {
-    capabilities = make_css_capabilities(),
-    on_attach = M.on_attach
-}
+    server:setup {
+        on_attach = M.on_attach,
+        capabilities = capabilities,
+    }
+end
 
 -- :LspIntall typescript
 -- enable per project
 -- nvim_lsp.typescript.setup { on_attach = M.on_attach }
 
--- :LspIntall go
-nvim_lsp.go.setup { on_attach = M.on_attach }
 
--- paru -S deno
--- nvim_lsp.denols.setup{
---     on_attach = M.setup_keybindings,
---     init_options = {
---         enable = true,
---         lint = true,
---         unstable = true
---     }
--- }
-
--- paru -S sqls
 -- It causes vim to pause a second when it quits.
 -- complition not working
 -- Error when running :SqlsExecuteQuery with line visual selection
@@ -222,13 +214,5 @@ nvim_lsp.go.setup { on_attach = M.on_attach }
 --         require"sqls".setup{picker = "fzf"}
 --     end,
 -- }
-
-
--- Automatically reload after `:LspInstall <server>` so we don't have to restart neovim
--- wrap setup() into setup_servers() function
--- require'lspinstall'.post_install_hook = function ()
---   setup_servers() -- reload installed servers
---   vim.cmd("bufdo e") -- this triggers the FileType autocmd that starts the server
--- end
 
 return M

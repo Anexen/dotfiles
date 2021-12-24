@@ -1,16 +1,5 @@
 local packer = nil
 
-local function packer_bootstrap()
-    local execute = vim.api.nvim_command
-    local fn = vim.fn
-
-    local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
-    if fn.empty(fn.glob(install_path)) > 0 then
-        execute('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
-        execute 'packadd packer.nvim'
-    end
-end
-
 local function init()
     if packer == nil then
         packer = require('packer')
@@ -29,32 +18,40 @@ local function init()
     use {"wbthomason/packer.nvim", opt = true}
 
     -- Theme
+    -- use {
+    --     'laggardkernel/vim-one',
+    --     config = function()
+    --         vim.g.one_allow_italics = 1
+    --         vim.g.one_dark_syntax_bg = '#222222'
+    --         vim.cmd("colorscheme one")
+    --     end
+    -- }
+
     use {
-        'laggardkernel/vim-one',
+        'olimorris/onedarkpro.nvim',
         config = function()
-            vim.g.one_allow_italics = 1
-            vim.g.one_dark_syntax_bg = '#222222'
-            vim.cmd("colorscheme one")
+            local onedarkpro = require("onedarkpro")
+            onedarkpro.setup({
+                hlgroups = {
+                    TSVariable = { fg = "none" },
+                    TSFuncMacro = { link = "Macro" },
+                    CursorLineNr = {fg = "${blue}", style = "none" }
+                },
+                styles = {
+                    comments = "italic",
+                },
+                options = {
+                    italic = true, -- Use the themes opinionated italic styles?
+                    underline = true, -- Use the themes opinionated underline styles?
+                    undercurl = true, -- Use the themes opinionated undercurl styles?
+                    transparency = true, -- Use a transparent background?
+                    terminal_colors = true,
+                    window_unfocussed_color = true,
+                }
+            })
+            onedarkpro.load()
         end
     }
-
---     use {
---         "navarasu/onedark.nvim",
---         config = function()
---             vim.g.onedark_style = "warmer"
---             require('onedark').setup()
---             vim.cmd("colorscheme onedark")
---         end
---     }
-
---     use {
---         "folke/tokyonight.nvim",
---         config = function()
---             vim.g.tokyonight_style = "storm"
---             vim.g.tokyonight_italic_functions = true
---             vim.cmd("colorscheme tokyonight")
---         end
---     }
 
     -- Status Line and Bufferline
     -- use {
@@ -63,7 +60,7 @@ local function init()
     -- }
 
     -- Syntax highlighting
-    use "sheerun/vim-polyglot"
+    -- use "sheerun/vim-polyglot"
 
     use {
         "nvim-treesitter/nvim-treesitter",
@@ -98,7 +95,12 @@ local function init()
     -- Search
     use {
         "junegunn/fzf.vim",
-        requires = {"junegunn/fzf"}
+        requires = {"junegunn/fzf"},
+        config=function()
+            vim.g["fzf_layout"] = {
+                window = { width = 1, height = 0.4, xoffset = 0, yoffset = 1, border = "sharp" }
+            }
+        end
     }
     use {
         "jesseleite/vim-agriculture",
@@ -122,9 +124,13 @@ local function init()
     -- LSP
     use {
         "neovim/nvim-lspconfig",
-        requires = {"kabouzeid/nvim-lspinstall"},
+        requires = {
+            "williamboman/nvim-lsp-installer",
+            "simrat39/rust-tools.nvim"
+        },
         config = function() require"plugins.lsp" end,
     }
+
     use {
         "hrsh7th/nvim-compe",
         event = "InsertEnter",
@@ -257,10 +263,6 @@ end
 
 local plugins = setmetatable({}, {
     __index = function(_, key)
-        if (key == "packer_bootstrap") then
-            return packer_bootstrap
-        end
-
         init()
         return packer[key]
     end

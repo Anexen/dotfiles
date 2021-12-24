@@ -5,8 +5,21 @@ endfunction
 
 command! -nargs=+ WebSearch call WebSearch(<f-args>)
 
+lua <<EOF
+function PackerBootstrap()
+    local execute = vim.api.nvim_command
+    local fn = vim.fn
+
+    local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+        execute('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
+        execute 'packadd packer.nvim'
+    end
+end
+EOF
+
 " load packer on demand
-" command! PackerBootstrap lua require('plugins').packer_bootstrap()
+command! PackerBootstrap lua PackerBootstrap()
 command! PackerClean packadd packer.nvim | lua require('plugins').clean()
 command! PackerCompile packadd packer.nvim | lua require('plugins').compile()
 command! PackerInstall packadd packer.nvim | lua require('plugins').install()

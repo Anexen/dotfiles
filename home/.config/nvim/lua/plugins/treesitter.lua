@@ -4,14 +4,10 @@
 
 require"nvim-treesitter.configs".setup {
     -- Modules and its options go here
-    ensure_installed = {
-        "bash", "python", "rust", "dockerfile", "lua",
-        "javascript", "typescript", "tsx",
-        "html", "toml", "json",
-    },
-    highlight = { enable = false },
+    ensure_installed = "maintained",
+    highlight = { enable = true },
     incremental_selection = { enable = true },
-    -- indent = { enable = true },
+    indent = { enable = true },
     autotag = { -- windwp/nvim-ts-autotag plugin
         enable = true,
     },
