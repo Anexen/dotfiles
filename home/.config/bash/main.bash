@@ -42,6 +42,7 @@ export HISTCONTROL=ignoreboth:erasedups
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 export HISTSIZE=20000
 # export HISTFILESIZE=20000
+export HISTIGNORE="&:ls:reboot:pwd:exit:clear:bg:fg*:nvim:history"
 
 function deduplicate_history {
     tmp=$(mktemp)

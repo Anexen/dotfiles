@@ -21,7 +21,7 @@ alias ipy='ipython'
 alias suod='sudo'
 alias sduo='sudo'
 
-alias ctclip='xclip -sel clip'
+alias yank='xclip -sel clip'
 alias passgen='cat /dev/urandom | tr -dc "a-zA-Z0-9" | fold -w 32 | head -n 1'
 
 alias tree='tree -I __pycache__'

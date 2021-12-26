@@ -13,8 +13,9 @@ fi
 
 # fzf preview
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --no-ignore-vcs'
-export FZF_DEFAULT_OPTS='--layout=reverse --bind "alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up,alt-bs:execute-multi(rm {})+reload($FZF_DEFAULT_COMMAND)"'
-export FZF_CTRL_T_OPTS="--preview '(bat --color=always --style=plain {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_PREVIEW_COMMAND='(bat --color=always --style=plain --theme TwoDark {} || tree -C {}) 2> /dev/null'
+export FZF_DEFAULT_OPTS='--layout=reverse --preview-window right,50%,border-sharp --bind "alt-j:preview-down,alt-k:preview-up,ctrl-f:preview-page-down,ctrl-b:preview-page-up,alt-bs:execute-multi(rm {})+reload($FZF_DEFAULT_COMMAND)"'
+export FZF_CTRL_T_OPTS="--preview '"$FZF_PREVIEW_COMMAND" | head -200'"
 
 # fzf rm
 frm() {
