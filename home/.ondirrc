@@ -1,9 +1,11 @@
 enter ~/projects/((aprenita/)?[^/]+)
     if [[ -r "${ONDIRWD}/.python-version" && -z ${VIRTUAL_ENV} ]]; then
         workon $(cat "${ONDIRWD}/.python-version")
+        export LD_LIBRARY_PATH=${PYENV_ROOT}/versions/$(python --version | cut -d' ' -f2)/lib
     fi
 
 leave ~/projects/((aprenita/)?[^/]+)
     if [[ -n ${VIRTUAL_ENV} ]]; then
         deactivate
+        unset LD_LIBRARY_PATH
     fi
