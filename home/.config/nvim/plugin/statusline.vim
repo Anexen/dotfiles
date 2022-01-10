@@ -103,9 +103,9 @@ function! ActiveStatusLine()
     let sl_info = 0
 
     if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-        let sl_errors += luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
-        let sl_warnings += luaeval("vim.lsp.diagnostic.get_count(0, [[Warning]])")
-        let sl_info += luaeval("vim.lsp.diagnostic.get_count(0, [[Info]])")
+        let sl_errors += luaeval("#vim.diagnostic.get(0, {severity = vim.diagnostic.severity.ERROR})")
+        let sl_warnings += luaeval("#vim.diagnostic.get(0, {severity = vim.diagnostic.severity.WARNING})")
+        let sl_info += luaeval("#vim.diagnostic.get(0, {severity = vim.diagnostic.severity.INFO})")
     endif
 
     if !has_running_jobs && s:neomake_exists
