@@ -145,12 +145,18 @@ function SetupRust(server)
         }
     }
 
+    local tools = {
+        inlay_hints = {
+            only_current_line = true
+        }
+    }
+
     -- server:setup {
     --     on_attach = M.on_attach,
     --     capabilities = capabilities,
     --     settings = settings
     -- }
-    require("rust-tools").setup({server = opts})
+    require("rust-tools").setup({server = opts, tools = tools})
 end
 
 
