@@ -131,14 +131,20 @@ local function init()
         config = function() require"plugins.lsp" end,
     }
 
+    -- use {
+    --     "hrsh7th/nvim-compe",
+    --     event = "InsertEnter",
+    --     requires = {
+    --         -- "ray-x/lsp_signature.nvim",
+    --         {"tpope/vim-dadbod", ft = "sql"},
+    --         {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
+    --     },
+    --     config = function() require"plugins.completion" end
+    -- }
+
     use {
-        "hrsh7th/nvim-compe",
-        event = "InsertEnter",
-        requires = {
-            -- "ray-x/lsp_signature.nvim",
-            {"tpope/vim-dadbod", ft = "sql"},
-            {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
-        },
+        "ms-jpq/coq_nvim",
+        branch = "coq",
         config = function() require"plugins.completion" end
     }
 

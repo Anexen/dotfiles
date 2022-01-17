@@ -74,3 +74,5 @@ set termguicolors
 set background=dark
 
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
+let g:python3_host_prog = "/usr/bin/python"
