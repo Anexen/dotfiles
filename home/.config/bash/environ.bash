@@ -1,6 +1,8 @@
+#!/bin/bash
+
 export EDITOR=nvim
 export VISUAL=nvim
-# export TERM="alacritty"
+export TERM="alacritty"
 
 export SWT_GTK3=0
 

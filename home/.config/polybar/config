@@ -81,11 +81,14 @@ label-close-padding = 1
 menu-0-0 = " ⏾ |"
 menu-0-0-exec = systemctl suspend
 
-menu-0-1 = "  |"
-menu-0-1-exec = systemctl reboot
+menu-0-1 = " * |"
+menu-0-1-exec = systemctl hibernate
 
-menu-0-2 = " ⏻ "
-menu-0-2-exec = systemctl poweroff
+menu-0-2 = "  |"
+menu-0-2-exec = systemctl reboot
+
+menu-0-3 = " ⏻ "
+menu-0-3-exec = systemctl poweroff
 
 [module/menu]
 type = custom/text
