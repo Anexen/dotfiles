@@ -79,6 +79,18 @@ function! AutoImport(name, local)
 endfunction
 
 
+function! s:abc(input)
+    let line = split(a:input, "\t")
+    let @+=PathAsImport(line[1], line[-2]) . line[0]
+endfunction
+
+function! CopyTagImport()
+    call fzf#vim#tags('', fzf#vim#with_preview({
+    \   "placeholder": "--tag {2}:{-1}:{3..}",
+    \   "sink": function('s:abc'),
+    \ }))
+endfunction
+
 function! OptimizeImports()
     let fn = expand('%')
     execute '!isort -rc -sl ' . fn
@@ -115,10 +127,16 @@ function! GenerateSitePackagesTags()
     echo "Done"
 endfunction
 
+function! Noop(...)
+    return v:null
+endfunction
 
 let b:textwidth = 79
 
 setlocal foldmethod=indent nofoldenable foldlevel=5
+" prevent installation vim.lsp.tagfunc
+setlocal tagfunc=Noop
+" setlocal tagfunc={->v:null}
 
 " import yank path as import
 nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c').expand('<cword>')<CR>
@@ -131,7 +149,7 @@ nnoremap <buffer> <silent> <LocalLeader>io :silent call OptimizeImports()<CR>
 nnoremap <buffer> <LocalLeader>= :Neoformat black<CR>
 
 " debug
-nnoremap <buffer> <LocalLeader>db Oimport ipdb; ipdb.set_trace()<Esc>
+nnoremap <buffer> <LocalLeader>db Obreakpoint()<Esc>
 
 " lint
 nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>

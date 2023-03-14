@@ -27,26 +27,40 @@ local function init()
     --     end
     -- }
 
+    -- https://github.com/NTBBloodbath/rest.nvim
+    -- use {
+    --     "NTBBloodbath/rest.nvim",
+    --     requires = { "nvim-lua/plenary.nvim" },
+    -- }
+
     use {
         'olimorris/onedarkpro.nvim',
         config = function()
             local onedarkpro = require("onedarkpro")
             onedarkpro.setup({
-                hlgroups = {
-                    TSVariable = { fg = "none" },
-                    TSFuncMacro = { link = "Macro" },
-                    CursorLineNr = {fg = "${blue}", style = "none" }
+                highlights = {
+                    ["@variable"] = { fg = "NONE" },
+                    ["@variable.javascript"] = { link = "@variable" },
+                    ["@function.macro.rust"] = { link = "@function.macro"},
+                    ["@field.rust"] = { link = "@field"},
+                    -- ["@constructor.python"] = { link = "@constructor"},
+                    CursorLineNr = {fg = "${blue}" },
+                    SpellBad = { style = "underline" },
+                    SpellCap = { style = "underline" },
+                    SpellLocal = { style = "underline" },
+                    SpellRare = { style = "underline" },
                 },
                 styles = {
                     comments = "italic",
                 },
                 options = {
+                    bold = false,
                     italic = true, -- Use the themes opinionated italic styles?
                     underline = true, -- Use the themes opinionated underline styles?
                     undercurl = true, -- Use the themes opinionated undercurl styles?
                     transparency = true, -- Use a transparent background?
                     terminal_colors = true,
-                    window_unfocussed_color = true,
+                    highlight_inactive_windows = true,
                 }
             })
             onedarkpro.load()
@@ -68,6 +82,7 @@ local function init()
         run = ":TSUpdate",
         requires = {
             "nvim-treesitter/nvim-treesitter-textobjects",
+            "yioneko/nvim-yati", -- fix indents
             {"windwp/nvim-ts-autotag", ft = {"html", "xml"}}, -- autoclose and autorename html tag
             {"romgrk/nvim-treesitter-context", cmd = "TSContextToggle"},
         },
@@ -79,6 +94,17 @@ local function init()
         ft = "terraform",
         config = function()
             vim.g.terraform_fmt_on_save = 1
+        end
+    }
+
+    use {
+        "editorconfig/editorconfig-vim",
+        config = function()
+            vim.g.EditorConfig_exec_path = "/usr/bin/editorconfig"
+            vim.g.EditorConfig_core_mode = "external_command"
+            vim.g.EditorConfig_exclude_patterns = {
+                "fugitive://.*", "scp://.*", "term://.*"
+            }
         end
     }
 
@@ -104,14 +130,14 @@ local function init()
     }
     use {
         "jesseleite/vim-agriculture",
-        config=function()
+        config = function()
             vim.g["agriculture#rg_options"] = "--smart-case"
         end
     }
     use {
         'nvim-telescope/telescope.nvim',
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
-        config=function()
+        config = function()
             require('telescope').setup{
                 defaults = {
                     file_sorter =  require'telescope.sorters'.get_fzy_sorter,
@@ -125,28 +151,41 @@ local function init()
     use {
         "neovim/nvim-lspconfig",
         requires = {
-            "williamboman/nvim-lsp-installer",
-            "simrat39/rust-tools.nvim"
+            "williamboman/mason.nvim",
+            "williamboman/mason-lspconfig.nvim",
+            "simrat39/rust-tools.nvim",
+            "kosayoda/nvim-lightbulb",
+            "gfanto/fzf-lsp.nvim",
+            -- "ray-x/lsp_signature.nvim",
         },
         config = function() require"plugins.lsp" end,
     }
 
-    -- use {
-    --     "hrsh7th/nvim-compe",
-    --     event = "InsertEnter",
-    --     requires = {
-    --         -- "ray-x/lsp_signature.nvim",
-    --         {"tpope/vim-dadbod", ft = "sql"},
-    --         {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
-    --     },
-    --     config = function() require"plugins.completion" end
-    -- }
+    use {
+        "saecki/crates.nvim",
+        requires = { "nvim-lua/plenary.nvim" },
+        config = function() require("crates").setup() end,
+    }
 
     use {
-        "ms-jpq/coq_nvim",
-        branch = "coq",
+        "hrsh7th/nvim-cmp",
+        requires = {
+            -- hrsh7th/cmp-vsnip
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-path",
+            "quangnguyen30192/cmp-nvim-tags",
+            {"tpope/vim-dadbod", ft = "sql"},
+            {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
+        },
         config = function() require"plugins.completion" end
     }
+
+    -- use {
+    --     "ms-jpq/coq_nvim",
+    --     branch = "coq",
+    --     config = function() require"plugins.completion" end
+    -- }
 
     use {
         "hrsh7th/vim-vsnip",
@@ -163,9 +202,10 @@ local function init()
     use "weilbith/vim-localrc"             -- secure exrc for local configs
     use "kshenoy/vim-signature"            -- show marks in sign column
     use "farfanoide/inflector.vim"         -- string inflection
+    use "junegunn/vim-easy-align"
 
+    use {"vifm/vifm.vim"}
     use {"takac/vim-hardtime", cmd = "HardTimeToggle"}
-    use {"wellle/context.vim", cmd = "ContextToggle"}
     use {"tweekmonster/startuptime.vim", cmd = "StartupTime"}
 
 --     use {  -- displays latest package versions in package.json file as virtual text.
@@ -187,10 +227,13 @@ local function init()
         end
     }
 
-    -- use { -- changes working directory to the project root
-    --     "airblade/vim-rooter",
-    --     config = function() require"plugins.rooter" end,
-    -- }
+    use {
+        "jbyuki/instant.nvim",
+        opt = true,
+        config = function()
+            vim.g.instant_username = "Alexander"
+        end
+    }
 
     use { -- changes working directory to the project root
         "ahmedkhalf/project.nvim",
@@ -255,6 +298,17 @@ local function init()
         config = function() require"plugins.iron" end,
         opt = true,
     }
+
+    -- use {
+    --     "~/projects/satellite.nvim",
+    --     config = function()
+    --         require"satellite".setup {
+    --             winblend = 0,
+    --             -- handlers = { marks = { enable = false }}
+    --         }
+    --     end
+    -- }
+
     -- use 'mfussenegger/nvim-dap'
     --Plug "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
     --Plug "dhruvasagar/vim-table-mode"       " automatic table creator & formatter

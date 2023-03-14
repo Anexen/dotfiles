@@ -212,7 +212,8 @@ nnoremap <Leader>sb :BLines<CR>
 nmap <Leader>sw <Plug>RgRawWordUnderCursor<CR>
 nmap <Leader>sl :Rg<Up><CR>
 nnoremap <Leader>st :Tags<CR>
-nnoremap <expr> <Leader>sd ":Tags " . expand('<cword>') . "<CR>"
+nnoremap <expr> <Leader>s<S-d> ":Tags " . expand('<cword>') . "<CR>"
+nnoremap <expr> <Leader>sd "<Plug>RgRawSearch-- '" . input("> ") . "' " . expand('%:h') . "<CR>"
 nnoremap <Leader>sp :Rg<CR>
 nnoremap <Leader>sg :call WebSearch(expand('<cword>'))<CR>
 

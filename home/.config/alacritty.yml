@@ -3,6 +3,7 @@ window:
   startup_mode: Maximized
   scrolling: 9999
   dynamic_title: true
+  opacity: 0.95
 
 font:
   size: 9.0
@@ -44,6 +45,3 @@ colors:
     magenta: '#D291E4'
     cyan:    '#65C2CD'
     white:   '#E3E5E9'
-
-
-background_opacity: 0.95

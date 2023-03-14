@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
+  if [[ -f /usr/share/bash-completion/bash_completion ]]; then
     source /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
+  elif [[ -f /etc/bash_completion ]]; then
     source /etc/bash_completion
   fi
 fi
 
-# aws cli v2 completion
-complete -C aws_completer aws
+# complete -C /usr/bin/aws_completer aws
+# complete -C /usr/bin/terraform terraform
 
 # complete -W "$(_parse_help ./myscript)" ./myscript
 
@@ -25,4 +25,8 @@ if [[ -f /usr/share/bash-complete-alias/complete_alias ]]; then
     for a in $(alias | cut -d= -f1 | cut -d' ' -f2); do
         complete -F _complete_alias $a;
     done
+fi
+
+if _command_exists cargo-shuttle; then
+    source <(cargo shuttle generate -s bash)
 fi

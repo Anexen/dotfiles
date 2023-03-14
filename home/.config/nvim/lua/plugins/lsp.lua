@@ -1,16 +1,11 @@
+require("mason").setup()
+require("mason-lspconfig").setup()
+require("fzf_lsp").setup()
 
-local lsp_installer = require("nvim-lsp-installer")
 local nvim_lsp = require("lspconfig")
 local utils = require("utils")
 
 local M = {}
-
-vim.lsp.handlers["textDocument/references"] = vim.lsp.with(
-    vim.lsp.handlers["textDocument/references"], {
-        -- Use location list instead of quickfix list
-        loclist = true,
-    }
-)
 
 -- local goto_definition = vim.lsp.handlers["textDocument/definition"];
 
@@ -35,12 +30,13 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 
 -- customize signs
 vim.cmd [[
-sign define LspDiagnosticsSignError text=● texthl=LspDiagnosticsSignError linehl= numhl=
-sign define LspDiagnosticsSignWarning text=● texthl=LspDiagnosticsSignWarning linehl= numhl=
-sign define LspDiagnosticsSignInformation text=● texthl=LspDiagnosticsSignInformation linehl= numhl=
-sign define LspDiagnosticsSignHint text=● texthl=LspDiagnosticsSignHint linehl= numhl=
+    sign define LspDiagnosticsSignError text=● texthl=LspDiagnosticsSignError linehl= numhl=
+    sign define LspDiagnosticsSignWarning text=● texthl=LspDiagnosticsSignWarning linehl= numhl=
+    sign define LspDiagnosticsSignInformation text=● texthl=LspDiagnosticsSignInformation linehl= numhl=
+    sign define LspDiagnosticsSignHint text=● texthl=LspDiagnosticsSignHint linehl= numhl=
 ]]
 
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 
 function M.setup_keybindings(_, bufnr)
     local nnoremap = function(lhs, rhs) utils.nnoremap(bufnr, lhs, rhs) end
@@ -74,23 +70,38 @@ function M.on_attach(client, bufnr)
     end
 end
 
+function M.root_pattern(...)
+    return vim.fs.dirname(vim.fs.find({ ... }, { upward = true })[1])
+end
 
-lsp_installer.on_server_ready(function(server)
-    -- This setup() function is exactly the same as lspconfig's setup function.
-    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+nvim_lsp.util.default_config = vim.tbl_extend(
+    "force",
+    nvim_lsp.util.default_config,
+    { on_attach = M.on_attach }
+)
 
-    if server.name == "rust_analyzer" then return SetupRust(server) end
-    if server.name == "sumneko_lua" then return SetupLua(server) end
-    if server.name == "cssls" then return SetupCSS(server) end
+nvim_lsp.vimls.setup {}
+nvim_lsp.bashls.setup {}
+nvim_lsp.gopls.setup {}
 
-    local others = {"vimls", "bashls", "gopls", "terraformls"}
+nvim_lsp.terraformls.setup {}
 
-    if vim.tbl_contains(others, server.name) then
-        return server:setup { on_attach = M.on_attach }
-    end
+-- vim.api.nvim_create_autocmd('FileType', {
+--     pattern = { 'terraform' },
+--     callback = function()
+--         vim.lsp.start({
+--             name = 'terraformls',
+--             cmd = { 'terraform-ls', 'serve' },
+--             root_dir = M.root_pattern('.terraform', '.git'),
+--         })
+--     end,
+-- })
 
-    error("Unknown language server: " .. server.name)
-end)
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--     callback = function(args)
+--         M.on_attach(args.client, args.buf)
+--     end
+-- })
 
 -- :LspIntall dockerfile
 -- nvim_lsp.dockerfile.setup{
@@ -103,7 +114,6 @@ end)
 -- };
 
 nvim_lsp.pylsp.setup {
-    on_attach = M.on_attach,
     -- available settings at https://github.com/python-lsp/python-lsp-server/blob/develop/pylsp/config/schema.json
     settings = {
         pylsp = {
@@ -111,12 +121,17 @@ nvim_lsp.pylsp.setup {
                 pycodestyle = { enabled = false },
                 pylint = { enabled = false },
                 yapf = { enabled = false },
+                pylsp_mypy = { enabled = false },
             }
         }
     }
 }
 
-function SetupRust(server)
+-- nvim_lsp.pyright.setup {
+--     autostart = false,
+-- }
+
+local function SetupRust()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities.textDocument.completion.completionItem.snippetSupport = true
     capabilities.textDocument.completion.completionItem.resolveSupport = {
@@ -127,8 +142,7 @@ function SetupRust(server)
         }
     }
 
-    local opts = server:get_default_options()
-    opts.on_attach = M.on_attach
+    local opts = {}
     opts.capabilities = capabilities
     opts.settings = {
         ["rust-analyzer"] = {
@@ -141,7 +155,19 @@ function SetupRust(server)
             },
             diagnostics = {
                 disabled = {"unresolved-proc-macro"}
-            }
+            },
+            workspace = {
+                symbol = {
+                    search = {
+                        scope = "workspace_and_dependencies"
+                    }
+                }
+            },
+            inlayHints = {
+                locationLinks = false,
+                -- lifetimeElisionHints = { enable = "always" },
+                -- reborrowHints = { enable = "always" },
+            },
         }
     }
 
@@ -160,13 +186,14 @@ function SetupRust(server)
 end
 
 
+SetupRust()
+
 function SetupLua(server)
     local runtime_path = vim.split(package.path, ';')
     table.insert(runtime_path, "lua/?.lua")
     table.insert(runtime_path, "lua/?/init.lua")
 
-    server:setup {
-        on_attach = M.on_attach,
+    server.setup {
         settings = {
             Lua = {
                 runtime = {
@@ -191,6 +218,8 @@ function SetupLua(server)
 end
 
 
+SetupLua(nvim_lsp.lua_ls)
+
 -- :LspInstall css
 function SetupCSS(server)
     -- vscode-css-language-server only provides completions when snippet support is
@@ -200,7 +229,6 @@ function SetupCSS(server)
     capabilities.textDocument.completion.completionItem.snippetSupport = true
 
     server:setup {
-        on_attach = M.on_attach,
         capabilities = capabilities,
     }
 end

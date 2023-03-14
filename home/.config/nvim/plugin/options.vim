@@ -75,4 +75,6 @@ set background=dark
 
 set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
 
+set tags=tags
+
 let g:python3_host_prog = "/usr/bin/python"

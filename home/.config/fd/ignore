@@ -1,6 +1,7 @@
 .git
 .terraform
 undodir
+tags
 
 # python
 __pycache__
@@ -16,3 +17,6 @@ target
 # target/debug
 # target/release
 # target/rls
+
+# js
+node_modules

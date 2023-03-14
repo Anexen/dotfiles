@@ -26,7 +26,7 @@ default_border none
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock -n /usr/lib/xsecurelock/dimmer -l -- xsecurelock
+# exec --no-startup-id xss-lock -n /usr/lib/xsecurelock/dimmer -l -- xsecurelock
 # bindsym Control+Mod1+L exec --no-startup-id loginctl lock-session
 bindsym Control+Mod1+L exec --no-startup-id "sleep 1 && xset dpms force standby"
 # exec --no-startup-id xset s 300 5
