@@ -1,331 +1,337 @@
-local packer = nil
+return {
+	-- Theme
+	{
+		"olimorris/onedarkpro.nvim",
+		priority = 1000, -- Ensure it loads first
+		opts = {
+			highlights = {
+				["@variable"] = { fg = "NONE" },
+				["@variable.javascript"] = { link = "@variable" },
+				["@variable.rust"] = { link = "@variable" },
+				["@variable.typescript"] = { link = "@variable" },
+				["@function.macro.rust"] = { link = "@function.macro" },
+				["@field.rust"] = { link = "@field" },
+				["@include.python"] = { link = "@include" },
+				-- ["@constructor.python"] = { link = "@constructor"},
+				CursorLineNr = { fg = "${blue}" },
+				SpellBad = { style = "underline" },
+				SpellCap = { style = "underline" },
+				SpellLocal = { style = "underline" },
+				SpellRare = { style = "underline" },
+			},
+			styles = {
+				comments = "italic",
+			},
+			options = {
+				bold = false,
+				italic = true, -- Use the themes opinionated italic styles?
+				underline = true, -- Use the themes opinionated underline styles?
+				undercurl = true, -- Use the themes opinionated undercurl styles?
+				transparency = true, -- Use a transparent background?
+				terminal_colors = true,
+				highlight_inactive_windows = true,
+			},
+		},
+		config = function(_, opts)
+			require("onedarkpro").setup(opts)
+			vim.cmd("colorscheme onedark")
+		end,
+	},
 
-local function init()
-    if packer == nil then
-        packer = require('packer')
-        packer.init({
-            disable_commands = true,
-            display = {
-                open_fn = require('packer.util').float,
-            }
-        })
-    end
+	-- https://github.com/NTBBloodbath/rest.nvim
+	-- {
+	--     "NTBBloodbath/rest.nvim",
+	--     dependencies = { "nvim-lua/plenary.nvim" },
+	-- },
 
-    local use = packer.use
-    packer.reset()
+	-- Status Line and Bufferline
+	-- {
+	--     "glepnir/galaxyline.nvim",
+	--     config = function() require'plugins.galaxyline' end,
+	-- },
 
-    -- Packer can manage itself
-    use {"wbthomason/packer.nvim", opt = true}
+	{
+		"nvim-treesitter/nvim-treesitter",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			"nvim-treesitter/nvim-treesitter-context",
+			-- "CKolkey/ts-node-action",
+			"yioneko/nvim-yati", -- fix indents
+			"JoosepAlviste/nvim-ts-context-commentstring", -- setting the commentstring option based on the cursor location in the file
+			{ "windwp/nvim-ts-autotag", ft = { "html", "xml" } }, -- autoclose and autorename html tag
+		},
+		build = ":TSUpdate",
+		config = function()
+			require("config.treesitter")
+		end,
+	},
 
-    -- Theme
-    -- use {
-    --     'laggardkernel/vim-one',
-    --     config = function()
-    --         vim.g.one_allow_italics = 1
-    --         vim.g.one_dark_syntax_bg = '#222222'
-    --         vim.cmd("colorscheme one")
-    --     end
-    -- }
+	{
+		"hashivim/vim-terraform",
+		ft = "terraform",
+		init = function()
+			vim.g.terraform_fmt_on_save = 1
+		end,
+	},
 
-    -- https://github.com/NTBBloodbath/rest.nvim
-    -- use {
-    --     "NTBBloodbath/rest.nvim",
-    --     requires = { "nvim-lua/plenary.nvim" },
-    -- }
+	-- Git
+	{
+		"lewis6991/gitsigns.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		event = "BufRead",
+		opts = {},
+	},
 
-    use {
-        'olimorris/onedarkpro.nvim',
-        config = function()
-            local onedarkpro = require("onedarkpro")
-            onedarkpro.setup({
-                highlights = {
-                    ["@variable"] = { fg = "NONE" },
-                    ["@variable.javascript"] = { link = "@variable" },
-                    ["@function.macro.rust"] = { link = "@function.macro"},
-                    ["@field.rust"] = { link = "@field"},
-                    -- ["@constructor.python"] = { link = "@constructor"},
-                    CursorLineNr = {fg = "${blue}" },
-                    SpellBad = { style = "underline" },
-                    SpellCap = { style = "underline" },
-                    SpellLocal = { style = "underline" },
-                    SpellRare = { style = "underline" },
-                },
-                styles = {
-                    comments = "italic",
-                },
-                options = {
-                    bold = false,
-                    italic = true, -- Use the themes opinionated italic styles?
-                    underline = true, -- Use the themes opinionated underline styles?
-                    undercurl = true, -- Use the themes opinionated undercurl styles?
-                    transparency = true, -- Use a transparent background?
-                    terminal_colors = true,
-                    highlight_inactive_windows = true,
-                }
-            })
-            onedarkpro.load()
-        end
-    }
+	{ "tpope/vim-fugitive", event = "BufRead" },
+	{ "junegunn/gv.vim", cmd = "GV" },
 
-    -- Status Line and Bufferline
-    -- use {
-    --     "glepnir/galaxyline.nvim",
-    --     config = function() require'plugins.galaxyline' end,
-    -- }
+	-- Search
+	{
+		"junegunn/fzf.vim",
+		dependencies = {
+			"junegunn/fzf",
+			"jesseleite/vim-agriculture",
+		},
+		init = function()
+			vim.g["agriculture#rg_options"] = "--smart-case"
+			vim.g["fzf_layout"] = {
+				window = { width = 1, height = 0.4, xoffset = 0, yoffset = 1, border = "sharp" },
+			}
+		end,
+	},
 
-    -- Syntax highlighting
-    -- use "sheerun/vim-polyglot"
+	-- LSP
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"williamboman/mason.nvim",
+			"williamboman/mason-lspconfig.nvim",
+			"kosayoda/nvim-lightbulb",
+			"gfanto/fzf-lsp.nvim",
+			-- "ray-x/lsp_signature.nvim",
+			-- "jose-elias-alvarez/typescript.nvim",
+			"simrat39/rust-tools.nvim",
+		},
+		config = function()
+			require("config.lsp")
+		end,
+	},
 
-    use {
-        "nvim-treesitter/nvim-treesitter",
-        -- disable = true,
-        run = ":TSUpdate",
-        requires = {
-            "nvim-treesitter/nvim-treesitter-textobjects",
-            "yioneko/nvim-yati", -- fix indents
-            {"windwp/nvim-ts-autotag", ft = {"html", "xml"}}, -- autoclose and autorename html tag
-            {"romgrk/nvim-treesitter-context", cmd = "TSContextToggle"},
-        },
-        config = function() require"plugins.treesitter" end
-    }
+	{
+		"saecki/crates.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		ft = "toml",
+		opts = {},
+	},
 
-    use {
-        "hashivim/vim-terraform",
-        ft = "terraform",
-        config = function()
-            vim.g.terraform_fmt_on_save = 1
-        end
-    }
+	{ -- displays latest package versions in package.json file as virtual text.
+		"vuki656/package-info.nvim",
+		ft = "json",
+		opts = {},
+	},
 
-    use {
-        "editorconfig/editorconfig-vim",
-        config = function()
-            vim.g.EditorConfig_exec_path = "/usr/bin/editorconfig"
-            vim.g.EditorConfig_core_mode = "external_command"
-            vim.g.EditorConfig_exclude_patterns = {
-                "fugitive://.*", "scp://.*", "term://.*"
-            }
-        end
-    }
+	{
+		"hrsh7th/nvim-cmp",
+		dependencies = {
+			-- hrsh7th/cmp-vsnip
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-path",
+			"quangnguyen30192/cmp-nvim-tags",
+			{ "tpope/vim-dadbod", ft = "sql" },
+			{ "kristijanhusak/vim-dadbod-completion", ft = "sql" },
+		},
+		config = function()
+			require("config.completion")
+		end,
+	},
 
-    -- Git
-    use {
-        "lewis6991/gitsigns.nvim",
-        event = "BufRead",
-        config = function() require("gitsigns").setup() end,
-        requires = { "nvim-lua/plenary.nvim" },
-    }
-    use {"tpope/vim-fugitive", event = "BufRead"}
-    use {"junegunn/gv.vim", cmd = "GV"}
+	-- Linters and Fixers
+	{ "neomake/neomake", cmd = "Neomake" },
+	{ "sbdchd/neoformat", cmd = "Neoformat" },
 
-    -- Search
-    use {
-        "junegunn/fzf.vim",
-        requires = {"junegunn/fzf"},
-        config=function()
-            vim.g["fzf_layout"] = {
-                window = { width = 1, height = 0.4, xoffset = 0, yoffset = 1, border = "sharp" }
-            }
-        end
-    }
-    use {
-        "jesseleite/vim-agriculture",
-        config = function()
-            vim.g["agriculture#rg_options"] = "--smart-case"
-        end
-    }
-    use {
-        'nvim-telescope/telescope.nvim',
-        requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}},
-        config = function()
-            require('telescope').setup{
-                defaults = {
-                    file_sorter =  require'telescope.sorters'.get_fzy_sorter,
-                    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
-                }
-            }
-        end
-    }
+	-- Miscellaneous
+	"stefandtw/quickfix-reflector.vim", -- edit entries in QuickFix window
+	{ "yorickpeterse/nvim-pqf", event = "VeryLazy", opts = {} },
 
-    -- LSP
-    use {
-        "neovim/nvim-lspconfig",
-        requires = {
-            "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
-            "simrat39/rust-tools.nvim",
-            "kosayoda/nvim-lightbulb",
-            "gfanto/fzf-lsp.nvim",
-            -- "ray-x/lsp_signature.nvim",
-        },
-        config = function() require"plugins.lsp" end,
-    }
+	{ "mizlan/iswap.nvim", cmd = "ISwap", opts = {} },
+	"farfanoide/inflector.vim", -- string inflection
 
-    use {
-        "saecki/crates.nvim",
-        requires = { "nvim-lua/plenary.nvim" },
-        config = function() require("crates").setup() end,
-    }
+	-- show marks in sign column
+	{ "kshenoy/vim-signature", event = "VeryLazy" },
+	{ "takac/vim-hardtime", cmd = "HardTimeToggle" },
+	{ "tweekmonster/startuptime.vim", cmd = "StartupTime" },
 
-    use {
-        "hrsh7th/nvim-cmp",
-        requires = {
-            -- hrsh7th/cmp-vsnip
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-path",
-            "quangnguyen30192/cmp-nvim-tags",
-            {"tpope/vim-dadbod", ft = "sql"},
-            {"kristijanhusak/vim-dadbod-completion", ft = "sql"},
-        },
-        config = function() require"plugins.completion" end
-    }
+	{ -- because sudo trick does not work on neovim.
+		"lambdalisue/suda.vim",
+		init = function()
+			vim.g.suda_smart_edit = 1
+		end,
+	},
 
-    -- use {
-    --     "ms-jpq/coq_nvim",
-    --     branch = "coq",
-    --     config = function() require"plugins.completion" end
-    -- }
+	{ -- generate tags in background
+		"ludovicchabant/vim-gutentags",
+		event = "VeryLazy",
+		config = function()
+			vim.g.gutentags_generate_on_new = 0
+			vim.g.gutentags_generate_on_missing = 0
+			vim.g.gutentags_generate_on_write = 1
 
-    use {
-        "hrsh7th/vim-vsnip",
-        requires = {"hrsh7th/vim-vsnip-integ"}
-    }
+			-- extra project roots
+			vim.g.gutentags_project_root = { "Cargo.toml" }
+			vim.g.gutentags_add_default_project_roots = 1
 
-    -- Linters and Fixers
-    use "neomake/neomake"
-    use "sbdchd/neoformat"
+			vim.g.gutentags_ctags_extra_args = { "--languages=python,rust,typescript" }
+			vim.g.gutentags_ctags_exclude = {
+				".git",
+				".tox",
+				".mypy_cache",
+				".ipynb_checkpoints",
+				"__pycache__",
+				"*.min.js",
+				"target",
+			}
+		end,
+	},
 
-    -- Miscellaneous
-    use "stefandtw/quickfix-reflector.vim" -- edit entries in QuickFix window
-    use "lambdalisue/suda.vim"             -- because sudo trick does not work on neovim.
-    use "weilbith/vim-localrc"             -- secure exrc for local configs
-    use "kshenoy/vim-signature"            -- show marks in sign column
-    use "farfanoide/inflector.vim"         -- string inflection
-    use "junegunn/vim-easy-align"
+	{
+		"majutsushi/tagbar",
+		cmd = "TagbarToggle",
+		init = function()
+			vim.g.tagbar_sort = 0
+			vim.g.tagbar_foldlevel = 0
+			vim.g.tagbar_autofocus = 1
+			vim.g.tagbar_compact = 1
+		end,
+	},
 
-    use {"vifm/vifm.vim"}
-    use {"takac/vim-hardtime", cmd = "HardTimeToggle"}
-    use {"tweekmonster/startuptime.vim", cmd = "StartupTime"}
+	{
+		"mbbill/undotree",
+		cmd = "UndotreeToggle",
+		init = function()
+			vim.g.undotree_WindowLayout = 2
+		end,
+	},
 
---     use {  -- displays latest package versions in package.json file as virtual text.
---         "vuki656/package-info.nvim",
---         config = function () require("package-info").setup() end
---     }
+	{
+		"jbyuki/instant.nvim",
+		optional = true,
+		init = function()
+			vim.g.instant_username = "Alexander"
+		end,
+	},
 
-    use { -- generate tags in background
-        "ludovicchabant/vim-gutentags",
-        config = function() require"plugins.tags" end,
-    }
-    use {"majutsushi/tagbar", cmd = "TagbarToggle"}
+	{ -- changes working directory to the project root
+		"ahmedkhalf/project.nvim",
+		main = "project_nvim",
+		opts = {
+			manual_mode = true,
+			detection_methods = { "pattern" },
+			patterns = {
+				".python-version",
+				"Cargo.toml",
+				"=site-packages",
+				".git",
+				"init.vim",
+			},
+		},
+	},
 
-    use {
-        "mbbill/undotree",
-        cmd = "UndotreeToggle",
-        config = function()
-            vim.g.undotree_WindowLayout = 2
-        end
-    }
+	{
+		"glacambre/firenvim",
+		cond = not not vim.g.started_by_firenvim,
+		build = function()
+			require("lazy").load({ plugins = "firenvim", wait = true })
+			vim.fn["firenvim#install"](0)
+		end,
+		init = function()
+			vim.g.firenvim_config = {
+				localSettings = {
+					[".*"] = {
+						cmdline = "neovim",
+						priority = 0,
+						selector = "textarea",
+						takeover = "never",
+					},
+				},
+			}
+		end,
+	},
 
-    use {
-        "jbyuki/instant.nvim",
-        opt = true,
-        config = function()
-            vim.g.instant_username = "Alexander"
-        end
-    }
+	{ -- Google Translate
+		"skanehira/translate.vim",
+		cmd = "Translate",
+		init = function()
+			vim.g.translate_source = "en"
+			vim.g.translate_target = "ru"
+		end,
+	},
 
-    use { -- changes working directory to the project root
-        "ahmedkhalf/project.nvim",
-        config = function()
-            require("project_nvim").setup {
-                manual_mode = true,
-                detection_methods = { "pattern" },
-                patterns = {
-                    ".python-version",
-                    "Cargo.toml",
-                    "=site-packages",
-                    ".git",
-                    "init.vim",
-                }
-            }
-        end
-    }
+	{
+		"terrortylor/nvim-comment",
+		main = "nvim_comment",
+		opts = {
+			marker_padding = true,
+			comment_empty = true,
+			line_mapping = "<leader>cl",
+			operator_mapping = "<leader>c",
+			hook = function()
+				require("ts_context_commentstring.internal").update_commentstring()
+			end,
+		},
+	},
 
-    use {
-        "glacambre/firenvim",
-        run = function() vim.fn["firenvim#install"](0) end,
-        config = function() require"plugins.firenvim" end,
-    }
+	{ -- colorizer
+		"rrethy/vim-hexokinase",
+		build = "make hexokinase",
+		cmd = "HexokinaseToggle",
+		init = function()
+			vim.g.Hexokinase_ftEnabled = {}
+			vim.g.Hexokinase_highlighters = { "backgroundfull" }
+			vim.g.Hexokinase_refreshEvents = { "TextChanged", "InsertLeave" }
+			vim.g.Hexokinase_optInPatterns = {
+				"full_hex",
+				"triple_hex",
+				"colour_names",
+				"rgb",
+				"rgba",
+				"hsl",
+				"hsla",
+			}
+		end,
+	},
 
-    use {  -- Google Translate
-        "skanehira/translate.vim",
-        cmd = "Translate",
-        config = function()
-            vim.g.translate_source = "en"
-            vim.g.translate_target = "ru"
-        end
-    }
+	{ -- Markdown preview
+		"iamcco/markdown-preview.nvim",
+		ft = "markdown",
+		cmd = "MarkdownPreview",
+		build = function()
+			vim.fn["mkdp#util#install"]()
+		end,
+	},
 
-    use {
-        "terrortylor/nvim-comment",
-        config = function()
-            require("nvim_comment").setup({
-                marker_padding = true,
-                comment_empty = false,
-                line_mapping = "<leader>cl",
-                operator_mapping = "<leader>c"
-            })
-        end
-    }
+	-- { -- Interactive Repls Over Neovim
+	--     "hkupty/iron.nvim",
+	--     config = function() require"config.iron" end,
+	--     optional = true,
+	-- }
 
-    use {  -- colorizer
-        "rrethy/vim-hexokinase",
-        run = "make hexokinase",
-        cmd = "HexokinaseToggle",
-        config = function() require"plugins.hexokinase" end
-    }
+	-- {
+	--     "lewis6991/satellite.nvim",
+	--     opts = {
+	--          winblend = 0,
+	--          -- handlers = { marks = { enable = false }}
+	--      }
+	-- }
 
-    use { -- Markdown preview
-        "iamcco/markdown-preview.nvim",
-        ft = "markdown",
-        cmd = "MarkdownPreview",
-        run = function() vim.fn["mkdp#util#install"]() end,
-    }
+	-- "ms-jpq/chadtree"
+	-- 'mfussenegger/nvim-dap'
+	-- "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
+	-- "dhruvasagar/vim-table-mode"       " automatic table creator & formatter
 
-    use { -- Interactive Repls Over Neovim
-        "hkupty/iron.nvim",
-        config = function() require"plugins.iron" end,
-        opt = true,
-    }
-
-    -- use {
-    --     "~/projects/satellite.nvim",
-    --     config = function()
-    --         require"satellite".setup {
-    --             winblend = 0,
-    --             -- handlers = { marks = { enable = false }}
-    --         }
-    --     end
-    -- }
-
-    -- use 'mfussenegger/nvim-dap'
-    --Plug "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
-    --Plug "dhruvasagar/vim-table-mode"       " automatic table creator & formatter
-
-    --" to try:
-    --" Plug "wellle/targets.vim"
-    --" Plug "justinmk/vim-sneak"               " ? replaces s, but faster then f
-    --" Plug "ripxorip/aerojump.nvim"
-
-
-end
-
-local plugins = setmetatable({}, {
-    __index = function(_, key)
-        init()
-        return packer[key]
-    end
-})
-
-return plugins
+	-- to try:
+	-- "bennypowers/nvim-regexplainer"
+	-- "wellle/targets.vim"
+	-- "justinmk/vim-sneak"               " ? replaces s, but faster then f
+	-- "ripxorip/aerojump.nvim"
+}

@@ -114,13 +114,13 @@ endfunction
 function! GenerateSitePackagesTags()
     let site_packages = FindSitePackagesPaths()
 
-	let code =<< trim END
-	import sys, os
-	for path in sys.argv[1:]:
-		os.chdir(path)
-		os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
-		os.system("sed -i '/\/\^ /d' tags")
-	END
+	let code =<< END
+import sys, os
+for path in sys.argv[1:]:
+    os.chdir(path)
+    os.system("ctags -R --languages=python --exclude=site-packages --exclude=test")
+    os.system("sed -i '/\/\^ /d' tags")
+END
 
     call system('python - ' . join(site_packages, ' '), code)
 
@@ -137,6 +137,8 @@ setlocal foldmethod=indent nofoldenable foldlevel=5
 " prevent installation vim.lsp.tagfunc
 setlocal tagfunc=Noop
 " setlocal tagfunc={->v:null}
+"
+setlocal spellfile=~/.config/nvim/spell/python.utf-8.add
 
 " import yank path as import
 nnoremap <buffer> <silent> <LocalLeader>iy :let @+=PathAsImport(expand('%:f'), 'c').expand('<cword>')<CR>
@@ -155,3 +157,4 @@ nnoremap <buffer> <LocalLeader>db Obreakpoint()<Esc>
 nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>
 nnoremap <buffer> <LocalLeader>lf :Neomake flake8<CR>
 nnoremap <buffer> <LocalLeader>lp :Neomake pylint<CR>
+

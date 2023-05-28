@@ -60,6 +60,7 @@ end
 
 function M.on_attach(client, bufnr)
     M.setup_keybindings(client, bufnr)
+    client.server_capabilities.semanticTokensProvider = nil
 
     if utils.isModuleAvailable("lsp_signature") then
         require"lsp_signature".on_attach {
@@ -70,6 +71,13 @@ function M.on_attach(client, bufnr)
     end
 end
 
+function M.on_init(client)
+    if client.server_capabilities then
+        -- disable LSP Semantic Tokens
+        client.server_capabilities.semanticTokensProvider = false
+    end
+end
+
 function M.root_pattern(...)
     return vim.fs.dirname(vim.fs.find({ ... }, { upward = true })[1])
 end
@@ -77,13 +85,16 @@ end
 nvim_lsp.util.default_config = vim.tbl_extend(
     "force",
     nvim_lsp.util.default_config,
-    { on_attach = M.on_attach }
+    {
+        -- on_init = M.on_init,
+        on_attach = M.on_attach,
+    }
 )
 
 nvim_lsp.vimls.setup {}
 nvim_lsp.bashls.setup {}
 nvim_lsp.gopls.setup {}
-
+nvim_lsp.docker_compose_language_service.setup {}
 nvim_lsp.terraformls.setup {}
 
 -- vim.api.nvim_create_autocmd('FileType', {

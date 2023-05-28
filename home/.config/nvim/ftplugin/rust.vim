@@ -7,3 +7,5 @@ nnoremap <buffer> <LocalLeader>cr :!cargo run --release<CR>
 nnoremap <buffer> <LocalLeader>c<S-r> :!cargo run --release<CR>
 nnoremap <buffer> <LocalLeader>ct :!cargo test<CR>
 nnoremap <buffer> <LocalLeader>c<S-t> :!cargo test<CR>
+
+setlocal spellfile=~/.config/nvim/spell/rust.utf-8.add
