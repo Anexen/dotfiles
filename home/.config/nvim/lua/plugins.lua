@@ -147,8 +147,8 @@ return {
 	},
 
 	-- Linters and Fixers
-	{ "neomake/neomake", cmd = "Neomake" },
-	{ "sbdchd/neoformat", cmd = "Neoformat" },
+	{ "neomake/neomake" },
+	{ "sbdchd/neoformat" },
 
 	-- Miscellaneous
 	"stefandtw/quickfix-reflector.vim", -- edit entries in QuickFix window

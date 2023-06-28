@@ -15,6 +15,10 @@ require("nvim-treesitter.configs").setup({
     context_commentstring = { -- JoosepAlviste/nvim-ts-context-commentstring
         enable = true,
         enable_autocmd = false,
+        config = {
+            yaml = "# %s",
+            bash = "# %s",
+        },
     },
     textobjects = {
 		select = {

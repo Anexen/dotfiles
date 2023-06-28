@@ -2,33 +2,34 @@ vim.o.completeopt = "menuone,noselect"
 vim.o.pumheight = 20
 
 local cmp = require('cmp')
+local compare = require('cmp.config.compare')
 
 local kind_icons = {
     Text = "",
-    Method = "",
-    Function = "",
+    Method = "󰆧",
+    Function = "󰊕",
     Constructor = "",
-    Field = "",
-    Variable = "",
-    Class = "ﴯ",
+    Field = "󰇽",
+    Variable = "󰂡",
+    Class = "󰠱",
     Interface = "",
     Module = "",
-    Property = "ﰠ",
+    Property = "󰜢",
     Unit = "",
-    Value = "",
+    Value = "󰎠",
     Enum = "",
-    Keyword = "",
+    Keyword = "󰌋",
     Snippet = "",
-    Color = "",
-    File = "",
+    Color = "󰏘",
+    File = "󰈙",
     Reference = "",
-    Folder = "",
+    Folder = "󰉋",
     EnumMember = "",
-    Constant = "",
+    Constant = "󰏿",
     Struct = "",
     Event = "",
-    Operator = "",
-    TypeParameter = ""
+    Operator = "󰆕",
+    TypeParameter = "󰅲",
 }
 
 local function get_bufnrs()
@@ -47,22 +48,32 @@ end
 cmp.setup {
     sources = {
         -- { name = 'vsnip' },
-        { name = 'nvim_lsp', priority = 1000 },
-        { name = 'buffer', get_bufnrs = get_bufnrs, priority = 100},
-        { name = 'tags', priority = 90 },
+        { name = 'nvim_lsp', priority = 100 },
+        { name = 'buffer', priority = 99, option = { get_bufnrs = get_bufnrs }},
+        { name = 'tags', priority = 98 },
         { name = 'path' },
         { name = 'vim-dadbod-completion' },
     },
+    sorting = {
+      comparators = {
+        compare.score,
+        compare.exact,
+        compare.kind,
+        compare.offset,
+        compare.recently_used,
+        compare.locality,
+        compare.order,
+      },
+    },
     formatting = {
+        fields = { "kind", "abbr", "menu" },
         format = function(entry, vim_item)
             -- Kind icons
             -- This concatonates the icons with the name of the item kind
-            vim_item.kind = string.format(
-                '%s %s', kind_icons[vim_item.kind], vim_item.kind
-            )
+            vim_item.kind = kind_icons[vim_item.kind]
             -- Source
             vim_item.menu = ({
-                buffer = "[Buffer]",
+                buffer = "[Buf]",
                 nvim_lsp = "[LSP]",
                 path = "[Path]",
                 tags = "[Tag]",
