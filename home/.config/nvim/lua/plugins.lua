@@ -12,6 +12,7 @@ return {
 				["@function.macro.rust"] = { link = "@function.macro" },
 				["@field.rust"] = { link = "@field" },
 				["@include.python"] = { link = "@include" },
+				["@markup.raw"] = { fg = "NONE" },
 				-- ["@constructor.python"] = { link = "@constructor"},
 				CursorLineNr = { fg = "${blue}" },
 				SpellBad = { style = "underline" },
@@ -43,7 +44,10 @@ return {
 	--     "NTBBloodbath/rest.nvim",
 	--     dependencies = { "nvim-lua/plenary.nvim" },
 	-- },
-
+    {
+        "LunarVim/bigfile.nvim",
+        opts = {},
+    },
 	-- Status Line and Bufferline
 	-- {
 	--     "glepnir/galaxyline.nvim",
@@ -109,8 +113,9 @@ return {
 			"kosayoda/nvim-lightbulb",
 			"gfanto/fzf-lsp.nvim",
 			-- "ray-x/lsp_signature.nvim",
-			-- "jose-elias-alvarez/typescript.nvim",
-			"simrat39/rust-tools.nvim",
+            "mrcjkb/rustaceanvim",
+            "lvimuser/lsp-inlayhints.nvim",
+            { "j-hui/fidget.nvim", event = "LspAttach" },
 		},
 		config = function()
 			require("config.lsp")
@@ -130,14 +135,17 @@ return {
 		opts = {},
 	},
 
+    -- {"tzachar/cmp-ai", dependencies = "nvim-lua/plenary.nvim"},
 	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
-			-- hrsh7th/cmp-vsnip
+            "hrsh7th/vim-vsnip",
+			"hrsh7th/cmp-vsnip",
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-path",
 			"quangnguyen30192/cmp-nvim-tags",
+            { dir = "~/projects/cmp-ai" },
 			{ "tpope/vim-dadbod", ft = "sql" },
 			{ "kristijanhusak/vim-dadbod-completion", ft = "sql" },
 		},
@@ -148,7 +156,23 @@ return {
 
 	-- Linters and Fixers
 	{ "neomake/neomake" },
+	-- { dir = "~/projects/neomake" },
 	{ "sbdchd/neoformat" },
+
+    {
+        "alfredodeza/pytest.vim",
+        ft = "python"
+    },
+
+    {
+        "andythigpen/nvim-coverage",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = {"Coverage", "CoverageLoadLcov"},
+        opts = {
+            auto_reload = true,
+            lcov_file = "coverage.lcov",
+        }
+    },
 
 	-- Miscellaneous
 	"stefandtw/quickfix-reflector.vim", -- edit entries in QuickFix window
@@ -171,14 +195,13 @@ return {
 
 	{ -- generate tags in background
 		"ludovicchabant/vim-gutentags",
-		event = "VeryLazy",
 		config = function()
 			vim.g.gutentags_generate_on_new = 0
 			vim.g.gutentags_generate_on_missing = 0
 			vim.g.gutentags_generate_on_write = 1
 
 			-- extra project roots
-			vim.g.gutentags_project_root = { "Cargo.toml" }
+			vim.g.gutentags_project_root = { "Cargo.toml", ".git" }
 			vim.g.gutentags_add_default_project_roots = 1
 
 			vim.g.gutentags_ctags_extra_args = { "--languages=python,rust,typescript" }
@@ -309,6 +332,20 @@ return {
 			vim.fn["mkdp#util#install"]()
 		end,
 	},
+
+    {
+        "gsuuon/model.nvim",
+        init = function()
+            vim.filetype.add({
+                extension = {
+                    mchat = "mchat",
+                }
+            })
+        end,
+        config = function()
+            require("config.llm")
+        end,
+    },
 
 	-- { -- Interactive Repls Over Neovim
 	--     "hkupty/iron.nvim",

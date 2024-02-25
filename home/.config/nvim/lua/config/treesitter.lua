@@ -12,15 +12,16 @@ require("nvim-treesitter.configs").setup({
 	yati = { -- yioneko/nvim-yati
 		enable = true,
 	},
-    context_commentstring = { -- JoosepAlviste/nvim-ts-context-commentstring
-        enable = true,
-        enable_autocmd = false,
-        config = {
-            yaml = "# %s",
-            bash = "# %s",
-        },
-    },
     textobjects = {
+        swap = {
+            enable = true,
+            swap_next = {
+                ["g>"] = "@parameter.inner",
+            },
+            swap_previous = {
+                ["g<"] = "@parameter.inner",
+            },
+        },
 		select = {
 			enable = true,
 			-- Automatically jump forward to textobj, similar to targets.vim
@@ -40,4 +41,13 @@ require("nvim-treesitter.configs").setup({
 
 require("treesitter-context").setup({
 	enable = false,
+})
+
+vim.g.skip_ts_context_commentstring_module = true
+require('ts_context_commentstring').setup({
+    enable_autocmd = false,
+    config = {
+        yaml = "# %s",
+        bash = "# %s",
+    },
 })

@@ -158,3 +158,7 @@ nnoremap <buffer> <LocalLeader>lm :Neomake mypy<CR>
 nnoremap <buffer> <LocalLeader>lf :Neomake flake8<CR>
 nnoremap <buffer> <LocalLeader>lp :Neomake pylint<CR>
 
+" test
+" Pytest
+nmap <buffer> <silent> <LocalLeader>tt <Esc>:Pytest file<CR>
+nmap <buffer> <silent> <LocalLeader>tf <Esc>:Pytest function<CR>

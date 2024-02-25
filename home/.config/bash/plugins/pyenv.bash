@@ -23,10 +23,9 @@ workon () {
     # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/src/f481be386e527c53bb2cc81ed965b66a93d4e792/virtualenvwrapper.sh?at=master#lines-789
 }
 
-# get rid of shims
-# if _command_exists pyenv; then
-#   eval "$(pyenv init - bash)"
-# fi
+if _command_exists pyenv; then
+  eval "$(pyenv init - bash)"
+fi
 
 # pyenv-virtualenv plugin is very slow
 # disable it in favor of ondir

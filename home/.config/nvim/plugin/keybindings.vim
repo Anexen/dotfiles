@@ -207,12 +207,12 @@ nnoremap <Leader>pt :botright 12split +terminal \| startinsert<CR>
 " +search
 nnoremap <Leader>sc :noh<CR>
 nmap <Leader>sa <Plug>RgRawSearch--<Space>''<Left>
-vmap <Leader>sa <Plug>RgRawVisualSelection<CR>
+vmap <Leader>sa :RgSelectedFixedString<CR>
 nnoremap <Leader>sb :BLines<CR>
 nmap <Leader>sw <Plug>RgRawWordUnderCursor<CR>
 nmap <Leader>sl :Rg<Up><CR>
 nnoremap <Leader>st :Tags<CR>
-nnoremap <expr> <Leader>s<S-d> ":Tags " . expand('<cword>') . "<CR>"
+nnoremap <expr> <Leader>s<S-t> ":Tags " . expand('<cword>') . "<CR>"
 nnoremap <expr> <Leader>sd "<Plug>RgRawSearch-- '" . input("> ") . "' " . expand('%:h') . "<CR>"
 nnoremap <Leader>sp :Rg<CR>
 nnoremap <Leader>sg :call WebSearch(expand('<cword>'))<CR>

@@ -2,6 +2,34 @@ require("mason").setup()
 require("mason-lspconfig").setup()
 require("fzf_lsp").setup()
 
+-- TODO: remove in nvim 0.10
+require("lsp-inlayhints").setup({
+    inlay_hints = {
+        only_current_line = true,
+    }
+})
+
+vim.api.nvim_create_autocmd("CursorHold", {
+    group = vim.api.nvim_create_augroup("CursorHold_inlayhints", {}),
+    callback = function()
+        require("lsp-inlayhints").show(nil, 5)
+    end,
+})
+
+require("fidget").setup({
+    progress = {
+        display = {
+            progress_icon = {
+                pattern = "arc"
+            }
+        }
+    },
+    notification = {
+    -- text = { spinner = "arc"},
+        window = { winblend = 0 },
+    }
+})
+
 local nvim_lsp = require("lspconfig")
 local utils = require("utils")
 
@@ -61,13 +89,18 @@ end
 function M.on_attach(client, bufnr)
     M.setup_keybindings(client, bufnr)
     client.server_capabilities.semanticTokensProvider = nil
+    -- client.capabilities.textDocument.completion.completionItem.snippetSupport = false
 
     if utils.isModuleAvailable("lsp_signature") then
-        require"lsp_signature".on_attach {
+        require("lsp_signature").on_attach({
             bind = true,
             hint_enable = false,
             handler_opts = { border = "single" }
-        }
+        })
+    end
+
+    if utils.isModuleAvailable("lsp-inlayhints") then
+        require("lsp-inlayhints").on_attach(client, bufnr)
     end
 end
 
@@ -96,23 +129,6 @@ nvim_lsp.bashls.setup {}
 nvim_lsp.gopls.setup {}
 nvim_lsp.docker_compose_language_service.setup {}
 nvim_lsp.terraformls.setup {}
-
--- vim.api.nvim_create_autocmd('FileType', {
---     pattern = { 'terraform' },
---     callback = function()
---         vim.lsp.start({
---             name = 'terraformls',
---             cmd = { 'terraform-ls', 'serve' },
---             root_dir = M.root_pattern('.terraform', '.git'),
---         })
---     end,
--- })
-
--- vim.api.nvim_create_autocmd('LspAttach', {
---     callback = function(args)
---         M.on_attach(args.client, args.buf)
---     end
--- })
 
 -- :LspIntall dockerfile
 -- nvim_lsp.dockerfile.setup{
@@ -153,51 +169,42 @@ local function SetupRust()
         }
     }
 
-    local opts = {}
-    opts.capabilities = capabilities
-    opts.settings = {
-        ["rust-analyzer"] = {
-            cargo = {
-                loadOutDirsFromCheck = true,
-                allFeatures = true,
-            },
-            procMacro = {
-                enable = true
-            },
-            diagnostics = {
-                disabled = {"unresolved-proc-macro"}
-            },
-            workspace = {
-                symbol = {
-                    search = {
-                        scope = "workspace_and_dependencies"
+    local opts = {
+        capabilities = capabilities,
+        on_attach = M.on_attach,
+        settings = {
+            ["rust-analyzer"] = {
+                cargo = {
+                    features = "all",
+                },
+                procMacro = {
+                    enable = true
+                },
+                diagnostics = {
+                    disabled = {"unresolved-proc-macro"}
+                },
+                workspace = {
+                    symbol = {
+                        search = {
+                            scope = "workspace_and_dependencies"
+                        }
                     }
-                }
-            },
-            inlayHints = {
-                locationLinks = false,
-                -- lifetimeElisionHints = { enable = "always" },
-                -- reborrowHints = { enable = "always" },
-            },
+                },
+                inlayHints = {
+                    locationLinks = false,
+                    -- lifetimeElisionHints = { enable = "always" },
+                    -- reborrowHints = { enable = "always" },
+                },
+            }
         }
     }
 
-    local tools = {
-        inlay_hints = {
-            only_current_line = true
-        }
+    return {
+        server = opts,
     }
-
-    -- server:setup {
-    --     on_attach = M.on_attach,
-    --     capabilities = capabilities,
-    --     settings = settings
-    -- }
-    require("rust-tools").setup({server = opts, tools = tools})
 end
 
-
-SetupRust()
+vim.g.rustaceanvim = SetupRust()
 
 function SetupLua(server)
     local runtime_path = vim.split(package.path, ';')
@@ -218,6 +225,7 @@ function SetupLua(server)
                 workspace = {
                     -- Make the server aware of Neovim runtime files
                     library = vim.api.nvim_get_runtime_file("", true),
+                    checkThirdParty = false,
                 },
                 -- Do not send telemetry data containing a randomized but unique identifier
                 telemetry = {
@@ -244,20 +252,10 @@ function SetupCSS(server)
     }
 end
 
+-- SetupCSS(nvim_lsp.css_ls)
+
 -- :LspIntall typescript
 -- enable per project
 -- nvim_lsp.typescript.setup { on_attach = M.on_attach }
-
-
--- It causes vim to pause a second when it quits.
--- complition not working
--- Error when running :SqlsExecuteQuery with line visual selection
--- nvim_lsp.sqls.setup{
---     on_attach = function(client, bufnr)
---         setup_keybindings(client, bufnr)
---         client.resolved_capabilities.execute_command = true
---         require"sqls".setup{picker = "fzf"}
---     end,
--- }
 
 return M

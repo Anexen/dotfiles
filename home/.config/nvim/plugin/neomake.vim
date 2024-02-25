@@ -38,14 +38,63 @@ function! NeomakeLiveModeToggle()
     call SetNeomakeLiveMode(g:neomake_live_mode ? 0 : 1)
 endfunction
 
+" let g:neomake_terraform_tfsec_maker = {
+"     \ 'exe': 'tfsec',
+"     \ 'args': [],
+"     \ 'errorformat': '%f:%l:%c: %m',
+"     \}
+
+
+command! Tfsec call s:tfsec()
+
+" tfsec runs tfsec and prints adds the results to the quick fix buffer
+function! s:tfsec() abort
+    let lines = systemlist(['tfsec', expand('%:h'), '--format', 'csv', '--exclude-downloaded-modules'])
+    call setqflist(map(lines[1:], function("s:tfsec_line_postprocess")))
+endfunction
+
+function! s:tfsec_line_postprocess(idx, line) abort
+    let items = split(a:line, ',')
+    return {
+        \ "filename": expand("%:h") . '/' . items[0],
+        \ "lnum": items[1],
+        \ "col": items[2],
+        \ "text": items[5] . ' [' . items[3] . '] ' . items[6],
+        \ "type": "E",
+        \}
+endfunction
+
+let g:neomake_python_ruff_maker = {
+    \ 'exe': 'ruff',
+    \ 'args': ['check', '--quiet', '--no-fix', '--output-format', 'text'],
+    \ 'errorformat': '%f:%l:%c: %m',
+    \ }
+
+function! g:neomake_python_ruff_maker.InitForJob(jobinfo) abort
+    if a:jobinfo.file_mode == 1
+        return self
+    endif
+
+    let maker = deepcopy(self)
+    let project_root = neomake#utils#get_project_root(a:jobinfo.bufnr)
+
+    if empty(project_root)
+        call add(maker.args, '.')
+    else
+        call add(maker.args, project_root)
+    endif
+
+    return maker
+endfunction
+
 let g:neomake_live_mode = 0
 " call SetNeomakeLiveMode(g:neomake_live_mode)
 
 let g:neomake_git_diff_config = {
-\   'py': {'filetype': 'python', 'makers': ['flake8']},
+\   'py': {'filetype': 'python', 'makers': ['ruff']},
 \ }
 
-let g:neomake_python_enabled_makers = ['flake8']
+let g:neomake_python_enabled_makers = ['ruff']
 " let g:neomake_python_pylint_remove_invalid_entries = 1
 
 let g:neomake_clippy_rustup_has_nightly = 1

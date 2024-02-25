@@ -24,12 +24,24 @@ command! BD call fzf#run(fzf#wrap({
   \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
 \ }))
 
-func! s:find(pattern, path, ...)
+func! s:rg(pattern, path, ...)
     let cmd = 'rg %s -- %s%s'
     let args = join(['--column', '--line-number', '--no-heading', '--color=always', '--sort=path', '--trim'] + a:000)
     let pattern = empty(a:pattern) ? '''''' : shellescape(a:pattern)
     let path = empty(a:path) ? '' : ' ' . a:path
     call fzf#vim#grep(printf(cmd, args, pattern, path), 1, call('fzf#vim#with_preview', ['right', 'ctrl-/']), 0)
+endfunc
+
+func! s:rg_fixed_string(pattern)
+    call s:rg(a:pattern, "", "-F")
+endfunc
+
+func! s:rg_selected_fixed_string()
+    norm gv"ay
+    let pattern = substitute(getreg('a'), '\n\+$', '', '')
+    let cmd = 'RgFixedString ' . pattern
+    call histadd("cmd", cmd)
+    call s:rg(pattern, "", "-F")
 endfunc
 
 let g:fzf_action = {
@@ -38,4 +50,5 @@ let g:fzf_action = {
   \ 'ctrl-x': 'split',
   \ 'ctrl-v': 'vsplit' }
 
-command! -nargs=1 -complete=tag Find call s:find(<f-args>, "", '-F')
+command! -nargs=1 -complete=tag RgFixed call s:rg_fixed_string(<f-args>)
+command! -range RgSelectedFixedString call s:rg_selected_fixed_string()
