@@ -39,11 +39,6 @@ return {
 		end,
 	},
 
-	-- https://github.com/NTBBloodbath/rest.nvim
-	-- {
-	--     "NTBBloodbath/rest.nvim",
-	--     dependencies = { "nvim-lua/plenary.nvim" },
-	-- },
     {
         "LunarVim/bigfile.nvim",
         opts = {},
@@ -135,7 +130,6 @@ return {
 		opts = {},
 	},
 
-    -- {"tzachar/cmp-ai", dependencies = "nvim-lua/plenary.nvim"},
 	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
@@ -145,9 +139,9 @@ return {
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-path",
 			"quangnguyen30192/cmp-nvim-tags",
-            { dir = "~/projects/cmp-ai" },
 			{ "tpope/vim-dadbod", ft = "sql" },
 			{ "kristijanhusak/vim-dadbod-completion", ft = "sql" },
+            { "jmbuhr/otter.nvim", ft = "markdown"},
 		},
 		config = function()
 			require("config.completion")
@@ -333,42 +327,11 @@ return {
 		end,
 	},
 
-    {
-        "gsuuon/model.nvim",
-        init = function()
-            vim.filetype.add({
-                extension = {
-                    mchat = "mchat",
-                }
-            })
-        end,
-        config = function()
-            require("config.llm")
-        end,
-    },
+    "dhruvasagar/vim-table-mode", -- automatic table creator & formatter
 
 	-- { -- Interactive Repls Over Neovim
 	--     "hkupty/iron.nvim",
 	--     config = function() require"config.iron" end,
 	--     optional = true,
 	-- }
-
-	-- {
-	--     "lewis6991/satellite.nvim",
-	--     opts = {
-	--          winblend = 0,
-	--          -- handlers = { marks = { enable = false }}
-	--      }
-	-- }
-
-	-- "ms-jpq/chadtree"
-	-- 'mfussenegger/nvim-dap'
-	-- "Asheq/close-buffers.vim"          " quickly close (bdelete) several buffers at once
-	-- "dhruvasagar/vim-table-mode"       " automatic table creator & formatter
-
-	-- to try:
-	-- "bennypowers/nvim-regexplainer"
-	-- "wellle/targets.vim"
-	-- "justinmk/vim-sneak"               " ? replaces s, but faster then f
-	-- "ripxorip/aerojump.nvim"
 }

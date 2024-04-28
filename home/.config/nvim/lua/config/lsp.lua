@@ -25,7 +25,6 @@ require("fidget").setup({
         }
     },
     notification = {
-    -- text = { spinner = "arc"},
         window = { winblend = 0 },
     }
 })

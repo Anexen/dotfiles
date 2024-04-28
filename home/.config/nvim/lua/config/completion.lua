@@ -58,62 +58,25 @@ local underscore_compare = function(entry1, entry2)
 end
 
 
-require("cmp_ai.config"):setup({
-  max_lines = 30,
-  provider = "llamacpp",
-  provider_options = {
-    -- base_url = "http://192.168.99.90:8080/completion",
-    base_url = "http://localhost:8080/completion",
-    prompt = function(lines_before, lines_after)
-      return "<PRE> " .. lines_before .. " <SUF>" .. lines_after .. " <MID>"
-      -- return "<fim_prefix>" .. lines_before .. "<fim_suffix>" .. lines_after .. "<fim_middle>"
-    end,
-  },
-  notify = true,
-  notify_callback = function(msg)
-    require("fidget").notify(msg)
-  end,
-  run_on_every_keystroke = false,
-  ignored_file_types = {
-    html = true
-    -- default is not to ignore
-    -- uncomment to ignore in lua:
-    -- lua = true
-  },
-})
+require("otter").setup()
 
 cmp.setup {
     sources = {
         { name = 'vsnip' },
-        {
-            name = 'nvim_lsp',
-            priority = 100
-        },
+        { name = "otter" , priority = 100 },
+        { name = 'nvim_lsp', priority = 100 },
         {
             name = 'buffer',
             priority = 99,
-            -- trigger_characters = {"."},
             max_item_count = 10,
             option = { get_bufnrs = get_bufnrs }
         },
-        {
-            name = 'tags',
-            priority = 98,
-            -- trigger_characters = {"."},
-            max_item_count = 10
-        },
-        {
-            name = 'path',
-            max_item_count = 25
-        },
-        {
-            name = 'vim-dadbod-completion',
-            priority = 100
-        },
+        { name = 'tags', priority = 98, max_item_count = 10 },
+        { name = 'path', max_item_count = 25 },
+        { name = 'vim-dadbod-completion', priority = 100 },
     },
     sorting = {
       comparators = {
-        require("cmp_ai.compare"),
         compare.score,
         compare.exact,
         -- compare.offset,
@@ -135,7 +98,7 @@ cmp.setup {
                 nvim_lsp = "[LSP]",
                 path = "[Path]",
                 tags = "[Tag]",
-                cmp_ai = '[AI]',
+                otter = "[LSP]",
             })[entry.source.name]
             return vim_item
         end
@@ -160,14 +123,6 @@ cmp.setup {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         }),
-        ['<C-x>'] = cmp.mapping(
-            cmp.mapping.complete({
-                config = {
-                    sources = cmp.config.sources({{ name = 'cmp_ai' }}),
-                },
-            }),
-            { 'i' }
-        ),
     },
 }
 
@@ -177,4 +132,23 @@ vim.api.nvim_create_autocmd("BufRead", {
     callback = function()
         cmp.setup.buffer({ sources = { { name = "crates" } } })
     end,
+})
+
+vim.api.nvim_create_autocmd("BufRead", {
+    group = vim.api.nvim_create_augroup("ActivateOtter", { clear = true }),
+    pattern = {"*.md"},
+    callback = function()
+        require("otter").activate(
+            -- table of embedded languages to look for.
+            -- nil will activate any embedded languages found
+            {"python", "bash"},
+            -- is completion enabled
+            true,
+            -- is diagnostics enabled
+            false,
+            -- treesitter query to look for embedded languages.
+            -- uses injections if nil or not set.
+            nil
+        )
+    end
 })
