@@ -63,7 +63,6 @@ require("otter").setup()
 cmp.setup {
     sources = {
         { name = 'vsnip' },
-        { name = "otter" , priority = 100 },
         { name = 'nvim_lsp', priority = 100 },
         {
             name = 'buffer',
@@ -138,6 +137,8 @@ vim.api.nvim_create_autocmd("BufRead", {
     group = vim.api.nvim_create_augroup("ActivateOtter", { clear = true }),
     pattern = {"*.md"},
     callback = function()
+        cmp.setup.buffer({ sources = { { name = "otter", priority = 100 } } })
+
         require("otter").activate(
             -- table of embedded languages to look for.
             -- nil will activate any embedded languages found
