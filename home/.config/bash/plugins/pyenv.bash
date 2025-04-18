@@ -8,19 +8,33 @@ path_add "${PYENV_ROOT}/bin"
 
 source "${PYENV_ROOT}/completions/pyenv.bash"
 
+mkvirtualenv () {
+    local python_version="${1?python version is required}"
+    local venv_name="${2?venv name is required}"
+    "${PYENV_ROOT}/versions/${python_version}/bin/python" -m venv "${PYENV_ROOT}/versions/${venv_name}"
+}
+
+rmvirtualenv () {
+    rm -rf "${PYENV_ROOT}/versions/${1?venv name is required}"
+}
+
+lsvirtualenv () {
+    ls "${PYENV_ROOT}/versions/"
+}
+
 workon () {
-    local _name="${1:-$(cat .python-version)}"
-    local _venv="${PYENV_ROOT}/versions/${_name}"
-    source "${_venv}/bin/activate"
+    local venv_name="${1:-$(cat .python-version)}"
+    local venv_root="${PYENV_ROOT}/versions/${venv_name}"
+    source "${venv_root}/bin/activate"
 
     # mimics virtualenvwrapper postactivate
     # https://virtualenvwrapper.readthedocs.io/en/latest/scripts.html#postactivate
-    if [[ -f "${_venv}/bin/postactivate" ]]; then
-        source "${_venv}/bin/postactivate"
+    if [[ -f "${venv_root}/bin/postactivate" ]]; then
+        source "${venv_root}/bin/postactivate"
     fi
 
     # TODO: postdeactivate hook
-    # https://bitbucket.org/virtualenvwrapper/virtualenvwrapper/src/f481be386e527c53bb2cc81ed965b66a93d4e792/virtualenvwrapper.sh?at=master#lines-789
+    # https://github.com/python-virtualenvwrapper/virtualenvwrapper/blob/main/virtualenvwrapper.sh#L695
 }
 
 if _command_exists pyenv; then

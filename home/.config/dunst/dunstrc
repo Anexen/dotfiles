@@ -7,9 +7,9 @@ frame_width = 0
 padding = 16
 horizontal_padding = 16
 width = 300
-height = 300
+height = (0,300)
 origin = top-right
-offset = 30x50
+offset = (30,50)
 frame_color = "#222222"
 
 font = SF Pro Display 10

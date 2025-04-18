@@ -1,0 +1,6 @@
+{
+  "mypy ignore line": {
+    "prefix": "# type",
+    "body": "# type: ignore[$0]"
+  }
+}

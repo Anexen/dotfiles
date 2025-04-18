@@ -1,5 +1,6 @@
 .git
 .terraform
+.devbox
 undodir
 tags
 
@@ -11,6 +12,8 @@ __pycache__
 .mypy_cache
 .pytest_cache
 .tox
+.venv
+.ruff_cache
 
 # rust
 target
@@ -20,3 +23,5 @@ target
 
 # js
 node_modules
+dist
+.pyodide-xbuildenv

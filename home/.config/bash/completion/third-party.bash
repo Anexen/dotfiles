@@ -27,6 +27,6 @@ if [[ -f /usr/share/bash-complete-alias/complete_alias ]]; then
     done
 fi
 
-if _command_exists cargo-shuttle; then
-    source <(cargo shuttle generate -s bash)
-fi
+# if _command_exists cargo-shuttle; then
+#     source <(cargo shuttle generate shell bash)
+# fi

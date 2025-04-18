@@ -44,14 +44,6 @@ export HISTSIZE=20000
 # export HISTFILESIZE=20000
 export HISTIGNORE="&:ls:reboot:pwd:exit:clear:bg:fg*:nvim:history"
 
-function deduplicate_history {
-    tmp=$(mktemp)
-    nl ~/.bash_history | sort -k 2  -k 1,1nr| uniq -f 1 | sort -n | cut -f 2 > $tmp
-    mv $tmp ~/.bash_history
-}
-
-trap deduplicate_history EXIT
-
 # source other files
 
 __dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -67,15 +59,20 @@ source "${__dir}/readline.bash"
 path_add "${HOME}/bin"
 path_add "${HOME}/.local/bin"
 path_add "${HOME}/.cargo/bin"
+# path_add "${HOME}/.dotnet/tools"
 
 if [[ -n "${GOPATH}" ]]; then
     path_add "${GOPATH}/bin"
 fi
 
+if [[ -n "${NPM_CONFIG_PREFIX}" ]]; then
+    path_add "${NPM_CONFIG_PREFIX}/bin"
+fi
+
 # source "${__dir}/plugins/battery.bash"
 source "${__dir}/plugins/fonts.bash"
 source "${__dir}/plugins/fzf.bash"
-source "${__dir}/plugins/pyenv.bash"
+# source "${__dir}/plugins/pyenv.bash"
 source "${__dir}/plugins/ssh.bash"
 source "${__dir}/plugins/starship.bash"
 
@@ -86,6 +83,18 @@ if _command_exists ondir; then
     source "${__dir}/libs/ondir/scripts.sh"
 else
     echo "Ondir is not installed"
+fi
+
+if _command_exists devbox; then
+    eval "$(devbox global shellenv)"
+    source <(devbox completion bash)
+fi
+
+if _command_exists direnv; then
+    export DIRENV_LOG_FORMAT=''  # mute direnv
+    eval "$(direnv hook bash)"
+else
+    echo "direnv is not installed"
 fi
 
 if  _command_exists fzf; then

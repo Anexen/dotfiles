@@ -7,11 +7,17 @@ tags.temp
 .autoenv
 .autoenv.leave
 .notags
+.envrc
+
+.devbox
+devbox.json
+devbox.lock
 
 # python
 .breakpoints
 .python-version
 _internal.py
+.venv
 
 # vim
 .exrc

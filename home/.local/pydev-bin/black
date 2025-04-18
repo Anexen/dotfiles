@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec "${PYENV_ROOT}/versions/${PYDEV_VENV}/bin/black" "$@"

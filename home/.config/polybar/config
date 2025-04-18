@@ -44,7 +44,7 @@ font-0 = "Sauce Code Pro Nerd Font:size=11;3"
 enable-ipc = true
 cursor-click = pointer
 modules-left = menu i3 cpu memory wireless-network wired-network
-modules-right = xkeyboard battery backlight volume microphone date dunst powermenu
+modules-right = media-prev media-play media-next xkeyboard battery backlight volume microphone date dunst powermenu
 
 # [module/power]
 # type = custom/text
@@ -68,8 +68,7 @@ hook-1 = echo "%{A1:dunstctl set-paused false && polybar-msg hook dunst 1:}%{F#e
 [module/powermenu]
 type = custom/menu
 
-expand-right = true
-format = <label-toggle><menu>
+format = <menu><label-toggle>
 format-spacing = 0
 format-foreground = ${color.fg}
 format-background = ${color.bg}
@@ -83,14 +82,14 @@ label-close-padding = 1
 menu-0-0 = "  |"
 menu-0-0-exec = systemctl suspend
 
-menu-0-1 = " * |"
-menu-0-1-exec = systemctl hibernate
+menu-0-1 = "  |"
+menu-0-1-exec = systemctl reboot
 
-menu-0-2 = "  |"
-menu-0-2-exec = systemctl reboot
+menu-0-2 = " ⏻ "
+menu-0-2-exec = systemctl poweroff
 
-menu-0-3 = " ⏻ "
-menu-0-3-exec = systemctl poweroff
+# menu-0-3 = " * |"
+# menu-0-3-exec = systemctl hibernate
 
 [module/menu]
 type = custom/text
@@ -192,6 +191,25 @@ ramp-free-4 = ▅
 ramp-free-5 = ▆
 ramp-free-6 = ▇
 ramp-free-7 = █
+
+
+[module/media-prev]
+type = custom/text
+content = 
+click-left = "playerctl prev"
+
+[module/media-play]
+type = custom/script
+; exec = ~/.config/polybar/media.sh
+exec = "playerctl --follow status | sed -u 's/Playing/  /;s/Stopped/ 󰓛 /;s/Paused/ 󰐊 /'"
+tail = true
+click-left = "playerctl play-pause"
+
+[module/media-next]
+type = custom/text
+content = 
+click-left = "playerctl next"
+
 
 [module/xkeyboard]
 type = internal/xkeyboard

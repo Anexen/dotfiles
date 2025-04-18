@@ -1,1 +1,0 @@
-nnoremap <LocalLeader>= :TerraformFmt<CR>

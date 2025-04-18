@@ -9,6 +9,7 @@ format = """\
     $rust\
     $terraform\
     $aws\
+    $nix_shell\
     $memory_usage\
     $env_var\
     $cmd_duration\
@@ -17,13 +18,16 @@ format = """\
     $line_break\
     $character\
     """
+
 [aws]
 format = "on [$symbol$profile]($style) "
 style = "bold blue"
 
 [character]
-success_symbol = "[└─ \\$](bold green)"
-error_symbol = "[└─ ✗](bold green)"
+# success_symbol = "[└─ \\$](bold green)"
+# error_symbol = "[└─ ✗](bold green)"
+success_symbol = "[ \\$](bold green)"
+error_symbol = "[ ✗](bold green)"
 
 [memory_usage]
 format = "$symbol${ram_pct}($style) "
@@ -53,6 +57,9 @@ symbol = "✦ "
 
 [python]
 symbol = ""
+
+[nix_shell]
+format = '[$symbol]($style) '
 
 # [cmd_duration]
 # show_notifications = true

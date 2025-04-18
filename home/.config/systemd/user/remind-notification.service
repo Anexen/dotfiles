@@ -1,0 +1,9 @@
+[Unit]
+Description=Remind Notification Service
+
+[Service]
+StandardOutput=journal
+ExecStart=/usr/bin/remind -z1 '-k/usr/bin/notify-send -c reminder Reminder %%s &' /home/archer/.reminders
+
+[Install]
+WantedBy=default.target

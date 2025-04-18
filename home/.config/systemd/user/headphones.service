@@ -1,0 +1,9 @@
+[Unit]
+Description=Pause media when unplugging headphones
+
+[Service]
+StandardOutput=journal
+ExecStart=/bin/bash -c 'acpi_listen | grep --line-buffered "HEADPHONE unplug" | xargs -n 1 -d "\n" playerctl pause'
+
+[Install]
+WantedBy=default.target
