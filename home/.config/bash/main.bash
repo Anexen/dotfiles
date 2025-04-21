@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # https://wiki.archlinux.org/index.php/XDG_Base_Directory
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_CACHE_HOME="${HOME}/.cache"
@@ -35,8 +36,7 @@ shopt -s cdable_vars
 export dotfiles="${HOME}/.dotfiles"
 
 # Automatically trim long paths in the prompt
-PROMPT_DIRTRIM=5
-
+export PROMPT_DIRTRIM=5
 # ignoreboth = ignorespace + ignoredups
 export HISTCONTROL=ignoreboth:erasedups
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
@@ -77,13 +77,6 @@ source "${__dir}/plugins/ssh.bash"
 source "${__dir}/plugins/starship.bash"
 
 source "${__dir}/completion/third-party.bash"
-
-# build ondir: cd libs/ondir && sudo make install
-if _command_exists ondir; then
-    source "${__dir}/libs/ondir/scripts.sh"
-else
-    echo "Ondir is not installed"
-fi
 
 if _command_exists devbox; then
     eval "$(devbox global shellenv)"

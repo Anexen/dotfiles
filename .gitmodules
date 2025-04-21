@@ -1,9 +1,21 @@
-[submodule "home/.config/bash/libs/forgit"]
-	path = home/.config/bash/libs/forgit
-	url = https://github.com/wfxr/forgit
-[submodule "home/.config/bash/libs/fzf-marks"]
-	path = home/.config/bash/libs/fzf-marks
-	url = https://github.com/urbainvaes/fzf-marks.git
-[submodule "home/.config/tmux/plugins/tpm"]
-	path = home/.config/tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
+[submodule "forgit"]
+    path = home/.config/bash/libs/forgit
+    url = https://github.com/wfxr/forgit
+[submodule "fzf-marks"]
+    path = home/.config/bash/libs/fzf-marks
+    url = https://github.com/urbainvaes/fzf-marks.git
+[submodule "tmux-copycat"]
+    path = home/.config/tmux/plugins/tmux-copycat
+    url = https://github.com/tmux-plugins/tmux-copycat
+[submodule "tmux-fzf-url"]
+    path = home/.config/tmux/plugins/tmux-fzf-url
+    url = https://github.com/wfxr/tmux-fzf-url
+[submodule "tmux-open"]
+    path = home/.config/tmux/plugins/tmux-open
+    url = https://github.com/tmux-plugins/tmux-open
+[submodule "tmux-resurrect"]
+    path = home/.config/tmux/plugins/tmux-resurrect
+    url = https://github.com/tmux-plugins/tmux-resurrect
+[submodule "tmux-thumbs"]
+    path = home/.config/tmux/plugins/tmux-thumbs
+    url = https://github.com/fcsonline/tmux-thumbs
